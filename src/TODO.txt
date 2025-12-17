@@ -1,0 +1,68 @@
+
+
+1. order page doctor detail show
+3. slot booking accoring to doctor id date and time booked to show booked or not  
+5. doctor upcoming will show when meeting created after doctor accept the patient booking.
+6. upcoming doctor APi bi banana h.
+6. acrdng doctor availablity show time slot  
+7. health record wale m accroind to patient prescritpn and test repost show hone chiaye
+
+
+
+7. patient shoulb be send to book consulation having customer patinet else it take that patinet customer id   // done 
+8. show the consulation fees on consulation response that will show on payment page.      // done   
+2. doctor will show to customer who is assured muni    // done 
+4. doctor approved by superadmin thne show assured muni true else false    // done
+
+
+
+1. Loader lgana buttons p 
+2. wellness ka design 
+3. djnago API CRUD banna h 
+
+
+
+
+
+1. resolve debug issue 
+2. wellness design 
+3. check the navigation after the payment success full 
+
+
+Today's Task for Add the consulatation added My Cart Section  
+ 2. Handle the back press to exit the App   // done 
+ 3. optimised the code
+
+
+
+
+password : mantra 
+ 
+What is your first and last name?
+  [Unknown]:  CM
+What is the name of your organizational unit?
+  [Unknown]:  mantra
+What is the name of your organization?
+  [Unknown]:  mantra
+What is the name of your City or Locality?
+  [Unknown]:  delhi
+What is the name of your State or Province?
+  [Unknown]:  HR
+What is the two-letter country code for this unit?
+  [Unknown]:  In
+Is CN=CM, OU=mantra, O=mantra, L=delhi, ST=HR, C=In correct?
+  [no]:
+
+
+
+
+
+password  : mantra
+
+
+
+
+
+
+
+    // "react-native-skeleton-placeholder": "^5.2.4",
