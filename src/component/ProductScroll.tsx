@@ -14,15 +14,15 @@ const { width } = Dimensions.get('window');
 
 const ProductScroll = (props: any) => {
 
-    const productImages = [
-        "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg",
-        "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg",
-        "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg",
-        "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg"
-    ];
+    // const productImages = [
+    //     "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg",
+    //     "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg",
+    //     "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg",
+    //     "https://ayurmuni.s3.ap-south-1.amazonaws.com/products/cocountoil.jpeg"
+    // ];
 
 
-    // const productImages = props.Productdata;
+    const productImages = props.Productdata;
 
     // console.log("Product Images ===>", productImages)
 
@@ -74,12 +74,12 @@ const ProductScroll = (props: any) => {
 
 
                     <View style={styles.mainImageContainer}>
-                        {/* <Image
+                        <Image
                             source={{ uri: productImages[selectedImageIndex] }}
                             // source={productImages[selectedImageIndex]}
                             style={styles.mainImage}
                             resizeMode="cover"
-                        /> */}
+                        />
 
                         {selectedImageIndex > 0 && (
                             <TouchableOpacity
@@ -129,12 +129,12 @@ const ProductScroll = (props: any) => {
                                     selectedImageIndex === index && styles.activeThumbnail
                                 ]}
                                 onPress={() => handleThumbnailPress(index)} >
-                                {/* <Image
+                                <Image
                                     source={{ uri: image }}
                                     // source={image}
                                     style={styles.thumbnailImage}
                                     resizeMode="cover"
-                                /> */}
+                                />
 
                                 {selectedImageIndex === index && (
                                     <View style={styles.activeOverlay} />

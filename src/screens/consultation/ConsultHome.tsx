@@ -1,15 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
+import {View,Text,StyleSheet,ScrollView,TouchableOpacity,Image,StatusBar,SafeAreaView,} from 'react-native';
 import { NavigationProp, useIsFocused } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import SearchBar from '../../component/SearchBar';
@@ -47,13 +37,6 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
   const [loadingHealth, setLoadingHealth] = useState(true);
 
 
-  //   useEffect(() => {
-  //   getDoctorAPI();
-  //   getConsultApi();
-  //   getHealthCategory();
-  // }, [isFocused]);
-
-
   const fetchAllData = useCallback(async () => {
 
     _CONSULT_SERVICE.getDoctor()
@@ -71,11 +54,11 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
       .catch(err => console.log("Health Error", err))
       .finally(() => setLoadingHealth(false));
 
-    // _HOME_SERVICE.getBestSellerProduct()
-    //   .then((res: any) => res?.json())
-    //   .then(json => setPrevPlaced(json))
-    //   .catch(err => console.log("Best Selling Error", err))
-    //   .finally(() => setLoadingBest(false));
+    _HOME_SERVICE.getBestSellerProduct()
+      .then((res: any) => res?.json())
+      .then(json => setPrevPlaced(json))
+      .catch(err => console.log("Best Selling Error", err))
+      .finally(() => setLoadingBest(false));
 
   }, []);
 
@@ -87,71 +70,10 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
     }
   }, [isFocused, fetchAllData]);
 
-  const getDoctorAPI = async () => {
-    setIsLoading(true);
-    try {
-      let response: any = await _CONSULT_SERVICE.getDoctor();
-
-      const DataJSON = await response.json();
-      console.log("doctorlist-->", DataJSON);
-      const filteredData = DataJSON?.data?.filter((item: any) => item.assured_muni === true);
-      console.log("filteredData-->", filteredData);
-      setIsLoading(false);
-      setDoctorList(filteredData);
-    } catch (error) {
-      setIsLoading(false);
-      console.log("CATEGORY DATA ERROR:", error);
-    }
-  }
-
-
-
-  const getConsultApi = async () => {
-    setIsLoading(true);
-    try {
-      let response: any = await _CONSULT_SERVICE.getHomePage();
-      const responseData = await response.json();
-      if (responseData.status_code == 200) {
-        // setHealthConcern(responseData.health_concerns)
-        setPrevPlaced(responseData?.best_selling);
-        setIsLoading(false);
-      }
-
-      else {
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log("CATEGORY DATA ERROR:", error);
-    }
-  }
-
-  const getHealthCategory = async () => {
-    setIsLoading(true);
-    try {
-      let response: any = await _HOME_SERVICE.get_health_category();
-
-      const DataCategory = await response.json();
-      console.log("healthhhh-->", DataCategory);
-      if (response.status == 200) {
-        setHealthConcern(DataCategory)
-        setIsLoading(false);
-      }
-
-      else {
-        setIsLoading(false);
-      }
-
-    } catch (error) {
-      setIsLoading(false);
-      console.log("CATEGORY DATA ERROR:", error);
-    }
-  }
 
   const handleSearch = (text: string) => {
     console.log('Searching for:', text);
   };
-
 
 
   const handleVoicePress = () => {
@@ -159,6 +81,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
   };
 
   const ConsultNow = () => {
+
     return (
       <View style={styles.onlineBanner}>
         <View style={styles.onlineBannerContent}>
@@ -189,6 +112,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
         </View>
         <View style={styles.onlineBannerImage}>
           <Image
+          
             source={require('../../assets/images/consultnow.png')}
             style={styles.doctorBannerImage}
           />
@@ -221,7 +145,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
         <View style={styles.bannerContainer}>
           <View style={styles.bannerRow}>
             <ConsultDoctor title="Don't have Prescription?" subTitle="Consult with our doctors." buttonText="Consult With Doctor" navigation={navigation} image={ConsultImage} />
-            <TouchableOpacity style={styles.assistButton} onPress={() => navigation.navigate('HealthAssistant')}>
+            <TouchableOpacity style={styles.assistButton} onPress={() => navigation.navigate('HealthAssesment')}>
               <Text style={styles.assistButtonText}>Health Assistant</Text>
             </TouchableOpacity>
           </View>
@@ -286,15 +210,10 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
 
         <View style={styles.sectionContainer}>
 
-          {/* {loadingDoctors ?
-            <ProductSkeleton /> :
-            <ProductCard title='Your previous placed orders:' navigation={navigation} PropsData={PrevPlaced} />
-          } */}
-
+          {loadingDoctors ? <ProductSkeleton /> : PrevPlaced?.length > 0 ?
+            <ProductCard title='Your previous placed orders:' navigation={navigation} PropsData={PrevPlaced} /> : null
+          }
         </View>
-
-
-
         <FAQComponent />
       </ScrollView>
     </SafeAreaView >
@@ -354,14 +273,15 @@ const styles = StyleSheet.create({
   },
   prescriptionText: {
     flex: 1,
+
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: Fonts.PoppinsSemiBold,
     color: '#000000',
     marginLeft: 12,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: Fonts.PoppinsSemiBold,
     color: '#333333',
     marginBottom: 15,
     paddingHorizontal: 10

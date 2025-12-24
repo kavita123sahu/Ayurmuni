@@ -168,11 +168,8 @@ const MyOrder = (props: any) => {
 
             }
 
-            console.log("  datasendcancel =============>", dataToSend);
-
+    
             const result: any = await _ORDER_SERVICE.order_cancle_API(dataToSend);
-
-            console.log("cancleeeeresult====>>", result);
 
             if (result.status === 200) {
 
@@ -417,7 +414,6 @@ const MyOrder = (props: any) => {
             <StatusBar barStyle="light-content" backgroundColor={Colors.primaryColor} />
 
             <Header title='My Orders' navigation={props.navigation} Is_Tab={false} />
-            {/* , 'Wellness Centers' */}
             <View style={styles.tabContainer}>
                 {['Products', 'Consulting'].map((tab) => (
                     <TouchableOpacity

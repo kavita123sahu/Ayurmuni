@@ -267,3 +267,6 @@ export const moreWaysToPay = [{ id: 'netbanking', name: 'Netbanking', height: 25
 
 
 
+
+
+

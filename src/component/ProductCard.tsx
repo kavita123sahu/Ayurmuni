@@ -1,15 +1,5 @@
 import React, { useRef } from 'react';
-import {
-    Animated,
-    Dimensions,
-    FlatList,
-    Image,
-    ListRenderItem,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {Animated,Dimensions,FlatList,Image,StyleSheet,Text,TouchableOpacity,View,} from 'react-native';
 import { Colors } from '../common/Colors';
 import { Fonts } from '../common/Fonts';
 import CustomStarRating from './CustomStarRating';
@@ -46,32 +36,25 @@ interface Props {
     PropsData?: Product[];
 }
 
-const ProductCard = ({
-    title,
-    navigation,
-    PropsData = [],
-    flag
-}: Props) => {
+const ProductCard = ({ title, navigation, PropsData = [], flag}: Props) => {
 
-    const scrollX = useRef(new Animated.Value(0)).current;
-    const cardWidth = screenWidth * 0.72;
-
+   
     const renderProduct = ({ item }: { item: Product }) => (
         <TouchableOpacity
             style={styles.productCard}
             onPress={() => navigation.navigate('ProductDetail', { PropsData: item })}
         >
             <View style={styles.productImage}>
-                {/* <Image
+                { <Image
                     source={
-                        // typeof item?.image === 'string'
-                            // ? 
+                        typeof item?.image === 'string'
+                            ?   
                             { uri: item.image }
-                            // : item?.image || require('../assets/images/productimage.png')
+                            : item?.image || require('../assets/images/productimage.png')
                     }
                     style={styles.productImage}
                     resizeMode="contain"
-                /> */}
+                /> }
             </View>
 
             <View style={styles.productInfo}>
@@ -104,18 +87,20 @@ const ProductCard = ({
         </TouchableOpacity>
     );
 
-    const ItemSeparator = () => <View style={styles.separator} />;
-
+  
+    
     return (
         <View style={styles.categoriesSection}>
             <Text style={styles.sectionTitle}>{title}</Text>
 
-             {flag === "search" ? (
+            {flag === "search" && (
                 <FlatList
+
                     data={PropsData}
                     renderItem={renderProduct}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={2}
+                    scrollEnabled={false}
                     columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 10 }}
                     contentContainerStyle={styles.gridContainer}
                     ListEmptyComponent={
@@ -124,70 +109,70 @@ const ProductCard = ({
                         </View>
                     }
                 />
-            ) : ( 
-                <>
+            ) 
+            // : (
+            //     <>
 
-                    <Animated.FlatList
-                        horizontal
-                        data={PropsData}
-                        renderItem={renderProduct}
-                        keyExtractor={(item) => item.id.toString()}
-                        showsHorizontalScrollIndicator={false}
-                        ItemSeparatorComponent={ItemSeparator}
-                        contentContainerStyle={styles.flatListContainer}
-                        snapToInterval={cardWidth + 12}
-                        decelerationRate="fast"
-                        onScroll={Animated.event(
-                            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                            { useNativeDriver: false }
-                        )}
-                    />
+            //         <Animated.FlatList
+            //             horizontal
+            //             data={PropsData}
+            //             renderItem={renderProduct}
+            //             keyExtractor={(item) => item.id.toString()}
+            //             showsHorizontalScrollIndicator={false}
+            //             ItemSeparatorComponent={ItemSeparator}
+            //             contentContainerStyle={styles.flatListContainer}
+            //             snapToInterval={cardWidth + 12}
+            //             decelerationRate="fast"
+            //             onScroll={Animated.event(
+            //                 [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            //                 { useNativeDriver: false }
+            //             )}
+            //         />
 
-                    {/* DOTS — same UI — now animated */}
-                    {PropsData.length > 1 && (
-                        <View style={styles.paginationContainer}>
-                            {PropsData.map((_, i) => {
-                                const inputRange = [
-                                    (i - 1) * (cardWidth + 12),
-                                    i * (cardWidth + 12),
-                                    (i + 1) * (cardWidth + 12),
-                                ];
+            //         {/* DOTS — same UI — now animated */}
+            //         {PropsData.length > 1 && (
+            //             <View style={styles.paginationContainer}>
+            //                 {PropsData.map((_, i) => {
+            //                     const inputRange = [
+            //                         (i - 1) * (cardWidth + 12),
+            //                         i * (cardWidth + 12),
+            //                         (i + 1) * (cardWidth + 12),
+            //                     ];
 
-                                const opacity = scrollX.interpolate({
-                                    inputRange,
-                                    outputRange: [0.3, 1, 0.3],
-                                    extrapolate: "clamp",
-                                });
+            //                     const opacity = scrollX.interpolate({
+            //                         inputRange,
+            //                         outputRange: [0.3, 1, 0.3],
+            //                         extrapolate: "clamp",
+            //                     });
 
-                                const scale = scrollX.interpolate({
-                                    inputRange,
-                                    outputRange: [0.7, 1.25, 0.7],
-                                    extrapolate: "clamp",
-                                });
+            //                     const scale = scrollX.interpolate({
+            //                         inputRange,
+            //                         outputRange: [0.7, 1.25, 0.7],
+            //                         extrapolate: "clamp",
+            //                     });
 
-                                return (
-                                    <Animated.View
-                                        key={i}
-                                        style={[
-                                            styles.dot,
-                                            { opacity, transform: [{ scale }] },
-                                        ]}
-                                    />
-                                );
-                            })}
-                        </View>
-                    )}
-                </>
-             )} 
+            //                     return (
+            //                         <Animated.View
+            //                             key={i}
+            //                             style={[
+            //                                 styles.dot,
+            //                                 { opacity, transform: [{ scale }] },
+            //                             ]}
+            //                         />
+            //                     );
+            //                 })}
+            //             </View>
+            //         )}
+            //     </>
+            // )
+            }
         </View>
     );
 };
 
 export default ProductCard;
 
-
 const cardWidth = (screenWidth - 44) / 2;
-
 
 const styles = StyleSheet.create({
     categoriesSection: {
@@ -201,42 +186,15 @@ const styles = StyleSheet.create({
         color: '#333333',
         marginBottom: 16,
     },
-    categoriesList: {
-        marginHorizontal: -10,
-    },
+   
     flatListContainer: {
         paddingHorizontal: 5,
     },
     separator: {
         width: 12,
     },
-    categoryItem: {
-        alignItems: 'center',
-        paddingHorizontal: 10,
-        paddingVertical: 12,
-        borderRadius: 12,
-        gap: 8,
-        minWidth: 80,
-    },
-    activeCategoryItem: {
-        backgroundColor: '#E8F5E8',
-    },
-    categoryIcon: {
-        fontSize: 24,
-        marginBottom: 4,
-    },
-    categoryText: {
-        fontSize: 12,
-        color: '#666666',
-        fontWeight: '500',
-    },
-    activeCategoryText: {
-        color: '#4CAF50',
-        fontWeight: 'bold',
-    },
-
-    productCard: {   //200
-        // width: 200,
+    
+    productCard: {   
         width: cardWidth,
         borderRadius: 12,
         padding: 12,
@@ -275,36 +233,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
     },
-    starsContainer: {
-        flexDirection: 'row',
-        marginRight: 4,
-    },
-    starFilled: {
-        fontSize: 12,
-        color: '#FCD34D',
-    },
-    starEmpty: {
-        fontSize: 12,
-        color: '#D1D5DB',
-    },
-    reviewCount: {
-        fontSize: 12,
-        fontFamily: Fonts.PoppinsRegular,
-        color: '#6B7280',
-        marginLeft: 4,
-    },
+ 
     productDetails: {
         fontSize: 12,
         fontFamily: Fonts.PoppinsRegular,
         color: '#6B7280',
         marginBottom: 4,
     },
-    mrpLabel: {
-        fontSize: 12,
-        color: '#6B7280',
-        marginTop: 8,
-        marginBottom: 4,
-    },
+   
     priceContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -340,7 +276,6 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
         borderWidth: 0.4,
         borderRadius: 4,
-
         gap: 2,
 
     },
@@ -351,10 +286,6 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.PoppinsMedium,
     },
 
-    gridList: {
-        flex: 1,
-        paddingHorizontal: 10,
-    },
     gridContainer: {
         paddingBottom: 20,
         padding: 5
@@ -362,11 +293,8 @@ const styles = StyleSheet.create({
 
     columnWrapper: {
         justifyContent: 'space-between',
-        // paddingHorizontal: 5,
     },
-    gridSeparator: {
-        height: 15,
-    },
+
     paginationContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -383,12 +311,5 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primaryColor,
         opacity: 0.4,
     },
-    dotActive: {
-        opacity: 1,
-        width: 14,
-        height: 14,
-        borderRadius: 7,
-    }
-
 
 })

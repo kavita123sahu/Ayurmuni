@@ -1,92 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-    Image,
-    StatusBar,
-    SafeAreaView,
-} from 'react-native';
+import React, { } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, StatusBar, } from 'react-native';
 import { Dimensions } from 'react-native';
 import { Images } from '../../common/Images';
 import LinearGradient from 'react-native-linear-gradient';
 import SearchBar from '../../component/SearchBar';
 import Servicecard from '../../component/servicecard';
 import * as _PROFILE_SERVICES from '../../services/ProfileServices';
-import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native';
-import { useNavigationState } from "@react-navigation/native";
-import { BackHandler, ToastAndroid } from 'react-native';
-import { useRef } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const { width } = Dimensions.get('window');
 
 
 
 const HomePage: React.FC = () => {
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const isFocused = useIsFocused();
     const navigation = useNavigation();
-    const navState = useNavigationState((state) => state);
-    const exitCount = useRef(0);
 
-    const handleSearch = (text: string) => {
-    };
-
-
-    const handleVoicePress = () => {
-        console.log('Voice search pressed');
-    };
-
-
-
-     useEffect(() => {
-          console.log("Hello Debugger");
-        }, []);
-    
 
     return (
-
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#466425" barStyle="light-content" />
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
 
-                <LinearGradient
-                    colors={['#466425', '#71A33F']}
-                    style={styles.header}>
+            <LinearGradient
+                colors={['#466425', '#71A33F']}
+                style={styles.header}>
 
-                    <TouchableOpacity>
-                        <SearchBar
-                            type='home'
-                            showVoiceIcon={false}
-                            placeholder="Search for products"
-                            navigation={navigation}
-                            onSearch={handleSearch}
-                            onVoicePress={handleVoicePress}
-                            value={searchQuery}
-                            onChangeText={setSearchQuery}
-                        />
+                <TouchableOpacity>
+                    <SearchBar
+                        type='home'
+                        showVoiceIcon={false}
+                        placeholder="Search for products"
+                        navigation={navigation}
+                    // onSearch={handleSearch}
+                    // onVoicePress={handleVoicePress}
+                    // value={searchQuery}
+                    // onChangeText={setSearchQuery}
+                    />
 
+                </TouchableOpacity>
+
+                <View style={styles.advisorCard}>
+                    <View style={styles.advisorIcon}>
+                        <Image source={Images.robotIcon} resizeMode='cover' style={{ height: 100, width: 150 }} />
+                    </View>
+                    <View style={styles.advisorContent}>
+                        <Text style={styles.advisorTitle}>Your Personal Ayurvedic Advisor, Anytime.</Text>
+                        <Text style={styles.advisorSubtitle}>Get instant, personalized wellness guidance rooted in ancient Ayurvedic wisdom—powered by AI.</Text>
+                    </View>
+                </View>
+
+                <View style={styles.askNowContainer}>
+                    <TouchableOpacity style={styles.askNowButton}>
+                        <Image source={Images.askbutton} style={{ height: 32, width: 122, borderRadius: 20 }} />
                     </TouchableOpacity>
+                </View>
 
-                    <View style={styles.advisorCard}>
-                        <View style={styles.advisorIcon}>
-                            <Image source={Images.robotIcon} resizeMode='cover' style={{ height: 100, width: 150 }} />
-                        </View>
-                        <View style={styles.advisorContent}>
-                            <Text style={styles.advisorTitle}>Your Personal Ayurvedic Advisor, Anytime.</Text>
-                            <Text style={styles.advisorSubtitle}>Get instant, personalized wellness guidance rooted in ancient Ayurvedic wisdom—powered by AI.</Text>
-                        </View>
-                    </View>
+            </LinearGradient>
 
-                    <View style={styles.askNowContainer}>
-                        <TouchableOpacity style={styles.askNowButton}>
-                            <Image source={Images.askbutton} style={{ height: 32, width: 122, borderRadius: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-
-                </LinearGradient>
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
 
                 <Servicecard navigation={navigation} />
 
@@ -114,55 +84,6 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
 
     },
-    headerprofile: {
-        paddingHorizontal: 10,
-
-
-    },
-    headerTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 20,
-        marginBottom: 15,
-    },
-    locationContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-
-    locationText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    profileheader: {
-        backgroundColor: '#fff',
-        borderRadius: 40,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 40
-    },
-    sublocationText: {
-        color: '#FFFFFF',
-        fontSize: 12,
-        fontWeight: '400',
-    },
-    askMuniButton: {
-
-        paddingVertical: 6,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    askMuniText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: '600',
-        marginRight: 5,
-    },
-    askMuniIcon: {
-        fontSize: 20,
-    },
 
     advisorCard: {
         padding: 15,
@@ -186,9 +107,10 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 14,
         lineHeight: 20,
-        fontWeight: '500',
+        fontFamily : 'Poppins-Medium',
         marginBottom: 5,
     },
+    
     advisorSubtitle: {
         marginTop: 5,
         color: '#FFFFFF',
@@ -218,8 +140,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5F5F5',
     },
-
-
 
     takeChargeSection: {
         paddingHorizontal: 20,

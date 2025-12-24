@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, StatusBar, ScrollView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, StatusBar, ScrollView, TextInput } from 'react-native';
 import { Colors } from '../../common/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDebouncedValue } from '../../hooks/useDebaunce';
@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import *as _HOME_SERVICE from '../../services/HomeServices';
 import ProductCard from '../../component/ProductCard';
+import { ProductSkeleton } from '../../Skeleton/CardSkeleton';
 
 const ProductSearch = (props: any) => {
     const [searchText, setSearchText] = useState<string>('');
@@ -25,10 +26,31 @@ const ProductSearch = (props: any) => {
     const debouncedSearchText = useDebouncedValue(searchText, 300);
     const { categoryId } = props.route.params || {};
 
-    
+    const [categoryLoading, setCategoryLoading] = useState(true);
+    const [bestSellerLoading, setBestSellerLoading] = useState(true);
+    const [nutritionLoading, setNutritionLoading] = useState(true);
+
     useEffect(() => {
         loadAllData();
     }, [categoryId]);
+
+
+
+
+    const loadAllData = async () => {
+        setLoader(true);
+        try {
+            await Promise.all([
+                getVendorProduct(),
+                getBestSeller(),
+                getTopNutrition()
+            ]);
+        } catch (error) {
+            console.log("Error loading all data:", error);
+        } finally {
+            setLoader(false);
+        }
+    };
 
 
     useEffect(() => {
@@ -41,85 +63,69 @@ const ProductSearch = (props: any) => {
 
 
 
-    const loadAllData = async () => {
-        setLoader(true);
+    const getVendorProduct = async () => {
+        setCategoryLoading(true);
         try {
-            await Promise.all([
-                getProductsbyCategory(),
-                getBestSeller(),
-                getTopNutrition() 
-            ]);
-        } catch (error) {
-            console.log("Error loading all data:", error);
-        } finally {
-            setLoader(false);
-        }
-    };
+            const response: any = await _HOME_SERVICE.getVendorProduct();
+            const json = await response?.json();
 
-    const getProductsbyCategory = async () => {
-        try {
-
-            let response: any = await _HOME_SERVICE.getVendorProduct();
-            console.log(response, 'productttttttttttttresponse');
-            const JSONcategory = await response?.json();
-            console.log(JSONcategory, 'JSONcategory');
-            if (response.ok === true) {
-                setLoader(false)
-                setSearchData(JSONcategory.data || []);
-                setOriginalSearchData(JSONcategory.data || []); // Backup original data
+            if (response?.ok) {
+                setSearchData(json?.data ?? []);
+                setOriginalSearchData(json?.data ?? []);
             } else {
-                console.log("Error to fetch ", JSONcategory.status);
                 setSearchData([]);
-                setLoader(false)
                 setOriginalSearchData([]);
             }
         } catch (error) {
-            console.log("VENDOR PRODUCT BY CATEGORY DATA ERROR:", error);
+            console.log('CATEGORY ERROR:', error);
             setSearchData([]);
-            setLoader(false)
+
             setOriginalSearchData([]);
+        } finally {
+            setCategoryLoading(false);
         }
     };
+
 
     const getBestSeller = async () => {
+        setBestSellerLoading(true);
         try {
-            let response: any = await _HOME_SERVICE.getBestSellerProduct();
-            console.log(response, 'bestseller');
-            setLoader(false)
-            setBestSeller(response || []);
-
-            setOriginalBestSeller(response || []);
+            const response: any = await _HOME_SERVICE.getBestSellerProduct();
+            setBestSeller(response ?? []);
+            setOriginalBestSeller(response ?? []);
         } catch (error) {
-
-            setLoader(false)
-            console.log("BEST SELLER DATA ERROR:", error);
+            console.log('BEST SELLER ERROR:', error);
             setBestSeller([]);
             setOriginalBestSeller([]);
+        } finally {
+            setBestSellerLoading(false);
         }
     };
 
-    const getTopNutrition = async () => {
-        try {
 
-            let response: any = await _HOME_SERVICE.getVendorProduct(); 
-            const JSONdata = await response?.json();
-            console.log(JSONdata, 'topnutrition');
-            if (response.ok === true) {
-                setLoader(false)
-                setTopNutrition(JSONdata.data || []);
-                setOriginalTopNutrition(JSONdata.data || []);
+    const getTopNutrition = async () => {
+        setNutritionLoading(true);
+        try {
+            const response: any = await _HOME_SERVICE.getVendorProduct();
+            const json = await response?.json();
+
+            if (response?.ok) {
+                setTopNutrition(json?.data ?? []);
+                setOriginalTopNutrition(json?.data ?? []);
             } else {
                 setTopNutrition([]);
-                setLoader(false)
                 setOriginalTopNutrition([]);
             }
         } catch (error) {
-            console.log("TOP NUTRITION DATA ERROR:", error);
+            console.log('TOP NUTRITION ERROR:', error);
             setTopNutrition([]);
-            setLoader(false)
             setOriginalTopNutrition([]);
+        } finally {
+            setNutritionLoading(false);
         }
     };
+
+
 
     const performLocalSearch = (query: string) => {
         setIsSearching(true);
@@ -163,8 +169,6 @@ const ProductSearch = (props: any) => {
     };
 
 
-
-    
     const handleSearchTextChange = (text: string) => {
         setSearchText(text);
     };
@@ -189,11 +193,13 @@ const ProductSearch = (props: any) => {
         }
     };
 
+
     return (
-        <SafeAreaView style={{ flex: 1, }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
             <StatusBar backgroundColor={Colors.primaryColor} barStyle={'light-content'} />
 
             <LinearGradient style={styles.searchRow} colors={[Colors.primaryColor, Colors.secondaryColor]}>
+
                 <TouchableOpacity
                     style={styles.backButton}
                     onPress={() => props.navigation.goBack()}
@@ -211,13 +217,15 @@ const ProductSearch = (props: any) => {
                 />
             </LinearGradient>
 
-            {loader ? (
+            {/* {loader ? (
                 <View style={styles.loaderContainer}>
                     <ActivityIndicator size={'large'} color={Colors.primaryColor} />
                     <Text style={styles.loadingText}>Loading products...</Text>
                 </View>
-            ) : (
-                <ScrollView style={styles.container}>
+            ) : ( */}
+
+            <ScrollView style={{ flex: 1, backgroundColor: '#FFFFFF' }}
+                contentContainerStyle={{ padding: 5, paddingBottom: 20 }}>
                 <>
                     {isSearching && (
                         <View style={styles.searchingContainer}>
@@ -237,37 +245,45 @@ const ProductSearch = (props: any) => {
                         </View>
                     )}
 
-                    {/* Healthcare Essential Products */}
-                    {searchData.length > 0 && (
+                    {categoryLoading ? (
+                        <View style={{ backgroundColor: '#FFFFFF' }}>
+                            <ProductSkeleton />
+                        </View>
+                    ) : (
+                        searchData.length > 0) ? (
                         <ProductCard
                             title={searchText ? 'Healthcare Products Results:' : 'Healthcare Essential Products:'}
                             navigation={props.navigation}
                             PropsData={searchData}
                             flag='search'
-                        />
-                    )}
+                        />) : null
+                    }
 
-                    {/* Best Selling Products */}
-                    {BestSeller?.length > 0 && (
+
+                    {bestSellerLoading ? (
+                        <View style={{ backgroundColor: '#FFFFFF' }}>
+                            <ProductSkeleton /> </View>) : (
+                                BestSeller?.length > 0) ? (
                         <ProductCard
                             title={searchText ? 'Best Seller Results:' : 'Best Selling Products:'}
                             navigation={props.navigation}
                             PropsData={BestSeller}
                             flag='search'
-                        />
-                    )}
+                        />) : null
+                    }
 
-                    {/* Top Nutrition Products */}
-                    {TopNutrition.length > 0 && (
+                    {nutritionLoading ? (
+                        <View style={{ backgroundColor: '#FFFFFF' }}>
+                            <ProductSkeleton />  </View>) : (
+                                TopNutrition.length > 0) ? (
                         <ProductCard
                             title={searchText ? 'Top Nutrition Results:' : 'Top Nutrition Products:'}
                             navigation={props.navigation}
                             PropsData={TopNutrition}
                             flag='search'
-                        />
-                    )}
+                        />) : null
+                    }
 
-                    {/* Show No Results Message */}
                     {shouldShowNoResults() && (
                         <View style={styles.noResultsContainer}>
                             <MaterialIcons
@@ -284,25 +300,16 @@ const ProductSearch = (props: any) => {
                         </View>
                     )}
                 </>
-                </ScrollView>
-
-            )}
+            </ScrollView>
+            
+            {/* )} */}
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    header: {
-        backgroundColor: '#71A33F',
-        paddingHorizontal: 15,
-        paddingTop: 10,
-        paddingBottom: 10
-    },
-    searchContainer: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        backgroundColor: Colors.primaryColor,
-    },
+
+
     searchRow: {
         flexDirection: 'row',
         paddingHorizontal: 10,
@@ -327,35 +334,11 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgcolor,
         // paddingVertical: 0,
     },
-    searchBar: {
-        backgroundColor: 'white',
-        borderRadius: 25,
-        paddingHorizontal: 20,
-    },
-    textStroke: {
-        textShadowColor: 'black',
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 1,
-        color: 'white'
-    },
-    imageContainer: {
-        width: '100%',
-        height: 180,
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        backgroundColor: 'white',
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-    },
+
     container: {
         padding: 5,
-        marginTop: 2,
-        marginBottom: 10
+        backgroundColor: '#FFFFFF',
+        // marginTop: 2,
     },
     loaderContainer: {
         flex: 1,

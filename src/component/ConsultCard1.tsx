@@ -72,7 +72,7 @@ const ConsultCard: React.FC<ConsultCardProps> = ({
 
                 <View style={styles.doctorInfo}>
                     <View style={styles.avatarContainer}>
-                        {/* {item.profile_image ? <Image
+                        {item.profile_image ? <Image
                             source={
                                 item.profile_image
                                     ? { uri: item.profile_image }
@@ -91,7 +91,7 @@ const ConsultCard: React.FC<ConsultCardProps> = ({
                                 source={require('../assets/images/assured.png')}
                                 style={styles.assuredBadge}
                             />
-                        )} */}
+                        )}
                     </View>
 
                     <View style={styles.doctorDetails}>
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     cardWrapper: {
         paddingHorizontal: 8,
     },
-     titleRow: {
+    titleRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-} from 'react-native';
+import {View,Text,TouchableOpacity,ScrollView,StyleSheet,} from 'react-native';
 import CustomTextInput from '../../component/CustomeTextInput';
 import DropdownTextInput from '../../component/DropdownTextInput';
 import Header from '../../component/Header';
@@ -15,6 +8,7 @@ import { Fonts } from '../../common/Fonts';
 import * as _CONSULT_SERVICE from '../../services/ConsultServce';
 import { showSuccessToast } from '../../config/Key';
 import { Utils } from '../../common/Utils';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface PatientData {
   name: string;
@@ -51,7 +45,6 @@ const AddNewPatient: React.FC<AddNewPatientProps> = ({ navigation }) => {
 
   const [USER_ID, set_USER_ID] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
   const genderOptions: string[] = ['Male', 'Female', 'Other'];
 
   const handleInputChange = (field: keyof PatientData, value: string): void => {
@@ -260,12 +253,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
   },
-
-  disabledButton: {
-    backgroundColor: '#A0A0A0',
-    elevation: 0,
-  },
-
   doneButtonText: {
     fontSize: 16,
     fontFamily: Fonts.PoppinsMedium,

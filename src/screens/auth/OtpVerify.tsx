@@ -1,26 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    Image,
-    ScrollView,
-    ActivityIndicator,
-    Keyboard,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Platform,
-    BackHandler
-} from 'react-native';
+import { View,  Text,StyleSheet, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView,Platform, BackHandler} from 'react-native';
 import { Images } from '../../common/Images';
 import GradientButton from '../../component/GradientButton';
 import { Colors } from '../../common/Colors';
-import { ApiResponse, showSuccessToast } from '../../config/Key';
+import {  showSuccessToast } from '../../config/Key';
 import *as _AUTH_SERVICE from '../../services/AuthService'
 import { Utils } from '../../common/Utils';
-import { formatIndianPhoneNumber } from '../../common/Validator';
 import { Fonts } from '../../common/Fonts';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -38,7 +23,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
     const phoneNumber = props.route?.params?.phone;
     const IS_NEW_USER = props.route?.params?.newUser;
 
-    console.log("is-new_user", IS_NEW_USER);
 
     useEffect(() => {
         if (resendTimer > 0) {
@@ -49,15 +33,14 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
         }
     }, [resendTimer]);
 
+
     useFocusEffect(
         React.useCallback(() => {
             const onBackPress = () => {
-                // Return true to prevent default back action
                 return true;
             };
 
             const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
             return () => subscription.remove();
         }, [])
     );
@@ -70,9 +53,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             showSuccessToast('Please enter valid OTP', 'error');
             return;
         }
-
         setIsLoading(true);
-
         try {
             const send_data = {
                 phone_number: phoneNumber,
@@ -81,14 +62,12 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             };
 
             const response: any = await _AUTH_SERVICE.verify_otp(send_data);
-
             const { data, message = "", status } = response;
             const datauser = await response.json()
 
             if (status === 200) {
                 Utils.storeData('_USER_ID', datauser?.user_id);
                 showSuccessToast(response.message || 'OTP verified successfully', 'success');
-
                 if (datauser?.is_customer) {
                     props.navigation.replace('HomeStack', { screen: 'Home' });
                 }
@@ -100,7 +79,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                             agreed: false
                         }
                     })
-                    // props.navigation.replace('HomeStack', { screen: 'UpdateAvailable',  });
                 }
             }
 
@@ -136,10 +114,8 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             };
 
             const response: any = await _AUTH_SERVICE.customer_login(send_data);
-
             const { data, message = "", status } = response;
             const datauser = await response.json()
-
 
             if (response?.status === 200) {
                 showSuccessToast(response.message || 'OTP verified successfully', 'success');
@@ -171,7 +147,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
 
 
     const handleOTPChange = (text: string, index: number) => {
-
         const digit = text.slice(-1);
         const newOtp = [...otp];
         newOtp[index] = digit;
@@ -184,7 +159,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
     const handleKeyPress = (key: string, index: number) => {
         if (key === 'Backspace') {
             const newOtp = [...otp];
-
             if (otp[index]) {
                 newOtp[index] = '';
                 setOtp(newOtp);
@@ -200,16 +174,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
         props.navigation.goBack();
     }
 
-
-    const handleResendOTP = () => {
-        if (resendTimer === 0) {
-            setResendTimer(60);
-            setOtp(['', '', '', '']);
-            otpInputRefs.current[0]?.focus();
-            showSuccessToast('New OTP has been send to your mobile number', 'success')
-
-        }
-    };
 
     const onResendPress = async () => {
         setResendTimer(60);
@@ -418,11 +382,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    loadingContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+  
 
     loadingText: {
         marginLeft: 8,

@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Image,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import {View,Text,TouchableOpacity,StyleSheet,SafeAreaView,StatusBar,Image,ScrollView,Alert,} from 'react-native';
 import { Ionicons } from '../../common/Vector';
 import Header from '../../component/Header';
 import { Colors } from '../../common/Colors';

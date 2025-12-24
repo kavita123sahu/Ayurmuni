@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Dimensions,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native';
+import {View,Text,ScrollView,TouchableOpacity,Image,StyleSheet,Dimensions,SafeAreaView,StatusBar,} from 'react-native';
 import Header from '../../component/Header';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
@@ -19,6 +9,7 @@ import * as _HOME_SERVICE from '../../services/HomeServices';
 import ProductCard from '../../component/ProductCard';
 import * as _CONSULT_SERVICE from '../../services/ConsultServce';
 const { width, height } = Dimensions.get('window');
+
 
 
 interface UserModule {
@@ -102,8 +93,8 @@ const HealthRecords = (props: any) => {
             <View style={styles.dropdownContainer}>
               <ScrollView
                 style={styles.horizontalScroll}
-                showsVerticalScrollIndicator={false} // optional: hide scroll indicator
-                nestedScrollEnabled={true} // if needed for nested scrolling
+                showsVerticalScrollIndicator={false} 
+                nestedScrollEnabled={true} 
               >
                 {UsersList.map((user) => (
                   <TouchableOpacity
@@ -178,6 +169,8 @@ const HealthRecords = (props: any) => {
   );
 };
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -200,7 +193,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.PoppinsBold,
   },
 
-  // User Selector Styles
+
   userSelector: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -216,6 +209,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
+
   userSelectorText: {
     fontSize: 16,
     color: '#333333',

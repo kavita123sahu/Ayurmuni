@@ -1,16 +1,6 @@
 
 import React, { useRef } from 'react';
-import {
-    Animated,
-    FlatList,
-    Image,
-    ListRenderItem,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    Dimensions
-} from 'react-native';
+import {Animated,Image,ListRenderItem,StyleSheet,Text,TouchableOpacity,View,Dimensions} from 'react-native';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
 
@@ -30,14 +20,7 @@ interface Props {
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-const
-
-    CategoryPage = ({
-        title,
-        categories = [],
-        navigation,
-
-    }: Props) => {
+const   CategoryPage = ({ title, categories = [], navigation }: Props) => {
 
         const visibleItems = categories.slice(0, 5);
         const scrollX = useRef(new Animated.Value(0)).current;
@@ -53,7 +36,7 @@ const
         
         const renderCategory: ListRenderItem<Category> = ({ item }) => (
             <TouchableOpacity
-                style={[styles.categoryItem, {}]} // 3 items per screen
+                style={[styles.categoryItem, {}]} 
                 onPress={() => handleCategoryPress(item)}
             >
                 <View style={styles.cardstyle}>
@@ -69,7 +52,6 @@ const
 
         return (
             <View style={styles.categoriesSection}>
-                {/* Header */}
                 <View style={styles.titleRow}>
                     <Text style={styles.sectionTitle}>{title}</Text>
                     <TouchableOpacity onPress={handleViewAll}>
@@ -128,6 +110,7 @@ const
                 )}
             </View>
         );
+
     };
 
 export default CategoryPage;

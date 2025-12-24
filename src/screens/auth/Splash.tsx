@@ -1,7 +1,6 @@
 import { View, Text, Image, StyleSheet, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as Animatable from 'react-native-animatable';
-import { Fonts } from '../../common/Fonts';
 import { useIsFocused } from '@react-navigation/native';
 import { Images } from '../../common/Images';
 import { Utils } from '../../common/Utils';
@@ -17,12 +16,10 @@ const Splash = (props: any) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-
         getUser();
         // setTimeout(() => {
         //     props.navigation.replace('HomeStack', { screeen: 'Home' })
         // }, 2000);
-
     }, [isFocused]);
 
 
@@ -40,7 +37,7 @@ const Splash = (props: any) => {
                     setTimeout(() => {
                         props.navigation.replace('HomeStack', { screeen: 'Home' })
                     }, 1000);
-                    // props.navigation.replace('HomeStack', { screeen: 'Home' })
+                
                 }
 
                 else {
@@ -54,8 +51,7 @@ const Splash = (props: any) => {
                 setTimeout(() => {
                     props.navigation.replace('AuthStack', { screeen: 'Login' })
                 }, 2000);
-                // props.navigation.replace('AuthStack', { screeen: 'Login' })
-
+               
             }
         } catch (error) {
             console.log(error);

@@ -26,15 +26,12 @@ import CenterDetail from "../screens/centers/CenterDetail";
 import TermsConditions from "../screens/TermsCondition";
 import Onboarding from "../screens/auth/Onboarding";
 import UpdateAvailable from "../screens/UpdateAvailable";
-// import VideoPlayer from "../component/VideoCall";
 import CartScreen from "../screens/cart/CartScreen";
 import EditProfile from "../screens/profile/EditProfile";
 import EditAddress from "../screens/profile/EditAddress";
-// import FriendCall from "../component/FriendCall";
 import MyOrder from "../screens/orders/MyOrder";
 import HealthRecords from "../screens/orders/HealthRecords";
 import Search from "../screens/home/Search";
-import MyCart from "../screens/cart/MyCart";
 import AccessEnable from "../screens/AccessEnable";
 import PaymentMethods from "../screens/categories/PaymentMethods";
 import OrderDetails from "../screens/orders/OrderDetails";
@@ -50,8 +47,8 @@ import CenterWellness from "../screens/centers/CenterWellness";
 import { BackHandler, ToastAndroid } from "react-native";
 import { useNavigationState, useNavigation } from "@react-navigation/native";
 import { useEffect, useRef } from "react";
-import AllCategories from "../component/AllCategories";
 import { RootBottomParamList, RootStackParamList } from "../../type";
+import HealthAssesment from "../screens/assesment/HealthAssesment";
 
 enableScreens();
 
@@ -68,20 +65,17 @@ const TabStack = () => {
     const exitCount = useRef(0);
 
     useEffect(() => {
-
         const onBackPress = () => {
-
             if (navigation.canGoBack()) {
                 return false;
             }
 
-            // 2️⃣ We are at Tab root (no stack screens)
             if (exitCount.current === 0) {
                 exitCount.current = 1;
                 ToastAndroid.show("Press again to exit", ToastAndroid.SHORT);
 
                 setTimeout(() => (exitCount.current = 0), 2000);
-                return true; // block exit
+                return true; 
             }
 
             BackHandler.exitApp();
@@ -157,7 +151,6 @@ const TabStack = () => {
                 options={{
                     tabBarLabel: 'Profile',
                     headerShown: false,
-                    // animation: 'slide_from_right',
                     tabBarIcon: ({ focused, color, size }) => (
                         <View style={{ height: 55, width: 130, justifyContent: 'center', alignItems: 'center', }}>
                             <Image source={Images.profile} style={{
@@ -200,7 +193,6 @@ const HomeStack = () => {
             <Stack.Screen name={'HealthRecords'} component={HealthRecords} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'Search'} component={Search} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'UpdateAvailable'} component={UpdateAvailable} options={{ headerShown: false, animation: 'slide_from_right' }} />
-            <Stack.Screen name={'MyCart'} component={MyCart} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'AccessEnable'} component={AccessEnable} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'OrderDetails'} component={OrderDetails} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'AboutUs'} component={AboutUs} options={{ headerShown: false, animation: 'slide_from_right' }} />
@@ -210,7 +202,7 @@ const HomeStack = () => {
             <Stack.Screen name={'GeocodingExample'} component={GeocodingExample} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'ConsultationPayment'} component={ConsultationPayment} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'RatingScreen'} component={RatingScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
-            {/* <Stack.Screen name={'AllCategories'} component={AllCategories} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
+            <Stack.Screen name={'HealthAssesment'} component={HealthAssesment} options={{ headerShown: false, animation: 'slide_from_right' }} />
 
         </Stack.Navigator>
 
@@ -262,10 +254,7 @@ const MainNavigator = () => {
 
 const Navigator = () => {
     const isConnected = useNetworkStatus();
-    // const isConnected = useSelector((state: any) => {
-    //     return state.internetReducer.isConnected
-    // })
-
+  
     return (
         <NavigationContainer>
 

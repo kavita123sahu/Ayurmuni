@@ -63,7 +63,6 @@ export type RootStackParamList = {
   Coupons: undefined;
   EditAddress: undefined;
   PaymentMethods: undefined;
-  MyCart : undefined;
   AddAddress: any;
   TermsAndConditions: any;
   ReplacementAndReturn: any;
@@ -77,6 +76,7 @@ export type RootStackParamList = {
   OrderDetailPage: any;
   ViewPdf: any;
   ReplacementReason: any;
+  HealthAssesment : undefined;
 };
 
 

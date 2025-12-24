@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  SafeAreaView,
-  Dimensions,
-  Image,
-  StatusBar,
-  Alert,
-  Modal,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, TextInput, Dimensions, Image, StatusBar, Alert, Modal, } from 'react-native';
 import Header from '../../component/Header';
 import { Colors } from '../../common/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import { Fonts } from '../../common/Fonts';
-import { creditDebitOptions, moreWaysToPay, paymentMethods, paymentMethods1, RAZORPAY_KEY } from '../../common/datafile';
+import { moreWaysToPay, RAZORPAY_KEY } from '../../common/datafile';
 import { getExpectedDeliveryDate, showSuccessToast } from '../../config/Key';
 import *as _CONSULT_SERVICE from '../../services/ConsultServce';
 const { width, height } = Dimensions.get('window');
@@ -29,6 +16,7 @@ import * as _PROFILE_SERVICES from '../../services/ProfileServices';
 import { useIsFocused } from '@react-navigation/native';
 import * as _HOME_SERVICE from '../../services/HomeServices';
 import RazorpayCheckout, { CheckoutOptions } from 'react-native-razorpay';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface NavigationProp {
   navigate: (screen: string, params?: any) => void;
@@ -48,21 +36,17 @@ interface Address {
   country: string;
   house_details: string;
   is_default: boolean;
-  // other properties add karo jo address object mein hain
 }
 
 const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
   const [selectedPayment, setSelectedPayment] = useState('upi');
   const [promoCode, setPromoCode] = useState('');
   const [upiId, setUpiId] = useState('');
-  const [CustomerID, setCustomerID] = useState('');
-  // Fixed: Changed from Address[] to Address | null
   const [UserAddress, setUserAddress] = useState<Address | null>(null);
   const [userData, setUserData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+
 
   const [btnLoader, setBtnLoader] = useState(false);
-  const [totalWeight, setTotalWieght] = useState(0);
   const [showCardModal, setShowCardModal] = useState(false);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
@@ -70,9 +54,7 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
     cvv: '',
     cardHolderName: ''
   });
-  const [showPromoSuccess, setShowPromoSuccess] = useState(false);
-  const [promoApplied, setPromoApplied] = useState(false);
-  const [promoDiscount, setPromoDiscount] = useState(0);
+
   const isFocused = useIsFocused()
   const [EstimateData, setEstimateData] = useState<any>();
   const [ESTDate, setESTDate] = useState('');
@@ -80,120 +62,48 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
 
   const { buyNow } = props.route.params;
 
-  console.log("propspropspropsprops----->", props);
 
-  const handleApplyPromo = () => {
-    if (promoCode.trim() === '') {
-      Alert.alert('Error', 'Please enter a promo code');
-      return;
-    }
 
-    const validPromoCodes = ['SAVE10', 'FIRST20', 'HEALTH15', 'DISCOUNT5'];
-    const discount = promoCode === 'SAVE10' ? 10 : promoCode === 'FIRST20' ? 20 :
-      promoCode === 'HEALTH15' ? 15 : promoCode === 'DISCOUNT5' ? 5 : 0;
-
-    if (validPromoCodes.includes(promoCode.toUpperCase())) {
-      setPromoDiscount(discount);
-      setPromoApplied(true);
-      setShowPromoSuccess(true);
-
-      setTimeout(() => {
-        setShowPromoSuccess(false);
-      }, 3000);
-    } else {
-      Alert.alert('Invalid Code', 'Please enter a valid promo code');
-    }
-  };
-
-  type RazorpayMethod = {
-    netbanking?: boolean;
-    card?: boolean;
-    wallet?: boolean;
-    upi?: boolean;
-    emi?: boolean;
-  };
-
-  const mapSelectedMethodToObject = (method: string): RazorpayMethod | undefined => {
-    switch (method.toLowerCase()) {
-      case 'card':
-        return { card: true };
-      case 'upi':
-      case 'googlepay':
-      case 'phonepe':
-      case 'paytm':
-        return { upi: true };
-      case 'netbanking':
-        return { netbanking: true };
-      case 'wallet':
-        return { wallet: true };
-      case 'emi':
-        return { emi: true };
-      default:
-        return undefined;
-    }
-  };
 
 
   useEffect(() => {
-    data();
-    // const calculatedTotalWeight = productData?.items.reduce((sum: any, item: any) =>
-    //   sum + (Number(item.product.weight) * item.quantity / 1000), 0);
-    // setTotalWieght(calculatedTotalWeight);
-    getCustomerAddress();
+    if (!isFocused) return;
+    fetchCustomerAddress();
     getESTDate(productData?.id);
-  }, [isFocused])
+  }, [isFocused]);
 
 
-  const data = async () => {
-
-    const data = await Utils.getData('verify')
-    console.log(data, "data")
-
-  }
-
-
-  const getCustomerAddress = async () => {
+  const fetchCustomerAddress = async () => {
     try {
       const token = await Utils.getData('_TOKEN');
-
-      if (token) {
-        const result: any = await _PROFILE_SERVICES.user_profile();
-        const JSONDATA = await result.json();
-
-        console.log("JSONDATA====>>", JSONDATA);
-        if (result.status === 200) {
-          setUserData(JSONDATA);
-
-          const defaultAddress = JSONDATA.addresses?.find((item: Address) => item.is_default === true);
-          console.log("defaultAddress====>>", defaultAddress);
-
-          if (defaultAddress) {
-            // Fixed: Set single address object instead of array
-            setUserAddress(defaultAddress);
-          } else {
-            console.log("Default address not found");
-            setUserAddress(null);
-          }
-
-        } else {
-          console.log("No address found");
-          setUserAddress(null);
-        }
-      } else {
-        console.log("Error fetching user profile");
+      if (!token) {
         setUserAddress(null);
+        return;
       }
+
+      const response: any = await _PROFILE_SERVICES.user_profile();
+      if (response.status !== 200) {
+        setUserAddress(null);
+        return;
+      }
+
+      const data = await response.json();
+      setUserData(data);
+
+      const defaultAddress =
+        data?.addresses?.find((addr: Address) => addr?.is_default);
+
+      setUserAddress(defaultAddress || null);
+
     } catch (error) {
-      console.log(error);
+      console.log('FETCH CUSTOMER ADDRESS ERROR:', error);
       setUserAddress(null);
     }
-  }
+  };
+
 
 
   const verifyPayment = async (razorpaypaymentId: any, razorpayorderID: any, paymentID: any, razorpaySignature: any) => {
-
-    console.log("datepaymentresponse", razorpaypaymentId, razorpayorderID, paymentID, razorpaySignature);
-
     try {
 
       const send_Data = {
@@ -204,47 +114,31 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
 
       }
 
-      // const send_Data = {
-      //   order_id: orderId,
-      //   payment_id: orderId,              // tumhari DB ka order
-      //   razorpay_payment_id: razorpaypaymentId,
-      //   razorpay_order_id: razorpayorderID,
-      //   razorpay_signature: razorpaySignature
-      // };
-
       const Response: any = await _ORDER_SERVICE.payment_verify_API(send_Data);
-
-      console.log("Response--->", Response);
       const PaymentData = await Response.json();
-
-      console.log("PaymentDataPaymentData--->", PaymentData);
-      // Alert.alert('Success', 'Payment Successful');
-
       props.navigation.navigate('PaymentSuccessScreen', { paymentData: PaymentData, SuccessText: 'ecom', });
-      showSuccessToast('Payment Suceefully Done', 'success')
 
-      // if (Response.status === 200) {
+      if (Response.status === 200) {
+        props.navigation.navigate('PaymentSuccessScreen', { paymentData: PaymentData });
+        showSuccessToast('Payment Suceefully Done', 'success')
 
-      //   props.navigation.navigate('PaymentSuccessScreen', { paymentData: PaymentData });
-      //   showSuccessToast('Payment Suceefully Done', 'success')
+      } else {
 
-      // } else {
-
-      //   Alert.alert(
-      //     'Verification Failed',
-      //     'Payment verification failed. Please try again.',
-      //     [
-      //       {
-      //         text: 'Cancel',
-      //         style: 'cancel',
-      //       },
-      //       {
-      //         text: 'Retry',
-      //         onPress: () => handlePaymentWithOrder(productData?.order_id),
-      //       },
-      //     ]
-      //   );
-      // }
+        Alert.alert(
+          'Verification Failed',
+          'Payment verification failed. Please try again.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Retry',
+              onPress: () => handlePaymentWithOrder(productData?.order_id),
+            },
+          ]
+        );
+      }
 
     } catch (error) {
       console.error('Verification error:', error);
@@ -253,34 +147,27 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
   };
 
   const handlePaymentWithOrder = async (orderID: string) => {
-
     try {
 
       const send_Data = {
-        // amount: 1,
-        // customer_id: userData?.i
         order_id: orderID,
 
       }
 
       const orderResponse: any = await _CONSULT_SERVICE.create_razorpay_order_ID(send_Data);
-
       const orderData = await orderResponse.json();
-      console.log("oderruuuuuuuuuuuuuuu--->", orderData);
-
       if (!orderResponse.ok) {
         setBtnLoader(false)
         throw new Error('Failed to create order');
       }
 
-
       const options: CheckoutOptions = {
         description: 'Ayurmuni Order Payment',
         currency: 'INR',
         key: RAZORPAY_KEY,
-        amount: 1,    //orderData?.amount
+        amount: orderData?.amount,
         name: 'Ayurmuni',
-        order_id: orderData?.razorpay_order_id,   // ✅ Razorpay ka order id yaha hona chahiye
+        order_id: orderData?.razorpay_order_id,
         prefill: {
           email: userData?.email,
           contact: userData?.verified_phone_number,
@@ -306,13 +193,7 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
 
       RazorpayCheckout.open(options)
         .then(data => {
-          console.log("Razorpay response ===>", data);
-
-          // data.razorpay_payment_id
-          // data.razorpay_order_id
-          // data.razorpay_signature
           setBtnLoader(false);
-          console.log("orderDataorderDataorderData", orderData?.payment_id);
           verifyPayment(
             data.razorpay_payment_id,
             data.razorpay_order_id,
@@ -372,46 +253,24 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
 
 
   const getESTDate = async (vendor_pro_id: any) => {
-    console.log("vendor_pro_id", vendor_pro_id);
-    // setIsLoading(true);
     try {
 
       let serverResponse: any = await _HOME_SERVICE.get_EST_date(vendor_pro_id);
       let response = await serverResponse.json();
-      console.log('estimatedddatateee=====>', response);
       setEstimateData(response);
       const date = getExpectedDeliveryDate(response.delivery_date_range || '');
       setESTDate(date);
-
-      // if (serverResponse.status == 200) {
-      //   setProductDetail(response);
-      //   // setIsLoading(false);
-      // }
-      // else {
-      //   console.log("Error in fetching product similar data", response);
-      //   // setIsLoading(false);
-      // }
     } catch (error) {
       console.log("Date ERROR:", error);
     }
   }
 
-
   const OnPayment = async () => {
-    console.log("onpaymentttt", productData);
-
     try {
-
-      // if (selectedPayment ) {
-      //   showSuccessToast(`Total cart weight (${totalWeight.toFixed(2)} kg) cannot exceed 10 kg`, 'error');
-      //   return;
-      // }
-
       if (!selectedPayment) {
         showSuccessToast('Please select a payment method before proceeding.', 'error');
         return;
       }
-
 
       setBtnLoader(true);
 
@@ -428,7 +287,7 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
 
         }
       }
-      
+
 
       else {
         dataToSend = {
@@ -436,18 +295,11 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
           delivery_address: UserAddress?.id,
           use_cart: true,
           payment_method: selectedPayment === 'cod' ? "cash_on_delivery" : 'online',
-          // use_cart: true,// Add total amount
         }
       }
 
-      console.log("data to send =============>", dataToSend, selectedPayment);
-
-      // Single API call jo order 
-      // create kare AUR razorpay order ID bhi return kare
       const result: any = await _CART_SERVICE.order_place_item(dataToSend);
-      console.log("result====>>", result);
       const dataJson = await result.json();
-      console.log("resounseeeorderr->>", dataJson)
 
       if (result.ok === true) {
         if (selectedPayment === 'cod') {
@@ -460,9 +312,7 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
         }
 
         else {
-          // Online payment - razorpay
           if (dataJson?.order_id) {
-            // result.data
             handlePaymentWithOrder(dataJson?.order_id);
 
           }
@@ -485,61 +335,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
     }
   }
 
-  const renderPaymentOption1 = (item: any, isSelected: boolean, onPress: () => void) => (
-    <TouchableOpacity
-      key={item.id}
-      style={[
-        styles.paymentOption,
-        isSelected && styles.selectedPaymentOption
-      ]}
-      onPress={onPress}
-    >
-      <View style={styles.paymentOptionLeft}>
-        <View style={styles.radioButton}>
-          {isSelected && <View style={styles.radioButtonSelected} />}
-        </View>
-        <View style={styles.paymentInfo}>
-          <Image source={require('../../assets/images/statebank.png')} style={{ height: 45, width: 162 }} />
-        </View>
-      </View>
-      <View style={[styles.paymentIcon]}>
-        <Image source={require('../../assets/images/SBIlogo.png')} style={{ height: 36, width: 36 }} />
-      </View>
-    </TouchableOpacity>
-  );
-
-
-  const renderCreditOption = (item: any, isSelected: boolean, onPress: () => void) => (
-    <TouchableOpacity
-      key={item.id}
-      style={[
-        styles.paymentOption,
-        isSelected && styles.selectedPaymentOption
-      ]}
-      onPress={onPress}
-    >
-      <View style={styles.paymentOptionLeft}>
-        {!item.isAddNew && (
-          <View style={styles.radioButton}>
-            {isSelected && <View style={styles.radioButtonSelected} />}
-          </View>
-        )}
-
-        {item.isAddNew ? (
-          <>
-            <Image source={require('../../assets/images/solidadd.png')} style={{ height: 25, width: 25, resizeMode: 'cover' }} />
-            <Text style={styles.paymentName1}>{item.name}</Text>
-          </>
-        ) : (
-          <View style={styles.paymentInfo}>
-            <Image source={require('../../assets/images/statebank.png')} style={{ height: 49, width: 162, resizeMode: 'cover' }} />
-          </View>
-        )}
-      </View>
-
-      {!item.isAddNew && <Image source={item.logo} style={{ width: 100, height: 36, resizeMode: 'contain' }} />}
-    </TouchableOpacity>
-  );
 
   const renderPaymentOption = (item: any, isSelected: boolean, onPress: () => void) => (
     <View key={item.id}>
@@ -595,16 +390,13 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
         <Text style={styles.title}>Pricing</Text>
 
         <View style={styles.contentContainer}>
-          {/* Items Price */}
           <View style={styles.row}>
             <Text style={styles.label}>Items Price</Text>
             <Text style={styles.price}>
-              {/* {currency}{itemsPrice} */}
               {currency}{(productData?.discounted_price || productData?.selling_price) ?? '0.00'}
             </Text>
           </View>
 
-          {/* Delivery */}
           <View style={styles.row}>
             <Text style={styles.label}>Delivery</Text>
             <Text style={styles.price}>
@@ -613,7 +405,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
           </View>
 
 
-          {/* Promotion */}
           <View style={[styles.row, styles.totalRow]}>
             <Text style={styles.label}>Promotion</Text>
             <Text style={styles.promotionPrice}>
@@ -621,7 +412,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
             </Text>
           </View>
 
-          {/* Total */}
           <View style={[styles.row]}>
             <Text style={styles.label}>Total</Text>
             <Text style={styles.price}>
@@ -630,7 +420,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
           </View>
 
 
-          {/* Order Total */}
           <View style={[styles.row, styles.orderTotalRow]}>
             <Text style={styles.orderTotalLabel}>Order Total</Text>
             <Text style={styles.orderTotalPrice}>
@@ -742,7 +531,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
             <Text style={styles.deliveryTitle}>Delivering to {EstimateData?.vendor} {UserAddress?.city ?? ''} - {UserAddress?.pincode ?? ''}</Text>
 
             <View style={styles.deliveryAddressContainer}>
-              {/* Fixed: Now correctly accessing properties from Address object */}
               <Text style={styles.deliveryAddress}>
                 {UserAddress?.house_details ?? 'NA'}, {UserAddress?.city ?? 'NA'}, {UserAddress?.state ?? 'NA'} - {UserAddress?.country ?? "NA"}
               </Text>
@@ -774,43 +562,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
 
         <PricingSection />
 
-        {/* Payment Methods */}
-        {/* <View style={styles.section}>
-          <Text style={styles.sectionSubtitle}>Select payment method</Text>
-          <Text style={styles.sectionTitle}>Recommended</Text>
-          {paymentMethods1.map((item) =>
-            renderPaymentOption1(
-              item,
-              selectedPayment === item.id,
-              () => handlePaymentSelection(item.id)
-            )
-          )}
-        </View> */}
-
-        {/* <View style={styles.section}>
-          <Text style={styles.sectionTitle}>UPI</Text>
-
-          {paymentMethods.map((item) =>
-            renderPaymentOption(
-              item,
-              selectedPayment === item.id,
-              () => handlePaymentSelection(item.id)
-            )
-          )}
-        </View> */}
-
-
-        {/* <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Credit/Debit Card</Text>
-          {creditDebitOptions.map((item) =>
-            renderCreditOption(
-              item,
-              selectedPayment === item.id,
-              () => handlePaymentSelection(item.id)
-            )
-          )}
-        </View> */}
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>More ways to pay</Text>
           {moreWaysToPay.map((item) =>
@@ -822,36 +573,16 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
           )}
         </View>
 
-        {/* Promo Code */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Add gift card or Promo code</Text>
-          <View style={styles.promoCodeContainer}>
-            <TextInput
-              style={styles.promoCodeInput}
-              placeholder="Enter promo code"
-              value={promoCode}
-              onChangeText={setPromoCode}
-            />
-          </View>
 
-          <TouchableOpacity style={styles.applyButton} onPress={handleApplyPromo}>
-            <Text style={styles.applyButtonText}>Apply</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Bottom Actions */}
         <View style={styles.bottomActions}>
           <LinearGradient
             style={styles.buyNowButton}
             colors={[Colors.secondaryColor, Colors.secondaryColor, Colors.primaryColor]}
           >
-            {/* handlePaymentWithOrder(productData?.order_id) */}
-            {/* OnPayment() */}
 
             <TouchableOpacity disabled={btnLoader} onPress={() => (UserAddress ? OnPayment() : props.navigation.navigate('AddAddress'))}>
 
               <Text style={styles.buyNowText}>
-                {/* {btnLoader ? 'Processing...' : 'Pay Now'} */}
 
                 {btnLoader
                   ? 'Processing...'
@@ -866,7 +597,6 @@ const PaymentMethods: React.FC<SelectDoctorProps> = (props: any) => {
         </View>
       </ScrollView>
 
-      {/* Card Modal */}
       <CardModal />
     </SafeAreaView>
   );
@@ -886,18 +616,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
-  backButton: {
-    marginRight: 16,
-  },
-  backArrow: {
-    fontSize: 24,
-    color: '#333',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
+
+
   deliveryInfo: {
     paddingHorizontal: 20,
     marginTop: 10,
@@ -924,7 +644,7 @@ const styles = StyleSheet.create({
   },
 
   deliveryContainer: { marginBottom: 10 },
-  // deliveryTitle: { fontSize: 16, fontFamily: Fonts.PoppinsMedium, color: '#333333' },
+
   deliveryLocation: { fontSize: 14, color: '#2369FF', marginTop: 2, fontFamily: Fonts.PoppinsMedium },
   deliveryAddress: {
     fontSize: 14,
@@ -949,13 +669,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16, color: Colors.textColor, fontFamily: Fonts.PoppinsSemiBold,
-    marginBottom: 12,
-  },
-
-  sectionSubtitle: {
-    fontSize: 18,
-    color: '#000',
-    fontFamily: Fonts.PoppinsSemiBold,
     marginBottom: 12,
   },
 
@@ -1006,25 +719,13 @@ const styles = StyleSheet.create({
     color: '#1E1E1E',
     marginLeft: 10
   },
-  paymentName1: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.secondaryColor,
-    marginLeft: 10
-  },
+
   paymentNumber: {
     fontSize: 13,
     color: '#666',
     marginTop: 2,
   },
-  paymentIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  // UPI Container Styles
+
   upiContainer: {
     marginTop: 8,
     marginBottom: 8,
@@ -1076,7 +777,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  // Modal Styles
+
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -1216,6 +917,8 @@ const styles = StyleSheet.create({
   promotionPrice: {
     fontSize: 14, color: Colors.secondaryColor, fontFamily: Fonts.PoppinsSemiBold
   },
+
+
   orderTotalLabel: {
     fontSize: 16, color: Colors.textColor, fontFamily: Fonts.PoppinsMedium
   },
