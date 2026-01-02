@@ -12,6 +12,7 @@ export default function AllCategories() {
             icon: '📱',
             subcategories: ['Mobiles', 'Laptops', 'Tablets', 'Cameras', 'TVs', 'Accessories']
         },
+        
         {
             id: 2,
             name: 'Fashion',
@@ -79,6 +80,7 @@ export default function AllCategories() {
             subcategories: ['Vitamins', 'Medicine', 'Personal Care', 'Medical Supplies', 'Fitness', 'Wellness']
         }
     ];
+
 
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -165,8 +167,7 @@ export default function AllCategories() {
                                     shadowOpacity: 0.05,
                                     shadowRadius: 2,
                                     elevation: 1
-                                }}
-                            >
+                                }}>
                                 <Text style={{ fontSize: 32, marginRight: 15 }}>
                                     {category.icon}
                                 </Text>
@@ -200,7 +201,7 @@ export default function AllCategories() {
                                     borderWidth: 1,
                                     borderColor: '#e3e6e6'
                                 }}>
-                                    {category.subcategories.map((sub, subIdx) => (
+                                    {category.subcategories.map((sub  : any, subIdx : any) => (
                                         <TouchableOpacity
                                             key={subIdx}
                                             style={{

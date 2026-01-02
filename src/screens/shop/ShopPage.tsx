@@ -140,9 +140,13 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
                     /> : null
             }
 
+            
+
             {loadingBest ? <ProductSkeleton /> : SellingProduct?.length > 0 ?
                 <ProductCard title="Best Selling Products:" flag='search' navigation={navigation} PropsData={SellingProduct} /> : null
             }
+
+            
 
             {loadingVendor ? <ProductSkeleton /> : TopNutrician?.length > 0 ?
                 <ProductCard title="Top Nutrition Products:" flag='search' navigation={navigation} PropsData={TopNutrician} /> : null
@@ -207,6 +211,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#71A33F26',
         borderRadius: 12,
         padding: 16,
+        paddingHorizontal :15,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',

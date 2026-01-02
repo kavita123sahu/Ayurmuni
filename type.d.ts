@@ -28,7 +28,7 @@ export type RootStackParamList = {
   CallInviteSystem: undefined;
   ViewAll: undefined;
   WellnessOrder: undefined;
-  // VideoPlayer: undefined;
+  VideoCall: undefined;
   PackageSelect: undefined;
   GeocodingExample : undefined;
   TabStack: undefined;

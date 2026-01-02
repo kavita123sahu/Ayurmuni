@@ -11,7 +11,6 @@ import * as _CONSULT_SERVICE from '../../services/ConsultServce';
 const { width, height } = Dimensions.get('window');
 
 
-
 interface UserModule {
     id: string;
     name: string;
@@ -244,7 +243,6 @@ const styles = StyleSheet.create({
     color: '#333333',
     fontFamily: Fonts.PoppinsRegular,
   },
-
   // Records Section Styles
   recordsContainer: {
     backgroundColor: '#FFFFFF',
@@ -414,7 +412,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: Fonts.PoppinsSemiBold,
   },
-
+  
   // Bottom Banner Styles
   bottomBanner: {
     backgroundColor: '#E8F5E8',

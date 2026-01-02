@@ -73,6 +73,7 @@ export const getDoctorBySpeciality = async (data: Object) => {
                     'Content-Type': 'application/json',
                 },
             }
+            
             let serverResponse = await fetch(BaseUrl.base_url + 'ecom/doctors_speciality/', fetchParameter);
             resolve(serverResponse);
         }

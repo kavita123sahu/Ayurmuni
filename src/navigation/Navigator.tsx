@@ -15,6 +15,7 @@ import ShopPage from "../screens/shop/ShopPage";
 import AddAddress from "../component/AddAddress";
 import AddNewPatient from "../screens/consultation/AddNewPatient";
 import OtpVerify from "../screens/auth/OtpVerify";
+import VideoCall from '../component/VideoCall';
 import PatientSelect from "../screens/consultation/PatientSelect";
 import SelectSpecialty from "../screens/consultation/SelectSpecialty";
 import AllSpecialty from "../screens/consultation/AllSpecialty";
@@ -32,6 +33,7 @@ import EditAddress from "../screens/profile/EditAddress";
 import MyOrder from "../screens/orders/MyOrder";
 import HealthRecords from "../screens/orders/HealthRecords";
 import Search from "../screens/home/Search";
+import FriendCall from '../component/FriendCall';
 import AccessEnable from "../screens/AccessEnable";
 import PaymentMethods from "../screens/categories/PaymentMethods";
 import OrderDetails from "../screens/orders/OrderDetails";
@@ -185,8 +187,8 @@ const HomeStack = () => {
             <Stack.Screen name={'EditProfile'} component={EditProfile} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'TermsConditions'} component={TermsConditions} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'Onboarding'} component={Onboarding} options={{ headerShown: false, animation: 'slide_from_right' }} />
-            {/* <Stack.Screen name={'VideoPlayer'} component={VideoPlayer} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
-            {/* <Stack.Screen name={'FriendCall'} component={FriendCall} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
+            <Stack.Screen name={'VideoCall'} component={VideoCall} options={{ headerShown: false, animation: 'slide_from_right' }} />
+            <Stack.Screen name={'FriendCall'} component={FriendCall} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'CartScreen'} component={CartScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'MyOrders'} component={MyOrder} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'EditAddress'} component={EditAddress} options={{ headerShown: false, animation: 'slide_from_right' }} />

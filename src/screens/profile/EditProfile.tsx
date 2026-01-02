@@ -256,7 +256,10 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
         } catch (error) {
             console.log(error);
         }
+
     };
+
+    
 
     const ProfileField: React.FC<ProfileFieldProps> = ({
         label,

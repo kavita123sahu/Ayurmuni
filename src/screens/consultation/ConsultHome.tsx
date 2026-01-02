@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {View,Text,StyleSheet,ScrollView,TouchableOpacity,Image,StatusBar,SafeAreaView,} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, StatusBar, SafeAreaView, } from 'react-native';
 import { NavigationProp, useIsFocused } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import SearchBar from '../../component/SearchBar';
@@ -36,6 +36,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
   const [loadingBest, setLoadingBest] = useState(true);
   const [loadingHealth, setLoadingHealth] = useState(true);
 
+//  const roomId = `doc_${doctorId}_${Date.now()}`;
 
   const fetchAllData = useCallback(async () => {
 
@@ -112,7 +113,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
         </View>
         <View style={styles.onlineBannerImage}>
           <Image
-          
+
             source={require('../../assets/images/consultnow.png')}
             style={styles.doctorBannerImage}
           />
@@ -123,7 +124,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor="#466425" barStyle="light-content" />
 
       <LinearGradient
@@ -141,7 +142,8 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
       </LinearGradient>
 
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ backgroundColor: '#FFFFFF' }}
+        showsVerticalScrollIndicator={false} >
         <View style={styles.bannerContainer}>
           <View style={styles.bannerRow}>
             <ConsultDoctor title="Don't have Prescription?" subTitle="Consult with our doctors." buttonText="Consult With Doctor" navigation={navigation} image={ConsultImage} />
@@ -159,7 +161,11 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
             <ConsultCard
               doctorData={doctorData}
               // showActive='up'
-              onJoinPress={() => navigation.navigate('FriendCall')}
+              onJoinPress={() => navigation.navigate('VideoCall', {
+                userId: "b2d22800-8475-474c-b303-78f8d25050e8",
+                userName: 'Patient Ravi',
+                roomId: "doctor_12_1720000000",
+              })}
               onThumbPress={() => console.log('Recommendation pressed')}
               onRatingPress={() => console.log('Rating pressed')}
             />
@@ -210,13 +216,14 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
 
         <View style={styles.sectionContainer}>
 
-          {loadingDoctors ? <ProductSkeleton /> : PrevPlaced?.length > 0 ?
-            <ProductCard title='Your previous placed orders:' navigation={navigation} PropsData={PrevPlaced} /> : null
+          {loadingDoctors ?
+            <ProductSkeleton /> : PrevPlaced?.length > 0 ?  <ProductCard title='Your previous placed orders:' navigation={navigation} PropsData={PrevPlaced} /> : null
           }
+
         </View>
         <FAQComponent />
       </ScrollView>
-    </SafeAreaView >
+    </View >
   );
 };
 
@@ -262,6 +269,8 @@ const styles = StyleSheet.create({
   sectionContainer: {
     paddingHorizontal: 15,
     marginBottom: 15,
+    backgroundColor: '#FFFFFF', // 👈 ADD
+    flex: 1
   },
   prescriptionButton: {
     backgroundColor: '#71A33F1A',

@@ -25,6 +25,7 @@ import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import CustomStarRating from '../../component/CustomStarRating';
 import { showSuccessToast } from '../../config/Key';
+import DoctorOrder from '../../component/DoctorOrder';
 
 
 const { width, height } = Dimensions.get('window');
@@ -196,123 +197,123 @@ const MyOrder = (props: any) => {
         }
     }
 
-    const DoctorOrder: React.FC<{ doctor: DoctorData; showReorder?: boolean }> = ({ doctor, showReorder = false }) => (
-        <TouchableOpacity style={styles.cardWrapper} >
-            <View style={styles.upcomingCard}>
-                <View style={styles.doctorInfo}>
-                    <View style={styles.avatarContainer}>
-                        <Image
-                            source={
-                                doctor.profile_image
-                                    ? { uri: doctor.profile_image }
-                                    : require('../../assets/images/user_profile.png')
-                            }
-                            style={styles.doctorAvatar}
-                        />
+    // const DoctorOrder: React.FC<{ doctor: DoctorData; showReorder?: boolean }> = ({ doctor, showReorder = false }) => (
+    //     <TouchableOpacity style={styles.cardWrapper} >
+    //         <View style={styles.upcomingCard}>
+    //             <View style={styles.doctorInfo}>
+    //                 <View style={styles.avatarContainer}>
+    //                     <Image
+    //                         source={
+    //                             doctor.profile_image
+    //                                 ? { uri: doctor.profile_image }
+    //                                 : require('../../assets/images/user_profile.png')
+    //                         }
+    //                         style={styles.doctorAvatar}
+    //                     />
 
-                        {doctor.assured_muni && (
-                            <Image
-                                source={require('../../assets/images/assured.png')}
-                                style={styles.assuredBadge}
-                            />
-                        )}
-                    </View>
+    //                     {doctor.assured_muni && (
+    //                         <Image
+    //                             source={require('../../assets/images/assured.png')}
+    //                             style={styles.assuredBadge}
+    //                         />
+    //                     )}
+    //                 </View>
 
-                    <View style={styles.doctorDetails}>
-                        <Text style={styles.doctorName}>{doctor.doctor_name}</Text>
-                        <Text style={styles.doctorSpecialty}>{doctor.doctor_name}</Text>
-                        <Text style={styles.doctorExperience}>
-                            {doctor.doctor_experience} years of exp. overall
-                        </Text>
-                        {/* <Text style={styles.doctorSpecialty}>{doctor.doctor_interest}</Text> */}
-                    </View>
-                </View>
+    //                 <View style={styles.doctorDetails}>
+    //                     <Text style={styles.doctorName}>{doctor.doctor_name}</Text>
+    //                     <Text style={styles.doctorSpecialty}>{doctor.doctor_name}</Text>
+    //                     <Text style={styles.doctorExperience}>
+    //                         {doctor.doctor_experience} years of exp. overall
+    //                     </Text>
+    //                     {/* <Text style={styles.doctorSpecialty}>{doctor.doctor_interest}</Text> */}
+    //                 </View>
+    //             </View>
 
-                <View style={styles.divider}>
-                    <Image
-                        source={require('../../assets/images/Line.png')}
-                        style={styles.lineImage}
-                    />
-                </View>
+    //             <View style={styles.divider}>
+    //                 <Image
+    //                     source={require('../../assets/images/Line.png')}
+    //                     style={styles.lineImage}
+    //                 />
+    //             </View>
 
-                <View style={{ flex: 1, justifyContent: 'center', paddingVertical: 10 }}>
-                    <View style={styles.ratingButtons}>
-                        <TouchableOpacity
-                            style={[styles.ratButton, styles.thumbButton]}
-                        //    onPress={() => onThumbPress?.(item)}
-                        >
-                            <Image
-                                source={require('../../assets/images/thumb.png')}
-                                style={styles.buttonIcon}
-                            />
-                            <Text style={styles.joinButtonText}>
-                                {doctor.patient_recommendation}%
-                            </Text>
-                        </TouchableOpacity>
+    //             <View style={{ flex: 1, justifyContent: 'center', paddingVertical: 10 }}>
+    //                 <View style={styles.ratingButtons}>
+    //                     <TouchableOpacity
+    //                         style={[styles.ratButton, styles.thumbButton]}
+    //                     //    onPress={() => onThumbPress?.(item)}
+    //                     >
+    //                         <Image
+    //                             source={require('../../assets/images/thumb.png')}
+    //                             style={styles.buttonIcon}
+    //                         />
+    //                         <Text style={styles.joinButtonText}>
+    //                             {doctor.patient_recommendation}%
+    //                         </Text>
+    //                     </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={[styles.ratButton, styles.ratingButton]}
-                        //    onPress={() => onRatingPress?.(item)}
-                        >
-                            <Image
-                                source={require('../../assets/images/rating.png')}
-                                style={styles.buttonIcon}
-                            />
-                            <Text style={styles.joinButtonText}>{doctor.rating}</Text>
-                        </TouchableOpacity>
-                    </View>
+    //                     <TouchableOpacity
+    //                         style={[styles.ratButton, styles.ratingButton]}
+    //                     //    onPress={() => onRatingPress?.(item)}
+    //                     >
+    //                         <Image
+    //                             source={require('../../assets/images/rating.png')}
+    //                             style={styles.buttonIcon}
+    //                         />
+    //                         <Text style={styles.joinButtonText}>{doctor.rating}</Text>
+    //                     </TouchableOpacity>
+    //                 </View>
 
-                    <View style={{ flexDirection: 'row', alignContent: 'center' }}>
-                        <Text style={styles.ratetext}>
-                            Patient {'\n'}Recommendation
-                        </Text>
+    //                 <View style={{ flexDirection: 'row', alignContent: 'center' }}>
+    //                     <Text style={styles.ratetext}>
+    //                         Patient {'\n'}Recommendation
+    //                     </Text>
 
-                        <Text style={[styles.ratetext, { textAlign: 'right' }]}>
-                            Consultancy {'\n'}Excellence Rating
-                        </Text>
-                    </View>
+    //                     <Text style={[styles.ratetext, { textAlign: 'right' }]}>
+    //                         Consultancy {'\n'}Excellence Rating
+    //                     </Text>
+    //                 </View>
 
-                </View>
+    //             </View>
 
-                <View style={styles.divider}>
-                    <Image
-                        source={require('../../assets/images/Line.png')}
-                        style={styles.lineImage}
-                    />
-                </View>
+    //             <View style={styles.divider}>
+    //                 <Image
+    //                     source={require('../../assets/images/Line.png')}
+    //                     style={styles.lineImage}
+    //                 />
+    //             </View>
 
 
-                <View style={styles.consultationMeta}>
-                    <View style={styles.ratingDoctorContainer}>
-                        <Text style={styles.reviewCount}>Consultation fee</Text>
-                        <Text style={styles.price}>{doctor.total_amount}</Text>
-                    </View>
+    //             <View style={styles.consultationMeta}>
+    //                 <View style={styles.ratingDoctorContainer}>
+    //                     <Text style={styles.reviewCount}>Consultation fee</Text>
+    //                     <Text style={styles.price}>{doctor.total_amount}</Text>
+    //                 </View>
 
-                    <View style={styles.joinSection}>
-                        {doctor?.is_active && (
-                            <View style={styles.availabilityInfo}>
-                                <Text style={styles.startingText}>Starting at</Text>
-                                <Text style={styles.timeText}>
-                                    {doctor.consultation_date}
-                                </Text>
-                            </View>
-                        )}
+    //                 <View style={styles.joinSection}>
+    //                     {doctor?.is_active && (
+    //                         <View style={styles.availabilityInfo}>
+    //                             <Text style={styles.startingText}>Starting at</Text>
+    //                             <Text style={styles.timeText}>
+    //                                 {doctor.consultation_date}
+    //                             </Text>
+    //                         </View>
+    //                     )}
 
-                        <LinearGradient
-                            style={styles.joinButton}
-                            colors={[Colors.secondaryColor, Colors.primaryColor]}
-                        >
-                            <TouchableOpacity
-                            //  onPress={() => onJoinPress?.(doctor)}
-                            >
-                                <Text style={styles.joinButtonText}>  {showReorder ? 'Book Again' : 'Join Now '} </Text>
-                            </TouchableOpacity>
-                        </LinearGradient>
-                    </View>
-                </View>
-            </View>
-        </TouchableOpacity>
-    )
+    //                     <LinearGradient
+    //                         style={styles.joinButton}
+    //                         colors={[Colors.secondaryColor, Colors.primaryColor]}
+    //                     >
+    //                         <TouchableOpacity
+    //                         //  onPress={() => onJoinPress?.(doctor)}
+    //                           >
+    //                             <Text style={styles.joinButtonText}>  {showReorder ? 'Book Again' : 'Join Now '} </Text>
+    //                         </TouchableOpacity>
+    //                     </LinearGradient>
+    //                 </View>
+    //             </View>
+    //         </View>
+    //     </TouchableOpacity>
+    // )
 
 
     const OrderCard: React.FC<{ order: Order; showReorder?: boolean }> = ({ order, showReorder = false }) => (
@@ -368,6 +369,7 @@ const MyOrder = (props: any) => {
                     </View>
                 </View>
 
+
                 <TouchableOpacity style={styles.arrowButton}>
                     <Image source={require('../../assets/images/backButton.png')} style={{
                         height: 15,
@@ -379,7 +381,6 @@ const MyOrder = (props: any) => {
             </View>
 
             <View style={styles.actionButtons}>
-
                 <LinearGradient style={styles.invoiceButton} colors={[Colors.primaryColor, Colors.secondaryColor]}>
                     <TouchableOpacity onPress={() => handleViewInvoice(order.id)} style={styles.fullAreaButton}>
                         <Text style={styles.invoiceButtonText}>View Invoice</Text>
@@ -406,6 +407,7 @@ const MyOrder = (props: any) => {
                 </LinearGradient>
             </View>
         </Pressable>
+        
     );
 
 
@@ -908,6 +910,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
     },
+    
     cancelButtonText: {
         color: '#fff',
     },

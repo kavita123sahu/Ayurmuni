@@ -20,7 +20,9 @@ interface Props {
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-const   CategoryPage = ({ title, categories = [], navigation }: Props) => {
+
+
+const CategoryPage = ({ title, categories = [], navigation }: Props) => {
 
         const visibleItems = categories.slice(0, 5);
         const scrollX = useRef(new Animated.Value(0)).current;
@@ -49,6 +51,7 @@ const   CategoryPage = ({ title, categories = [], navigation }: Props) => {
                 <Text style={styles.categoryText}>{item?.name ?? 'NA'}</Text>
             </TouchableOpacity>
         );
+
 
         return (
             <View style={styles.categoriesSection}>

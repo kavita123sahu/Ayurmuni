@@ -57,7 +57,7 @@ export const onBoarding = async (data: any) => {
                     // "Authorization": `Bearer ${token}`,
                 },
             };
-
+            
             let serverResponse = await fetch(BaseUrl.base_url + 'ecom/customer/', fetchParameter);
             resolve(serverResponse);
         } catch (error) {

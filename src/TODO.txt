@@ -60,8 +60,8 @@ Is CN=CM, OU=mantra, O=mantra, L=delhi, ST=HR, C=In correct?
 password  : mantra
 
 
-
-
+  const ZEGO_APP_ID = 712416091; // Replace with your actual App ID
+  const ZEGO_APP_SIGN = 'c6de6e9ebf00826ca6a1834aaf6db203e722d67f5976cb9ede3f023db73232e8'; // Replace with your actual App Sign
 
 
 

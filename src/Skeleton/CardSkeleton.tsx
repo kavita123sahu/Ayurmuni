@@ -1,5 +1,5 @@
 import { Dimensions, View } from "react-native";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import SkeletonPlaceholder  from 'react-native-skeleton-placeholder'
 
 
 
@@ -10,6 +10,8 @@ const SKELETON_BG = '#EEF2F7';
 const SKELETON_HIGHLIGHT = '#FAFCFF';
 
 // ------------------ Doctor Card Skeleton ------------------
+
+
 export const DoctorCardSkeleton = () => {
   return (
     <View
@@ -22,6 +24,7 @@ export const DoctorCardSkeleton = () => {
         borderColor: '#E3E8EF',
       }}
     >
+
       <SkeletonPlaceholder
         backgroundColor={SKELETON_BG}
         highlightColor={SKELETON_HIGHLIGHT}
@@ -97,8 +100,7 @@ export const DoctorCardSkeleton = () => {
         <SkeletonPlaceholder.Item
           flexDirection="row"
           justifyContent="space-between"
-          marginBottom={16}
-        >
+          marginBottom={16}>
           <SkeletonPlaceholder.Item width="40%" height={12} />
           <SkeletonPlaceholder.Item width="40%" height={12} />
         </SkeletonPlaceholder.Item>
@@ -155,10 +157,9 @@ export const DoctorCardSkeleton = () => {
 export const ProductSkeleton = () => (
   <View style={{ paddingHorizontal: 16, backgroundColor: '#FFFFFF' }}>
     <SkeletonPlaceholder
-      backgroundColor={"#ffff"}
-      highlightColor={"#FAFCFF"}
+      backgroundColor="#E1E9EE"
+      highlightColor="#FAFCFF"
     >
-
       <SkeletonPlaceholder.Item
         width={130}
         height={20}
@@ -166,16 +167,19 @@ export const ProductSkeleton = () => (
         marginBottom={16}
       />
 
-      {/* GRID */}
-      <SkeletonPlaceholder.Item
-        flexDirection="row"
-        flexWrap="wrap"
-        justifyContent="space-between"
+      {/* GRID — WRAP WITH VIEW (IMPORTANT) */}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+        }}
       >
         {[1, 2, 3, 4].map(i => (
           <SkeletonPlaceholder.Item
             key={i}
             width={CARD_WIDTH}
+            height={CARD_WIDTH + 40}
             marginBottom={20}
           >
             <SkeletonPlaceholder.Item
@@ -184,33 +188,24 @@ export const ProductSkeleton = () => (
               borderRadius={16}
             />
             <SkeletonPlaceholder.Item
-              width="70%"
+              width={CARD_WIDTH * 0.7}
               height={12}
-              borderRadius={6}
               marginTop={10}
             />
             <SkeletonPlaceholder.Item
-              width="50%"
+              width={CARD_WIDTH * 0.5}
               height={10}
-              borderRadius={6}
               marginTop={6}
             />
           </SkeletonPlaceholder.Item>
         ))}
-      </SkeletonPlaceholder.Item>
-
-      {/* 👇 ADD THIS */}
-      <SkeletonPlaceholder.Item
-        width="100%"
-        height={20}
-        borderRadius={10}
-        marginBottom={20}
-      />
-
-
+      </View>
     </SkeletonPlaceholder>
   </View>
 );
+
+
+
 
 // export const ProductSkeleton = () => (
 //   <View style={{ flex: 1, paddingHorizontal: 16, backgroundColor: '#FFFFFF' }}>
@@ -287,8 +282,7 @@ export const CategorySkeleton = () => (
         <SkeletonPlaceholder.Item
           flexDirection="row"
           justifyContent="space-between"
-          paddingHorizontal={4}
-        >
+          paddingHorizontal={4} >
           {[1, 2, 3, 4].map(i => (
             <SkeletonPlaceholder.Item key={i} alignItems="center">
               <SkeletonPlaceholder.Item

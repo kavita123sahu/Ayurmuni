@@ -266,7 +266,11 @@ const Onboarding = (props: any) => {
                                     First name<Text style={styles.required}>*</Text>
                                 </Text>
                                 <TextInput
-                                    style={[styles.input, errors.firstName && styles.inputError]}
+                                    style={[
+                                        styles.input,
+                                        !!errors.firstName && styles.inputError
+                                    ]}
+                                    // style={[styles.input, errors.firstName && styles.inputError]}
                                     value={formData.firstName}
                                     onChangeText={(text) => handleFieldChange('firstName', text)}
                                     placeholder="First name"
@@ -280,7 +284,11 @@ const Onboarding = (props: any) => {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Last name*</Text>
                                 <TextInput
-                                    style={[styles.input, errors.lastName && styles.inputError]}
+                                    style={[
+                                        styles.input,
+                                        !!errors.lastName && styles.inputError
+                                    ]}
+                                    // style={[styles.input, errors.lastName && styles.inputError]}
                                     value={formData.lastName}
                                     onChangeText={(text) => handleFieldChange('lastName', text)}
                                     placeholder="Last name"
@@ -295,7 +303,11 @@ const Onboarding = (props: any) => {
                         <View style={styles.inputGroup}>
                             <Text style={styles.label}>Email</Text>
                             <TextInput
-                                style={[styles.input, errors.email && styles.inputError]}
+                                style={[
+                                    styles.input,
+                                    !!errors.email && styles.inputError
+                                ]}
+                                // style={[styles.input, errors.email && styles.inputError]}
                                 value={formData.email}
                                 onChangeText={(text) => handleFieldChange('email', text)}
                                 placeholder="Email"

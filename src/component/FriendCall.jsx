@@ -2,215 +2,151 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  TouchableOpacity,
   TextInput,
-  Alert,
+  TouchableOpacity,
+  StyleSheet,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
+import axios from 'axios';
+import api from '../services/API';
 
-export default function HomeScreen({ navigation }) {
-  const [callIdInput, setCallIdInput] = useState('');
+// API base URL (apni backend URL lagao)
+// const api = axios.create({
+//   baseURL: "https://vcxtv1pq-5173.inc1.devtunnels.ms/"  // eg: http://192.168.1.10:5000
+// });
 
-  // Start new call with Sunaina
-  const startNewCall = () => {
-    const callID = `call_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
-    navigation.navigate('VideoPlayer', {
-      friendUserId: 'sunaina_123',
-      friendName: 'Sunaina',
-      currentUserId: 'kavita_456',
-      currentUserName: 'Kavita',
-      callID: callID,
-      isNewCall: true,
-    });
-  };
+export default function FriendCall({ navigation, route }) {
+  const [roomId, setRoomId] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Join existing call
-  const joinExistingCall = () => {
-    if (!callIdInput.trim()) {
-      Alert.alert('Error', 'Please enter Call ID');
-      return;
+  const createRoom = async () => {
+    setLoading(true);
+    try {
+      const res = await api.post("/api/calls/create");
+      console.log("CreateRoomuser Response", res,);
+      navigation.navigate("VideoCall", { roomId: res.data.room.roomId, userId: "694e6c0488d1fe757794170d" });
+
+    } catch (err) {
+      console.log(err);
+      alert("Failed to create room");
     }
-
-    navigation.navigate('VideoPlayer', {
-      currentUserId: 'kavita_456',
-      currentUserName: 'Kavita',
-      callID: callIdInput.trim(),
-      isNewCall: false,
-    });
+    setLoading(false);
   };
 
-  // Quick call with predefined call ID (for testing)
-  const quickCall = () => {
-    const fixedCallID = 'test_call_123';
 
-    navigation.navigate('VideoPlayer', {
-      friendUserId: 'sunaina_123',
-      friendName: 'Sunaina',
-      currentUserId: 'kavita_456',
-      currentUserName: 'Kavita',
-      callID: fixedCallID,
-      isNewCall: true,
-    });
+
+  const joinRoom = async () => {
+
+    // if (!roomId.trim()) return alert("Enter a Room ID!");
+
+    setLoading(true);
+
+    try {
+      console.log("room joining")
+      await api.post(`/api/calls/join/${roomId}`);
+      navigation.navigate("VideoCall", { roomId, userId: "694e6c0488d1fe757794170d" });
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to join room");
+    }
+    setLoading(false);
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
+      <StatusBar backgroundColor="#4b6cb7" barStyle="light-content" />
+      <View style={styles.card}>
+        <Text style={styles.title}>🎥 Video Call Dashboard</Text>
 
-      <View style={styles.header}>
-        <Text style={styles.title}>Video Call App</Text>
-        <Text style={styles.subtitle}>Hi Kavita! 👋</Text>
-      </View>
-
-      <View style={styles.content}>
-        {/* Start New Call */}
-        <TouchableOpacity style={styles.primaryButton} onPress={startNewCall}>
-          <Text style={styles.primaryButtonText}>📞 Call Sunaina</Text>
+        <TouchableOpacity
+          onPress={createRoom}
+          disabled={loading}
+          style={styles.createButton}
+        >
+          <Text style={styles.btnText}>
+            {loading ? "Creating..." : "➕ Create New Room"}
+          </Text>
         </TouchableOpacity>
 
-        {/* Quick Test Call */}
-        <TouchableOpacity style={styles.secondaryButton} onPress={quickCall}>
-          <Text style={styles.secondaryButtonText}>🚀 Quick Test Call</Text>
+        <Text style={styles.orText}>──────── OR ────────</Text>
+
+        <TextInput
+          placeholder="Enter Room ID"
+          placeholderTextColor="#777"
+          value={roomId}
+          onChangeText={setRoomId}
+          style={styles.input}
+        />
+
+        <TouchableOpacity
+          onPress={joinRoom}
+          disabled={loading}
+          style={styles.joinButton}
+        >
+          <Text style={styles.btnText}>🔗 Join Room</Text>
         </TouchableOpacity>
 
-        {/* Join Call Section */}
-        <View style={styles.joinSection}>
-          <Text style={styles.sectionTitle}>Join Existing Call</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Call ID"
-            placeholderTextColor="#888"
-            value={callIdInput}
-            onChangeText={setCallIdInput}
-          />
-
-          <TouchableOpacity style={styles.joinButton} onPress={joinExistingCall}>
-            <Text style={styles.joinButtonText}>Join Call</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Instructions */}
-        <View style={styles.instructionsContainer}>
-          <Text style={styles.instructionsTitle}>How to use:</Text>
-          <Text style={styles.instructionText}>1. Tap "Call Sunaina" to start a new call</Text>
-          <Text style={styles.instructionText}>2. Share the Call ID with Sunaina</Text>
-          <Text style={styles.instructionText}>3. Sunaina can join using the same Call ID</Text>
-        </View>
+        {loading && <ActivityIndicator size="large" color="#4b6cb7" />}
       </View>
     </SafeAreaView>
   );
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#4b6cb7",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  header: {
-    alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 30,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#ccc',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  primaryButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginBottom: 20,
-    alignItems: 'center',
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+  card: {
+    width: "85%",
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 25,
     elevation: 8,
   },
-  primaryButtonText: {
-    color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 25,
+    color: "#333",
   },
-  secondaryButton: {
-    backgroundColor: '#34C759',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 20,
-    marginBottom: 30,
-    alignItems: 'center',
-  },
-  secondaryButtonText: {
-    color: 'black',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  joinSection: {
-    backgroundColor: '#2a2a2a',
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: '#3a3a3a',
-    color: 'black',
+  createButton: {
+    backgroundColor: "#1E90FF",
     padding: 15,
     borderRadius: 10,
-    marginBottom: 15,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#555',
+    marginBottom: 20,
   },
   joinButton: {
-    backgroundColor: '#FF9500',
-    paddingVertical: 15,
+    backgroundColor: "#6A0DAD",
+    padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
-  },
-  joinButtonText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  instructionsContainer: {
-    backgroundColor: '#2a2a2a',
-    padding: 20,
-    borderRadius: 15,
     marginTop: 10,
   },
-  instructionsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 10,
+  btnText: {
+    color: "#fff",
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
   },
-  instructionText: {
-    fontSize: 14,
-    color: '#ccc',
-    marginBottom: 5,
-    lineHeight: 20,
+  orText: {
+    textAlign: "center",
+    color: "#777",
+    marginVertical: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#f8f8f8",
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 16,
+    color: "#000",
   },
 });
