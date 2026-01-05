@@ -158,16 +158,16 @@ import ZegoUIKitPrebuiltCall, {
 // const APP_ID = 123456789; // Zego AppID
 // const APP_SIGN = 'YOUR_APP_SIGN';
 
-const APP_ID = 712416091; // Replace with your actual App ID
+const APP_ID = 712416091; // Replace with your actual aApp ID
 const APP_SIGN = 'c6de6e9ebf00826ca6a1834aaf6db203e722d67f5976cb9ede3f023db73232e8'; // Replace with your actual App Sign
-
 
 
 export default function VideoCallScreen({ route }) {
   const { userId, userName, roomId } = route.params;
   
 
-console.log("userVideoCallDetails--->", userId, userName, roomId);
+  console.log("userdetailssss--->", userId, userName, roomId);
+  
 
   return (
     <View style={{ flex: 1 }}>

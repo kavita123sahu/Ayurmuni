@@ -44,6 +44,7 @@ export type RootStackParamList = {
   OtpVerify: undefined;
   PatientSelect: any;
   PaymentFlow: undefined;
+  Assesment : undefined ;
   PaymentLoadingScreen: undefined;
   TermsConditions: undefined;
   Replacement: undefined;

@@ -47,6 +47,7 @@ const Assesment = (props: any) => {
             estimatedTime: '8-12 min',
             icon: '💊'
         }
+        
     ];
 
     const IntroScreen = () => (

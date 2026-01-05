@@ -14,8 +14,7 @@ class MainApplication : Application(), ReactApplication {
 
       override fun getPackages() =
         PackageList(this).packages
-        // ⚠️ YAHAN KUCH BHI MANUAL ADD NAHI KARNA
-
+       
       override fun getJSMainModuleName(): String = "index"
 
       override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG

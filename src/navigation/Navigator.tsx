@@ -51,6 +51,7 @@ import { useNavigationState, useNavigation } from "@react-navigation/native";
 import { useEffect, useRef } from "react";
 import { RootBottomParamList, RootStackParamList } from "../../type";
 import HealthAssesment from "../screens/assesment/HealthAssesment";
+import Assesment from "../screens/assesment/Assesment";
 
 enableScreens();
 
@@ -77,7 +78,7 @@ const TabStack = () => {
                 ToastAndroid.show("Press again to exit", ToastAndroid.SHORT);
 
                 setTimeout(() => (exitCount.current = 0), 2000);
-                return true; 
+                return true;
             }
 
             BackHandler.exitApp();
@@ -205,6 +206,7 @@ const HomeStack = () => {
             <Stack.Screen name={'ConsultationPayment'} component={ConsultationPayment} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'RatingScreen'} component={RatingScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'HealthAssesment'} component={HealthAssesment} options={{ headerShown: false, animation: 'slide_from_right' }} />
+            <Stack.Screen name={'Assesment'} component={Assesment} options={{ headerShown: false, animation: 'slide_from_right' }} />
 
         </Stack.Navigator>
 
@@ -256,7 +258,7 @@ const MainNavigator = () => {
 
 const Navigator = () => {
     const isConnected = useNetworkStatus();
-  
+
     return (
         <NavigationContainer>
 
