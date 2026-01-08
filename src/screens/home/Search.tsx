@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, StatusBar, ScrollView, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, StatusBar, ScrollView, Modal } from 'react-native';
 import { Colors } from '../../common/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Fonts } from '../../common/Fonts';
@@ -10,7 +10,7 @@ import * as _HOME_SERVICE from '../../services/HomeServices';
 import ProductCard from '../../component/ProductCard';
 
 const Search = (props: any) => {
-    const [searchText, setSearchText] = useState<string>('');
+
     const [searchData, setSearchData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [loader, setLoader] = useState(true);
@@ -22,8 +22,6 @@ const Search = (props: any) => {
     const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
     const { category } = props.route.params || {};
-
-    console.log(category, 'categoryyyyyyyyyyy');
 
     const priceRanges = [
         { label: 'Under ₹500', value: '0-500' },
@@ -53,11 +51,13 @@ const Search = (props: any) => {
         }
     }, [category]);
 
+
     useEffect(() => {
         if (searchData.length > 0) {
             applyFilters();
         }
     }, [searchData, selectedPriceRange, selectedRating, selectedSortBy]);
+
 
     useEffect(() => {
         let count = 0;
@@ -66,9 +66,9 @@ const Search = (props: any) => {
         if (selectedSortBy) count++;
         setActiveFiltersCount(count);
     }, [selectedPriceRange, selectedRating, selectedSortBy]);
+    
 
     const getProductsbyCategory = async (categoryId: string) => {
-        console.log("Fetching products for category ID:", categoryId);
         setLoader(true);
         try {
             let response: any = await _HOME_SERVICE.get_product_category(categoryId);
@@ -78,7 +78,7 @@ const Search = (props: any) => {
             if (response.status == 200) {
                 setSearchData(JSONcategory);
                 setLoader(false);
-            } 
+            }
             else {
                 setLoader(false);
                 console.log("Error to fetch ", JSONcategory.status);
@@ -124,7 +124,6 @@ const Search = (props: any) => {
             const minRating = parseFloat(selectedRating.replace('+', ''));
 
             filtered = filtered.filter((item: any) => {
-                // Check different possible rating field names
                 const rating = parseFloat(item.rating || item.average_rating || item.star_rating || 0);
                 console.log(`Item rating: ${rating} for min rating: ${minRating}`);
                 return rating >= minRating;
@@ -360,7 +359,7 @@ const Search = (props: any) => {
             </LinearGradient>
 
             {renderFilterSection()}
-            
+
             <ScrollView style={styles.container}>
                 {loader ? (
                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -368,7 +367,7 @@ const Search = (props: any) => {
                     </View>
                 ) : (
                     <>
-                        {/* Results Count */}
+
                         <View style={styles.resultsHeader}>
                             <Text style={styles.resultsText}>
                                 {filteredData.length > 0 ? filteredData.length : searchData.length} Products Found
@@ -385,7 +384,7 @@ const Search = (props: any) => {
                     </>
                 )}
             </ScrollView>
-            
+
             {renderFilterModal()}
         </SafeAreaView>
     );
@@ -405,7 +404,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
 
-    // Results Header
+
     resultsHeader: {
         paddingHorizontal: 10,
         paddingVertical: 8,
@@ -419,7 +418,7 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.PoppinsMedium,
     },
 
-    // Filter Styles
+
     filterContainer: {
         backgroundColor: Colors.white,
         paddingVertical: 10,
@@ -470,7 +469,7 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.PoppinsMedium,
     },
 
-    // Modal Styles
+
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -480,7 +479,6 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        // maxHeight: '80%',
         height: '80%'
     },
 
@@ -566,27 +564,6 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.PoppinsMedium,
     },
 
-    // Existing styles
-    textStroke: {
-        textShadowColor: 'black',
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 1,
-        color: 'white'
-    },
-    imageContainer: {
-        width: '100%',
-        height: 180,
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        backgroundColor: 'white',
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-    },
 });
 
 export default Search;

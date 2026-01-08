@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-    TextInput,
-    Alert
-} from 'react-native';
+import {View,Text,StyleSheet,ScrollView,TouchableOpacity,TextInput,Alert} from 'react-native';
 import Header from '../../component/Header';
+import { Fonts } from '../../common/Fonts';
 
 const RatingScreen = (props: any) => {
     const [rating, setRating] = useState(0);
@@ -24,7 +17,6 @@ const RatingScreen = (props: any) => {
         '🎯 As Described'
     ];
     
-    console.log('propsprops', props)
     const handleCategoryToggle = (category: any) => {
         if (selectedCategories.includes(category)) {
             setSelectedCategories(selectedCategories.filter(c => c !== category));
@@ -39,13 +31,11 @@ const RatingScreen = (props: any) => {
             return;
         }
 
-        // Yaha tu apna API call kar sakta hai
         Alert.alert(
             'Success',
             'Thank you for your feedback!',
             [{
                 text: 'OK', onPress: () => {
-                    // Reset form or navigate back
                     setRating(0);
                     setReviewText('');
                     setSelectedCategories([]);
@@ -79,15 +69,12 @@ const RatingScreen = (props: any) => {
     return (
         <ScrollView style={styles.container}>
             <Header title='Rating US' navigation={props.navigation} Is_Tab={false} />
-
             <View style={styles.header}>
-
                 <Text style={styles.headerSubtitle}>
                     Your feedback helps us improve
                 </Text>
             </View>
 
-            {/* Rating Section */}
             <View style={styles.ratingSection}>
                 <View style={styles.emojiContainer}>
                     <Text style={styles.emoji}>{getRatingEmoji()}</Text>
@@ -119,7 +106,6 @@ const RatingScreen = (props: any) => {
                 )}
             </View>
 
-            {/* Categories Section */}
             {rating > 0 && (
                 <View style={styles.categoriesSection}>
                     <Text style={styles.sectionTitle}>
@@ -147,7 +133,7 @@ const RatingScreen = (props: any) => {
                 </View>
             )}
 
-            {/* Review Text Section */}
+
             {rating > 0 && (
                 <View style={styles.reviewSection}>
                     <Text style={styles.sectionTitle}>
@@ -170,7 +156,7 @@ const RatingScreen = (props: any) => {
                 </View>
             )}
 
-            {/* Benefits Section */}
+
             {rating === 0 && (
                 <View style={styles.benefitsSection}>
                     <Text style={styles.benefitsTitle}>Why rate us?</Text>
@@ -207,7 +193,6 @@ const RatingScreen = (props: any) => {
                 </View>
             )}
 
-            {/* Submit Button */}
             {rating > 0 && (
                 <View style={styles.submitSection}>
                     <TouchableOpacity
@@ -230,7 +215,6 @@ const RatingScreen = (props: any) => {
                 </View>
             )}
 
-            {/* Privacy Note */}
             <View style={styles.privacyNote}>
                 <Text style={styles.privacyText}>
                     🔒 Your review will be public and visible to other users
@@ -252,14 +236,10 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#e9ecef',
     },
-    headerTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#212529',
-        marginBottom: 8,
-    },
+  
     headerSubtitle: {
-        fontSize: 15,
+        fontSize: 14,
+        fontFamily : Fonts.PoppinsMedium,
         color: '#6c757d',
     },
     ratingSection: {
@@ -309,6 +289,7 @@ const styles = StyleSheet.create({
     },
     ratingCount: {
         fontSize: 16,
+        fontFamily : Fonts.PoppinsSemiBold,
         color: '#6c757d',
         marginTop: 8,
     },
@@ -326,7 +307,7 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 18,
-        fontWeight: '600',
+        fontFamily : Fonts.PoppinsMedium,
         color: '#212529',
         marginBottom: 16,
     },
@@ -351,7 +332,7 @@ const styles = StyleSheet.create({
     categoryText: {
         fontSize: 14,
         color: '#495057',
-        fontWeight: '500',
+        fontFamily : Fonts.PoppinsRegular,
     },
     categoryTextActive: {
         color: '#fff',
@@ -382,6 +363,7 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         marginTop: 8,
         fontSize: 13,
+        fontFamily : Fonts.PoppinsRegular,
         color: '#6c757d',
     },
     benefitsSection: {
@@ -398,7 +380,7 @@ const styles = StyleSheet.create({
     },
     benefitsTitle: {
         fontSize: 18,
-        fontWeight: '600',
+        fontFamily : Fonts.PoppinsMedium,
         color: '#212529',
         marginBottom: 20,
     },
@@ -416,12 +398,13 @@ const styles = StyleSheet.create({
     },
     benefitTitle: {
         fontSize: 16,
-        fontWeight: '600',
+        fontFamily : Fonts.PoppinsSemiBold,
         color: '#212529',
         marginBottom: 4,
     },
     benefitDesc: {
         fontSize: 14,
+        fontFamily : Fonts.PoppinsRegular,
         color: '#6c757d',
         lineHeight: 20,
     },
@@ -443,7 +426,7 @@ const styles = StyleSheet.create({
     },
     submitButtonText: {
         fontSize: 17,
-        fontWeight: '600',
+        fontFamily : Fonts.PoppinsMedium,
         color: '#fff',
     },
     skipButton: {
@@ -453,7 +436,7 @@ const styles = StyleSheet.create({
     skipButtonText: {
         fontSize: 16,
         color: '#6c757d',
-        fontWeight: '500',
+        fontFamily : Fonts.PoppinsRegular   ,
     },
     privacyNote: {
         marginHorizontal: 16,
@@ -466,6 +449,7 @@ const styles = StyleSheet.create({
     },
     privacyText: {
         fontSize: 13,
+        fontFamily : Fonts.PoppinsRegular,
         color: '#495057',
         lineHeight: 20,
     },

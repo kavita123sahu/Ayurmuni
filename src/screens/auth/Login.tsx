@@ -20,23 +20,19 @@ import *as _AUTH_SERVICE from '../../services/AuthService'
 import { showSuccessToast } from '../../config/Key';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
-import LinearGradient from 'react-native-linear-gradient';
 
 
 
 
 const Login: React.FC = (props: any) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [tendername, setenderName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
 
-  
+
   const onLogin = async () => {
-    console.log("phoneNumber===>", phoneNumber);
 
     Keyboard.dismiss();
-
     if (phoneNumber.length !== 10) {
       setIsLoading(false);
       showSuccessToast('Please enter a valid 10-digit mobile number', 'error')
@@ -46,45 +42,32 @@ const Login: React.FC = (props: any) => {
 
 
     try {
+      
       const send_data = {
         phone_number: `+91${phoneNumber}`,
       };
-
       const response: any = await _AUTH_SERVICE.send_otp(send_data);
-
       const { data, message = "", status } = response;
-
-      console.log("response-otp", response);
-
       const JSONReponse = await response.json();
-
       console.log("reponse-userr", JSONReponse);
-
 
       if (status === 200) {
         setIsLoading(false);
         showSuccessToast(response.message || 'OTP send successfully', 'success');
-
         if (JSONReponse.is_new_user && JSONReponse.is_customer) {
-
           props.navigation.navigate('HomeStack', { Screen: 'Home' });
         }
 
         else if (JSONReponse.is_new_user && !JSONReponse.is_customer) {
-          // User true, Customer false - OtpVerify with newUser true
           props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
-          // props.navigation.navigate('HomeStack', { screen: 'Onboarding' });
         }
 
         else if (!JSONReponse.is_new_user && JSONReponse.is_customer) {
-          // User false, Customer true - OtpVerify without newUser flag
           props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
         }
 
         else {
           props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
-          // Dono false - Handle accordingly (maybe show error or default behavior)
-          // Add your logic here
         }
 
       }
@@ -95,7 +78,6 @@ const Login: React.FC = (props: any) => {
       }
 
     } catch (error) {
-
       setIsLoading(false);
       console.error('Send OTP Error:', error);
       showSuccessToast('Something went wrong. Please try again.', 'error');
@@ -114,7 +96,7 @@ const Login: React.FC = (props: any) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           style={styles.container}
-          keyboardShouldPersistTaps="handled" // Yeh important hai
+          keyboardShouldPersistTaps="handled" 
           showsVerticalScrollIndicator={false}>
 
           <View style={styles.logoContainer}>
@@ -132,7 +114,6 @@ const Login: React.FC = (props: any) => {
               Elevate your healthy lifestyle experience{'\n'}
               with our trusted, seamless and{'\n'}
               efficient services.
-              {/* Tender Name : {tendername} */}
             </Text>
 
 
@@ -191,10 +172,6 @@ const Login: React.FC = (props: any) => {
                   />
                 )
             }
-
-
-
-
 
             <View style={styles.termsContainer}>
               <Text style={styles.termsText}>
@@ -255,7 +232,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
 
-
   phoneInputContainer: {
     flexDirection: 'row',
     marginBottom: 24,
@@ -285,24 +261,7 @@ const styles = StyleSheet.create({
     color: Colors.textColor,
     fontFamily: Fonts.PoppinsMedium,
   },
-
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E0E0E0',
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: Colors.textColor,
-    fontFamily: Fonts.PoppinsMedium,
-  },
-
+  
   termsContainer: {
     paddingHorizontal: 20,
     marginTop: 10,

@@ -19,8 +19,8 @@ export default function OrderTrackingScreen({ route }) {
   // route.params.orderId could be passed
   const orderId = route?.params?.orderId || "order_123";
   const mapRef = useRef(null);
-  const [userLocation, setUserLocation] = useState(null);
-  const [driverLocation, setDriverLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState("");
+  const [driverLocation, setDriverLocation] = useState("");
   const [driverPath, setDriverPath] = useState([]); // history to draw polyline
   const [socketConnected, setSocketConnected] = useState(false);
   const socketRef = useRef(null);

@@ -1,14 +1,8 @@
 // InvoiceScreen.tsx
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  StatusBar,
-  SafeAreaView,
-  Dimensions 
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, StatusBar, SafeAreaView, } from 'react-native';
+import { Fonts } from '../../common/Fonts';
+import { Colors } from '../../common/Colors';
 
 
 const InvoiceScreen = ({ route }: any) => {
@@ -64,7 +58,7 @@ const InvoiceScreen = ({ route }: any) => {
             <Text style={styles.detailValue}>{invoiceData.dueDate}</Text>
           </View>
         </View>
-        
+
         <View style={styles.detailsRight}>
           <Text style={styles.billToLabel}>Bill To:</Text>
           <View style={styles.customerInfo}>
@@ -80,23 +74,23 @@ const InvoiceScreen = ({ route }: any) => {
 
   const renderItemsTable = () => (
     <View style={styles.tableContainer}>
-   
+
       <View style={styles.tableHeader}>
         <Text style={[styles.tableHeaderText, { flex: 3 }]}>Item Description</Text>
         <Text style={[styles.tableHeaderText, { flex: 1 }]}>Qty</Text>
         <Text style={[styles.tableHeaderText, { flex: 1.2 }]}>Price</Text>
         <Text style={[styles.tableHeaderText, { flex: 1.2 }]}>Amount</Text>
       </View>
-      
+
       {invoiceData.items.map((item, index) => (
         <View key={index} style={[
-          styles.tableRow, 
+          styles.tableRow,
           index === invoiceData.items.length - 1 && styles.lastTableRow
         ]}>
           <Text style={[styles.tableCell, { flex: 3 }]}>{item.name}</Text>
           <Text style={[styles.tableCell, { flex: 1, textAlign: 'center' }]}>{item.qty}</Text>
           <Text style={[styles.tableCell, { flex: 1.2, textAlign: 'right' }]}>₹{item.price}</Text>
-          <Text style={[styles.tableCell, { flex: 1.2, textAlign: 'right', fontWeight: '600' }]}>
+          <Text style={[styles.tableCell, { flex: 1.2, textAlign: 'right', fontFamily: Fonts.PoppinsMedium, }]}>
             ₹{item.total}
           </Text>
         </View>
@@ -144,7 +138,7 @@ const InvoiceScreen = ({ route }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#2196F3" barStyle="light-content" />
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
@@ -170,7 +164,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 20,
   },
-  
+
   // Header Styles
   header: {
     backgroundColor: '#fff',
@@ -191,13 +185,13 @@ const styles = StyleSheet.create({
   },
   companyName: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     color: '#2196F3',
     marginBottom: 8,
   },
   companyDetails: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textColor,
     lineHeight: 20,
   },
   invoiceBadge: {
@@ -208,11 +202,10 @@ const styles = StyleSheet.create({
   },
   invoiceLabel: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     fontSize: 16,
   },
 
-  // Details Container
   detailsContainer: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -240,22 +233,24 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    color: '#666',
+    color: Colors.textColor,
     marginBottom: 4,
     textTransform: 'uppercase',
-    fontWeight: '500',
+    fontFamily: Fonts.PoppinsSemiBold,
   },
+
   detailValue: {
     fontSize: 16,
     color: '#333',
-    fontWeight: '600',
+    fontFamily: Fonts.PoppinsMedium,
   },
+
   billToLabel: {
     fontSize: 12,
-    color: '#666',
+    color: Colors.textColor,
     marginBottom: 8,
     textTransform: 'uppercase',
-    fontWeight: '500',
+    fontFamily: Fonts.PoppinsSemiBold,
   },
   customerInfo: {
     backgroundColor: '#f8f9fa',
@@ -266,19 +261,19 @@ const styles = StyleSheet.create({
   },
   customerName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     color: '#333',
     marginBottom: 4,
   },
   customerAddress: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textColor,
     lineHeight: 18,
     marginBottom: 6,
   },
   customerContact: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textColor,
     marginBottom: 2,
   },
 
@@ -302,7 +297,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     fontSize: 14,
     textAlign: 'left',
   },
@@ -320,7 +315,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
-  
+
   // Summary Styles
   summaryContainer: {
     backgroundColor: '#fff',
@@ -340,12 +335,12 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textColor,
   },
   summaryValue: {
     fontSize: 14,
     color: '#333',
-    fontWeight: '500',
+    fontFamily: Fonts.PoppinsSemiBold,
   },
   divider: {
     height: 1,
@@ -363,12 +358,12 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     color: '#333',
   },
   totalValue: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     color: '#2196F3',
   },
 
@@ -385,13 +380,14 @@ const styles = StyleSheet.create({
   },
   footerTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: Fonts.PoppinsMedium,
     color: '#333',
     marginBottom: 12,
   },
+  
   footerText: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textColor,
     lineHeight: 20,
     marginBottom: 20,
   },
@@ -400,7 +396,9 @@ const styles = StyleSheet.create({
   },
   signatureText: {
     fontSize: 12,
-    color: '#666',
+    // color : Colors.textColor,
+    color: Colors.textColor,
+
     marginBottom: 8,
   },
   signatureLine: {

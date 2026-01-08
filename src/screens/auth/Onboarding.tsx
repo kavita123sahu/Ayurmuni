@@ -1,30 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StatusBar,
-    StyleSheet,
-    SafeAreaView,
-    Alert,
-    Image,
-    Platform,
-    ScrollView,
-    ActivityIndicator,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StatusBar, StyleSheet, Alert, Image, ScrollView, ActivityIndicator, } from 'react-native';
 import { Ionicons } from '../../common/Vector';
 import { Colors } from '../../common/Colors';
-import LinearGradient from 'react-native-linear-gradient';
 import { Fonts } from '../../common/Fonts';
 import * as _AUTH_SERVICES from '../../services/AuthService';
 import { showSuccessToast } from '../../config/Key';
 import { Utils } from '../../common/Utils';
-import { launchImageLibrary, launchCamera, MediaType, ImagePickerResponse, ImageLibraryOptions, CameraOptions, Asset } from 'react-native-image-picker';
+import { launchImageLibrary, launchCamera, ImagePickerResponse, ImageLibraryOptions, CameraOptions, Asset } from 'react-native-image-picker';
 import { EmailValidator } from '../../common/Validator';
 import { GenderOption, genderOptions } from '../../common/datafile';
-import { RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import GradientButton from '../../component/GradientButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useImagePicker } from '../../hooks/useImagePicker';
 
 interface FormData {
     firstName: string;
@@ -45,9 +33,7 @@ interface FormErrors {
 
 
 const Onboarding = (props: any) => {
-    // Single form data object
     const [isLoading, setIsLoading] = useState(false);
-    const [Isloading, setUSERID] = useState('')
     const [formData, setFormData] = useState<FormData>({
         firstName: '',
         lastName: '',
@@ -57,8 +43,6 @@ const Onboarding = (props: any) => {
         user: ''
     });
 
-
-    // Single error object
     const [errors, setErrors] = useState<FormErrors>({
         firstName: '',
         lastName: '',
@@ -77,17 +61,40 @@ const Onboarding = (props: any) => {
     const getUser = async () => {
         try {
             const user_id = await Utils.getData('_USER_ID');
-            // setUSERID(user_id);
             setFormData(prev => ({ ...prev, user: user_id }));
         } catch (error) {
             console.log(error);
         }
     };
 
+
+    const { openCamera, openGallery } = useImagePicker({
+        onImageSelected: (asset) => {
+            setFormData(prev => ({
+                ...prev,
+                profileImage: asset,
+            }));
+        },
+        onSuccess: (msg) => {
+            showSuccessToast(msg, 'success');
+        },
+        onCancelOrError: () => {
+            showSuccessToast('Image selection cancelled or error', 'error');
+        },
+        onErrorClear: () => {
+            if (errors.profileImage) {
+                setErrors(prev => ({ ...prev, profileImage: '' }));
+            }
+        },
+    });
+
+
+
     const handleBack = () => {
         props.navigation.goBack();
         console.log('Back pressed');
     };
+
 
     const handleAddImage = () => {
         Alert.alert(
@@ -111,68 +118,8 @@ const Onboarding = (props: any) => {
         );
     };
 
-    const openCamera = () => {
-        const options: CameraOptions = {
-            mediaType: 'photo',
-            includeBase64: false,
-            maxHeight: 2000,
-            maxWidth: 2000,
-            quality: 0.8,
-        };
-
-        launchCamera(options, (response: ImagePickerResponse) => {
-            if (response.didCancel || response.errorMessage) {
-                // showSuccessToast('Camera cancelled or error', 'error');
-                return;
-            }
-
-            if (response.assets && response.assets[0]) {
-                const asset = response.assets[0];
-                console.log(asset, 'data');
-                setFormData(prev => ({ ...prev, profileImage: asset }));
-                showSuccessToast('Photo Captured Successfully', 'success');
-
-                // Clear profile image error if any
-                if (errors.profileImage) {
-                    setErrors(prev => ({ ...prev, profileImage: '' }));
-                }
-            }
-        });
-    };
-
-    const openGallery = () => {
-        const options: ImageLibraryOptions = {
-            mediaType: 'photo',
-            includeBase64: false,
-            maxHeight: 2000,
-            maxWidth: 2000,
-            quality: 0.8,
-        };
-
-        launchImageLibrary(options, (response: ImagePickerResponse) => {
-            if (response.didCancel || response.errorMessage) {
-                showSuccessToast('Gallery cancelled or error', 'error');
-                return;
-            }
-
-            if (response.assets && response.assets[0]) {
-                const asset = response.assets[0];
-
-                setFormData(prev => ({ ...prev, profileImage: asset }));
-                showSuccessToast('Photo Selected Successfully', 'success');
-
-                // Clear profile image error if any
-                if (errors.profileImage) {
-                    setErrors(prev => ({ ...prev, profileImage: '' }));
-                }
-            }
-        });
-    };
-
-
     const handleFieldChange = (field: keyof FormData, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-
         if (errors[field as keyof FormErrors]) {
             setErrors(prev => ({ ...prev, [field]: '' }));
         }
@@ -207,13 +154,6 @@ const Onboarding = (props: any) => {
             newErrors.gender = 'Gender is required';
             isValid = false;
         }
-
-        // if (!formData.profileImage) {
-        //     newErrors.profileImage = 'Profile Image is required';
-        //     showSuccessToast('Profile Image is required', 'error');
-        //     isValid = false;
-        // }
-
         setErrors(newErrors);
         return isValid;
     };
@@ -241,7 +181,6 @@ const Onboarding = (props: any) => {
             send_data.append('profile_picture', imageFile as any);
         }
 
-
         try {
 
             const response: any = await _AUTH_SERVICES.onBoarding(send_data);
@@ -249,7 +188,6 @@ const Onboarding = (props: any) => {
 
                 setIsLoading(false);
                 const errorText = await response.text();
-                console.log("Error response:", errorText);
                 showSuccessToast('API Error', 'error');
                 return;
             }
@@ -263,7 +201,6 @@ const Onboarding = (props: any) => {
                 setIsLoading(false);
                 Utils.storeData('_TOKEN', jsonResponse?.access);
                 Utils.storeData('_USER_INFO', data);
-                // Utils.storeData('_USER_ID', jsonResponse?.data?.user);
                 showSuccessToast('Welcome to Ayurmuni', 'success');
                 props.navigation.replace('HomeStack', { screen: 'Home' });
             } else {
@@ -408,22 +345,6 @@ const Onboarding = (props: any) => {
                             onPress={handleProcees}
                             text='Proceed'
                         />
-                        // <LinearGradient
-                        //     colors={
-                        //         (!formData.firstName.trim() || !formData.lastName.trim() || !formData.gender)
-                        //             ? [Colors.tabinactive, Colors.tabinactive]
-                        //             : [Colors.secondaryColor, Colors.primaryColor]
-                        //     }
-                        //     style={styles.proceedButton}
-                        // >
-                        //     <TouchableOpacity
-                        //         // onPress={handleProcees}
-                        //         style={styles.touchableStyle}>
-                        //         <Text style={styles.proceedButtonText}>
-                        //             Proceed
-                        //         </Text>
-                        //     </TouchableOpacity>
-                        // </LinearGradient>
 
                     )}
                 </View>
@@ -580,30 +501,7 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
         paddingHorizontal: 15,
     },
-    proceedButton: {
-        height: 50,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    touchableStyle: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    proceedButtonDisabled: {
-        borderRadius: 8,
-        backgroundColor: Colors.tabinactive,
-    },
-    proceedButtonText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#ffffff',
-    },
-    proceedButtonTextDisabled: {
-        color: Colors.primaryColor,
-    },
+
     verifyButtonLoading: {
         backgroundColor: '#f0f0f0',
         flexDirection: 'row',

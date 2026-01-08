@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StatusBar,
-    StyleSheet,
-    SafeAreaView,
-    Image,
-} from 'react-native';
+import {View,Text,TouchableOpacity,StatusBar,StyleSheet,SafeAreaView,Image,} from 'react-native';
 import { Ionicons } from '../common/Vector';
 import { Colors } from '../common/Colors';
 import { Fonts } from '../common/Fonts';
@@ -32,9 +24,6 @@ const PermissionItem: React.FC<PermissionItemProps> = ({ icon, title, descriptio
 );
 
 const AccessEnable: React.FC = (props) => {
-
-
-
     const handleContinue = () => {
     };
 

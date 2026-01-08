@@ -69,25 +69,14 @@ interface NavigationProp {
 }
 
 
-const SearchBar: React.FC<SearchBarProps> = ({
-    placeholder = "Search for products",
-    // onSearch,
-    onVoicePress,
-    value,
-    // navigation,
-    type,
-    // onChangeText,
-    showVoiceIcon = true,
-}) => {
+const SearchBar: React.FC<SearchBarProps> = ({ placeholder = "Search for products", onVoicePress, value,  type,  showVoiceIcon = true,}) => {
 
-    const navigation = useNavigation<NavigationProp>(); // ✅ This always works
+    const navigation = useNavigation<NavigationProp>(); 
     const isFocused = useIsFocused()
-    const [searchText, setSearchText] = useState(value || '');
     const [UserData, setUserData] = useState<User>();
     const [UserAddress, setUserAddress] = useState<Address>();
 
     useEffect(() => {
-        // getUser();
         getCustomerAddress();
     }, [isFocused]);
 
@@ -98,12 +87,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
             if (token) {
                 const result: any = await _PROFILE_SERVICES.user_profile();
-                console.log("tokeennnn->", token);
                 const JSONDATA = await result.json();
-                console.log("reponsee-userr", result);
                 if (result.status === 200) {
                     setUserData(JSONDATA);
-                    console.log("User Dataaa", JSONDATA);
                     const defaultAddress = JSONDATA.addresses?.find((item: Address) => item.is_default === true);
                     if (defaultAddress) {
                         setUserAddress(defaultAddress);
@@ -154,11 +140,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                 onPress={() => navigation.navigate('Profile')}
                             >
                                 {UserData ? <Text style={[styles.UserText, { textAlign: 'center' }]}>
-                                    {/* {UserData?.first_name.charAt(0).toUpperCase()} */}
                                     {UserData?.first_name?.charAt(0)?.toUpperCase()}
-                                </Text> : ""
+                                </Text> :     ""
                                     // <Image source={{ uri: UserData?.profile_picture }} style={{ height: 20, width: 20, tintColor: '#fff' }} /> 
-
                                 }
                             </TouchableOpacity>
                         )}
@@ -198,41 +182,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
             {type === 'wellness' ? <></> :
                 (
-                    // <TouchableOpacity style={styles.searchContainer} onPress={()=>console.log("searchhhhhhhh")}>
-
-                    //     <TextInput
-                    //         style={styles.textInput}
-                    //         placeholder={placeholder}
-                    //         placeholderTextColor="#999"
-                    //         // value={searchText}
-                    //         // onChangeText={handleTextChange}
-                    //         // onSubmitEditing={handleSearch}
-                    //         // returnKeyType="search"
-                    //     />
-
-                    //     <Image source={Images.linemark} style={[styles.iconstyle, { width: 1, height: 25 }]} />
-                    //     {showVoiceIcon && (
-                    //         <TouchableOpacity onPress={onVoicePress} style={styles.voiceIconContainer}>
-                    //             <Image source={Images.micIcon} style={styles.iconstyle} />
-                    //         </TouchableOpacity>
-                    //     )}
-                    // </TouchableOpacity>
-
-
-
                     <Pressable style={styles.searchContainer}
                         onPress={() => navigation.navigate('ProductSearch')}  >
-
-                        {/* <TextInput
-                            style={styles.textInput}
-                            placeholder={placeholder}
-                            placeholderTextColor="#999"
-                            // value={searchText}
-                            // onChangeText={handleTextChange}
-                            // onSubmitEditing={handleSearch}
-                            // returnKeyType="search"
-                        /> */}
-
                         <Text
                             style={[
                                 styles.textFieldText,
@@ -248,10 +199,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         {showVoiceIcon ? (
                             <TouchableOpacity onPress={onVoicePress} style={styles.voiceIconContainer}>
                                 <Image source={Images.micIcon} style={styles.iconstyle} />
-
                             </TouchableOpacity>
                         ) :
-
                             <MaterialCommunityIcons name="arrow-right" size={20} color={Colors.textColor} />
                         }
                     </Pressable>
@@ -292,12 +241,9 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.PoppinsSemiBold
     },
     profileheader: {
-        // backgroundColor: '#fff',
         borderRadius: 40,
         height: 50,
         alignContent: 'center',
-        // borderWidth: 1,
-        // borderColor: Colors.textColor,
         justifyContent: 'center',
         alignItems: 'center',
         width: 50
@@ -342,19 +288,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#f0f0f0',
     },
-
-    textFieldContainer: {
-        borderWidth: 1,
-        flexDirection: 'row',
-        // alignItems: 'center',
-        borderColor: '#ddd',
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        paddingVertical: 12,
-        backgroundColor: '#fff',
-        minHeight: 45,
-        justifyContent: 'space-between',
-    },
+    
     textFieldText: {
         fontSize: 16,
         flex: 1,

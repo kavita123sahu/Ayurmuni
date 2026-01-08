@@ -1,15 +1,5 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Alert,
-  Image,
-} from 'react-native';
+import React, { } from 'react';
+import {View,Text,TouchableOpacity,StatusBar,StyleSheet,SafeAreaView,ScrollView,Image,} from 'react-native';
 import { Ionicons } from '../common/Vector';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../common/Colors';
@@ -112,8 +102,8 @@ const styles = StyleSheet.create({
   backButton: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
   notificationBanner: { marginHorizontal: 15, marginBottom: 15, borderRadius: 10, padding: 15, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
   notificationContent: { flex: 1, paddingRight: 10 },
-  notificationTitle: { color: '#ffffff', fontSize: 16, fontWeight: '600', marginBottom: 4 },
-  notificationText: { color: '#ffffff', fontSize: 14, lineHeight: 20 },
+  notificationTitle: { color: '#ffffff', fontSize: 16, fontFamily: Fonts.PoppinsMedium, marginBottom: 4 },
+  notificationText: { color: '#ffffff', fontSize: 14, lineHeight: 20, fontFamily: Fonts.PoppinsRegular },
   linkText: { fontSize: 14, fontFamily: Fonts.PoppinsMedium },
   closeButton: { width: 24, height: 24, justifyContent: 'center', alignItems: 'center' },
   content: { flex: 1, paddingHorizontal: 20 },

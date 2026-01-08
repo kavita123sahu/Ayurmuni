@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    SafeAreaView,
-    StatusBar,
-    Image,
-} from 'react-native';
+import {View,Text,TouchableOpacity,StyleSheet,SafeAreaView,StatusBar,Image,} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../common/Colors';
 import { Fonts } from '../common/Fonts';
@@ -78,7 +70,7 @@ const UpdateScreen: React.FC<UpdateScreenProps> = (props) => {
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#ffffff'},
   content: {flex: 1, paddingHorizontal: 32, paddingTop: 60, paddingBottom: 40, alignItems: 'center', justifyContent: 'space-between'},
-  title: {fontSize: 24, fontWeight: '600', color: '#333333', textAlign: 'center', marginBottom: 20},
+  title: {fontSize: 24,fontFamily : Fonts.PoppinsMedium, color: '#333333', textAlign: 'center', marginBottom: 20},
   iconSection: {flex: 1, justifyContent: 'center', alignItems: 'center'},
   iconContainer: {position: 'relative', marginBottom: 10},
   iconGradient: {width: 120, height: 120, borderRadius: 60, justifyContent: 'center', alignItems: 'center', position: 'relative', shadowColor: '#4CAF50', shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8},

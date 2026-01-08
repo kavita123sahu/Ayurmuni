@@ -1,7 +1,5 @@
-/// <reference types="nativewind/types" />
+
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { CompositeNavigationProp } from '@react-navigation/native';
-import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -16,6 +14,7 @@ export type RootStackParamList = {
   AuthStack: undefined;
   InvoiceScreen : undefined;
   Search: undefined;
+  Wakeup:undefined;
   ProductSearch : undefined;
   HomeStack: undefined;
   ConsultationPayment : undefined
@@ -63,7 +62,6 @@ export type RootStackParamList = {
   Coupons: undefined;
   EditAddress: undefined;
   PaymentMethods: undefined;
-  MyCart : undefined;
   AddAddress: any;
   TermsAndConditions: any;
   ReplacementAndReturn: any;
@@ -77,6 +75,7 @@ export type RootStackParamList = {
   OrderDetailPage: any;
   ViewPdf: any;
   ReplacementReason: any;
+  HealthAssesment : undefined;
 };
 
 

@@ -1,16 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    ScrollView,
-    Image,
-    TouchableOpacity,
-    StyleSheet,
-    SafeAreaView,
-    StatusBar,
-    Dimensions,
-    ActivityIndicator
-} from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, StatusBar, Dimensions, ActivityIndicator } from 'react-native';
 import Header from '../../component/Header';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
@@ -18,14 +7,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import *as _CART_SERVICE from '../../services/CartService';
 import { useIsFocused } from '@react-navigation/native';
 import ProductCard from '../../component/ProductCard';
-import { Images } from '../../common/Images';
 import CustomStarRating from '../../component/CustomStarRating';
 import { Utils } from '../../common/Utils';
 import LottieView from 'lottie-react-native';
 import { showSuccessToast } from '../../config/Key';
 import * as _HOME_SERVICE from '../../services/HomeServices';
-import { AntDesign, Entypo, Feather, FontAwesome5, Fontisto } from '../../common/Vector';
+import { Entypo, Feather, FontAwesome5, Fontisto } from '../../common/Vector';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 interface VendorProduct {
@@ -67,30 +56,35 @@ interface DoctorBooking {
 
 const CartScreen = (props: any) => {
     const isFocused = useIsFocused();
-    const [customerID, setcustomerID] = useState('');
     const [loader, setLoader] = useState(false);
     const [cartDetails, setCartDetails] = useState<any>({});
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [SimilarList, setSimilarList] = useState([]);
     const [doctorBookings, setDoctorBookings] = useState<DoctorBooking[]>([]);
-    const [bookingDetails, setBookingDetails] = useState<any>({});
     const [activeTab, setActiveTab] = useState<'orders' | 'bookings'>('orders');
-
     const { ProductSimilar } = props.route.params || {};
 
 
     useEffect(() => {
-        getUserDetail()
-        getBookingsList();
+        if (!isFocused) return;
+
+        fetchInitialData();
     }, [isFocused]);
+
+    const fetchInitialData = async () => {
+        await Promise.all([
+            getUserDetail(),
+            getBookingsList(),
+        ]);
+    };
+
+
+
+
+
 
     const getBookingsList = async () => {
         try {
-            // Replace with your actual API call
-            // const result = await _BOOKING_SERVICE.get_bookings(customerId);
 
-            // Sample data for testing
             const sampleBookings: DoctorBooking[] = [
                 {
                     id: '1',
@@ -139,17 +133,11 @@ const CartScreen = (props: any) => {
         );
 
         const newTotalPrice = updatedItems.reduce((sum: number, item: any) => sum + (item.vendorproduct?.selling_price * item.quantity), 0);
-        // const newTotalDiscount = updatedItems.reduce((sum: number, item: any) => sum + ((item.price - item.discounted_price) * item.quantity), 0);
-        console.log("tolleeeee", newTotalPrice);
-        // setTotalPrice(newTotalPrice);
-        // setTotalDiscount(newTotalDiscount);
+
 
     };
 
     const decreaseQuantity = async (id: string, currentQuantity: number) => {
-
-        console.log("decrseeee-->", id, currentQuantity)
-
         if (currentQuantity > 1) {
             const newQuantity = currentQuantity - 1;
 
@@ -158,8 +146,6 @@ const CartScreen = (props: any) => {
             try {
                 const dataToSend = { quantity: newQuantity };
                 const result: any = await _CART_SERVICE.update_cart_item_quantity(id, dataToSend);
-
-                console.log("updatequnity", result);
 
                 if (result.status === 200) {
                     const userInfo = await Utils.getData('_USER_INFO');
@@ -179,13 +165,13 @@ const CartScreen = (props: any) => {
     };
 
 
+
+
     const increaseQuantity = async (id: string, currentQuantity: number, maxStock: number) => {
-        console.log("increseee->", currentQuantity, id, maxStock);
 
         if (currentQuantity < maxStock) {
             const newQuantity = currentQuantity + 1;
 
-            // Immediately update UI
             updateCartItemQuantity(id, newQuantity);
 
             try {
@@ -193,18 +179,15 @@ const CartScreen = (props: any) => {
                 const result: any = await _CART_SERVICE.update_cart_item_quantity(id, dataToSend);
 
                 if (result.status === 200) {
-                    // API success - refresh cart data silently to get updated totals
                     const userInfo = await Utils.getData('_USER_INFO');
                     const customerId = await Utils.getData('_CUSTOMER_ID');
                     await getCartLists(userInfo?.id || customerId);
                 } else {
-                    // API failed - revert UI change
                     updateCartItemQuantity(id, currentQuantity);
                     showSuccessToast(result?.message || 'Failed to update quantity', 'error')
                 }
             } catch (error) {
                 console.log("UPDATE CART ERROR:", error);
-                // API failed - revert UI change
                 updateCartItemQuantity(id, currentQuantity);
                 showSuccessToast('Network error occurred', 'error')
             }
@@ -220,7 +203,6 @@ const CartScreen = (props: any) => {
 
             console.log('_USER_INFO', _USER_INFO, 'CUSTOMER_ID', CUSTOMER_ID);
             getCartLists(_USER_INFO?.id || CUSTOMER_ID)
-            // setcustomerID(_USER_INFO?.id || CUSTOMER_ID);
 
         } catch (error) {
             console.log(error);
@@ -234,8 +216,6 @@ const CartScreen = (props: any) => {
 
     const removeBooking = async (bookingId: string) => {
         try {
-            // Add your API call here
-            // const result = await _BOOKING_SERVICE.delete_booking(bookingId);
 
             setDoctorBookings(doctorBookings.filter(booking => booking.id !== bookingId));
             showSuccessToast('Booking cancelled successfully', 'Success');
@@ -259,7 +239,7 @@ const CartScreen = (props: any) => {
 
     const getCartLists = async (customerID: string) => {
         const data = await Utils.getData('razorpayData')
-        console.log('datarazorpayyy---.', data);
+
         setLoader(true);
         try {
             const result: any = await _CART_SERVICE.get_cart_list(customerID);
@@ -287,32 +267,24 @@ const CartScreen = (props: any) => {
 
 
     const RemoveCartItem = async (itemId: string) => {
-        console.log('itemID', itemId);
-        // setLoader(true);
-        try {
 
+        try {
             const result: any = await _CART_SERVICE.delete_item(itemId);
             const { data, message = "", status_code } = result;
-            console.log("deleteeeee:", result);
             const JSONData = await result.json();
-            console.log("deleteeeCART LIST:", JSONData);
 
             if (result.status === 200) {
                 setCartItems(cartItems.filter(item => item.id !== itemId));
-                // getCartLists(customerID);
-                // setLoader(false);
                 console.log("Item removed successfully");
                 showSuccessToast('Item removed from cart', 'Success');
 
             }
 
             else {
-                // setLoader(false);
                 console.log("Error fetching cart items:", message);
             }
 
         } catch (error) {
-            // setLoader(false);
             console.log("FETCHING CART LIST ERROR:", error);
 
         }
@@ -337,7 +309,6 @@ const CartScreen = (props: any) => {
 
                     <ScrollView
                         showsVerticalScrollIndicator={false}
-                    // style={styles.bookingsScrollView}
                     >
 
                         {doctorBookings.map((booking, index) => (
@@ -376,20 +347,17 @@ const CartScreen = (props: any) => {
                                         onPress={() => removeBooking(booking.id)}>
 
                                         <FontAwesome5Icon name='delete-left' color={Colors.secondaryColor} />
-                                        {/* <Text style={styles.removeBookingIcon}>🗑️</Text> */}
                                     </TouchableOpacity>
                                 </View>
 
                                 <View style={styles.appointmentDetailsSection}>
                                     <View style={styles.detailItemRow}>
-                                        {/* <Text style={styles.detailIcon}>📅</Text> */}
                                         <Fontisto name='date' color={Colors.primaryColor} />
                                         <Text style={styles.detailLabel}>Date:</Text>
                                         <Text style={styles.detailValue}>{booking?.appointmentDate}</Text>
                                     </View>
 
                                     <View style={styles.detailItemRow}>
-                                        {/* <Text style={styles.detailIcon}>🕐</Text> */}
                                         <Entypo name='back-in-time' color={Colors.textColor} />
                                         <Text style={styles.detailLabel}>Time:</Text>
                                         <Text style={styles.detailValue}>{booking?.appointmentTime}</Text>
@@ -492,12 +460,6 @@ const CartScreen = (props: any) => {
 
                         </View>
                     </ScrollView>
-
-
-
-                    {/* <View style={{ paddingHorizontal: 20, paddingVertical: 15 }}>
-                        <View style={styles.dividerLine} />
-                    </View> */}
                 </View>
             )
         }
@@ -516,7 +478,6 @@ const CartScreen = (props: any) => {
                     onPress={() => props.navigation.replace('TabStack', { screen: 'Shop' })}
                     style={styles.browseButton}
                 >
-                    {/* <Text style={styles.browseButtonText}>Browse Products</Text> */}
                 </TouchableOpacity>
 
             </View>
@@ -552,11 +513,8 @@ const CartScreen = (props: any) => {
 
                             {cartItems.map((item: CartItem) => (
                                 <TouchableOpacity
-                                    key={item.id} // Key add karna zaroori hai
+                                    key={item.id}
                                     style={styles.productCard}
-                                // onPress={() => props.navigation.navigate('ProductDetail', {
-                                //     PropsData: item
-                                // })}
                                 >
 
                                     <Image
@@ -685,7 +643,6 @@ const CartScreen = (props: any) => {
                     </View>
 
                     <View style={styles.recommendationsSection}>
-                        {/* <Text style={styles.recommendationsTitle}>You might also like:</Text> */}
                         <ProductCard title='You might also like:' navigation={props.navigation} PropsData={ProductSimilar} />
                     </View>
                 </ScrollView>
@@ -696,7 +653,6 @@ const CartScreen = (props: any) => {
         else {
             return (
                 <View style={[styles.emptyWishlist, { marginBottom: '20%' }]}>
-                    {/* Add your LottieView component */}
                     <LottieView
                         source={require('../../assets/animations/emptycart.json')}
                         autoPlay
@@ -749,6 +705,7 @@ const CartScreen = (props: any) => {
                     </View>
 
                     {activeTab === 'orders' ? RenderCartItem() : RenderBooking()}
+                    {/* {activeTab === 'orders' ? RenderCartItem() : RenderBooking()} */}
 
                 </>
             )}
@@ -758,7 +715,7 @@ const CartScreen = (props: any) => {
 
 
 const { width: screenWidth } = Dimensions.get('window');
-const cardWidth = (screenWidth - 44) / 2; // 48 = padding + margins
+const cardWidth = (screenWidth - 44) / 2;
 
 const styles = StyleSheet.create({
     container: {
@@ -834,11 +791,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         // paddingVertical: 10,
     },
-    deselectText: {
-        color: Colors.primaryColor,
-        fontSize: 14,
-        fontFamily: Fonts.PoppinsSemiBold,
-    },
+
     cartItems: {
         // backgroundColor: '#fff',
         marginHorizontal: 8,
@@ -848,29 +801,18 @@ const styles = StyleSheet.create({
     },
 
     horizontalScrollContainer: {
-        // paddingHorizontal: 16,
         paddingVertical: 5,
     },
 
     productCard: {
-        width: cardWidth, // Fixed width zaroori hai horizontal scroll ke liye
-        // backgroundColor: '#fff',
+        width: cardWidth,
         marginRight: 8,
         padding: 10,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ddd',
-        // elevation: 2,
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.1,
-        // shadowRadius: 4,
     },
     productImage: {
-        // width: '100%',
-        // height: 120,
-        // borderRadius: 8,
-        // marginBottom: 8,
         width: '100%',
         height: 120,
         alignContent: 'flex-start',
@@ -893,10 +835,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 4,
     },
-    starsContainer: {
-        flexDirection: 'row',
-        marginRight: 4,
-    },
+
 
     productDetails: {
         fontSize: 12,
@@ -917,29 +856,11 @@ const styles = StyleSheet.create({
     originalPrice: {
         fontSize: 12,
         color: '#999',
-
         fontFamily: Fonts.PoppinsMedium,
         textDecorationLine: 'line-through',
         marginRight: 5,
     },
-    discountBadge: {
-        // backgroundColor: ,
-        // paddingHorizontal: 6,
-        // paddingVertical: 2,
-        // borderRadius: 4,
 
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        width: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderStyle: 'dashed',
-        borderColor: Colors.borderColor,
-        borderWidth: 0.4,
-        borderRadius: 4,
-        gap: 2,
-
-    },
     removebutton: {
         paddingHorizontal: 6,
         paddingVertical: 2,
@@ -962,12 +883,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginBottom: 4,
     },
-    quantityLabel: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: '#333',
-        marginRight: 10,
-    },
+
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -982,9 +898,6 @@ const styles = StyleSheet.create({
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: '#fff',
-        // borderWidth: 1,
-        // borderColor: '#007bff',
     },
     quantityButtonDisabled: {
         backgroundColor: '#f5f5f5',
@@ -999,8 +912,6 @@ const styles = StyleSheet.create({
         color: '#999',
     },
     quantityText: {
-        // minWidth: 20,
-        // height: 25,
         textAlign: 'center',
         fontSize: 12,
         fontFamily: Fonts.PoppinsMedium,
@@ -1009,17 +920,14 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
     },
-    stockWarning: {
-        fontSize: 12,
-        color: '#ff6b35',
-        fontWeight: '500',
-        marginTop: 4,
-        fontStyle: 'italic',
-    },
+
+
+
     removeButton: {
         color: '#7CB342',
         fontSize: 14,
     },
+
     pricingSection: {
 
         backgroundColor: '#fff',
@@ -1071,7 +979,6 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     finalProceedButton: {
-        // marginHorizontal: 10,
         marginVertical: 10,
         paddingVertical: 10,
         borderRadius: 5,
@@ -1083,9 +990,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     recommendationsSection: {
-        // backgroundColor: '#fff',
-        // marginHorizontal: 10,
-        // marginVertical: 10,
         borderRadius: 5,
         padding: 15,
         marginBottom: 30,
@@ -1204,8 +1108,6 @@ const styles = StyleSheet.create({
         marginVertical: 15,
         borderRadius: 12,
         padding: 16,
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 8,
         // elevation: 4,
@@ -1245,13 +1147,7 @@ const styles = StyleSheet.create({
     },
 
     bookingCard: {
-        // backgroundColor: '#f8faf9',
-        // borderRadius: 12,
-        // padding: 14,
-        // marginBottom: 12,
-        // borderWidth: 1,
         borderColor: '#e0e0e0',
-        // position: 'relative',
     },
     bookingNumberBadge: {
         position: 'absolute',

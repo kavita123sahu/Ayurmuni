@@ -20,6 +20,7 @@ import { flagshipCenters } from '../../common/datafile';
 import CustomStarRating from '../../component/CustomStarRating';
 import { useSelector } from 'react-redux';
 import WellnessDetoxCard from './WellnessDetoxCard';
+import AllCentera from './AllCentera';
 
 const { width } = Dimensions.get('window');
 
@@ -213,56 +214,7 @@ const CenterWellness: React.FC<CenterProps> = ({ navigation }) => {
   );
 
 
-  const MainCard = (item: any) => (
-    <View style={styles.mainCard}>
-      {/* Image Section */}
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: item.image }} style={styles.mainImage} />
-        <View style={styles.ratingBadge}>
-          <Ionicons name="star" size={16} color="#FFF" />
-          <Text style={styles.ratingText}>{item.rating}</Text>
-        </View>
-      </View>
-
-      {/* Info Section */}
-      <View style={styles.cardContent}>
-        {/* Title Row */}
-        <View style={styles.titleRow}>
-          <View style={styles.excellentContainer}>
-            <Text style={styles.excellentText}>Excellent</Text>
-            <Text style={styles.reviewsText}>
-              {/* ({item.reviews.toLocaleString()} Ratings) */}
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.shareButton}>
-            <Ionicons name="share-outline" size={24} color="#333" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Center Name */}
-        <Text style={styles.centerName}>{item.name}</Text>
-
-        {/* Location */}
-        <View style={styles.locationRow}>
-          <Ionicons name="location-outline" size={18} color="#666" />
-          <Text style={styles.locationText}>
-            {item.area} | {item.location}
-          </Text>
-        </View>
-
-        {/* Price and Button */}
-        <View style={styles.bottomRow}>
-          <View>
-            <Text style={styles.priceLabel}>Starts From:</Text>
-            <Text style={styles.price}>₹{item.price}</Text>
-          </View>
-          <TouchableOpacity style={styles.bookButton}>
-            <Text style={styles.bookButtonText}>Book Now</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  );
+ 
 
 
   const CentersView = () => (
@@ -343,7 +295,8 @@ const CenterWellness: React.FC<CenterProps> = ({ navigation }) => {
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
             {flagshipCenters.map(center => (
-              <WellnessDetoxCard center={center} isLarge={false} />))
+
+              <WellnessDetoxCard  key={center.id} center={center} isLarge={false} />))
             }
           </ScrollView>
         </View>
@@ -359,194 +312,20 @@ const CenterWellness: React.FC<CenterProps> = ({ navigation }) => {
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
               {flagshipCenters.map(center => (
-                <WellnessDetoxCard center={center} isLarge={false} />))
+                <WellnessDetoxCard key={center.id} center={center} isLarge={false} />))
               }
             </ScrollView>
           </View>
         </View>
 
         {/* All Centers */}
-        <View style={[styles.section, { marginBottom: 20 }]}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>All Centers</Text>
-            <TouchableOpacity>
-              <Text style={styles.viewAllText}>View All</Text>
-            </TouchableOpacity>
-          </View>
-
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-
-            style={styles.filterScrollView}
-
-            contentContainerStyle={styles.filterContentContainer}
-          >
-            <FilterButton title="All Centers" filterType="all" />
-            <FilterButton title="Rating 4.0+" filterType="rating" />
-            <FilterButton title="Nearest" filterType="nearest" />
-            <FilterButton title="Great Offers" filterType="offers" />
-            <FilterButton title="Previously Ordered" filterType="ordered" />
-          </ScrollView>
-
-          <View style={styles.mainCardsContainer}>
-            {/* {filteredCenters.map((item) => (
-              <MainCard key={item.id} item={item} />
-            ))} */}
-
-            {filteredCenters.length === 0 && (
-              <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>
-                  No centers found with selected filter
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
+        <AllCentera/>
 
       </ScrollView>
     </SafeAreaView>
   );
 
-  const DetailView = () => {
-    if (!state.selectedCenter) return null;
 
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
-        <View style={styles.detailHeader}>
-          <TouchableOpacity
-            onPress={handleBackToCenters}
-            style={styles.backButton}
-          >
-            <Text style={styles.backIcon}>←</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.detailHeaderTitle}>Detox Center Details</Text>
-        </View>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-
-          <View style={styles.detailHeroContainer}>
-            <Image
-              source={{ uri: state.selectedCenter.image }}
-              style={styles.detailHeroImage}
-            />
-            <TouchableOpacity style={styles.detailHeartButton}>
-              <Text style={styles.heartIcon}>♡</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.detailContent}>
-
-            <View style={styles.detailCard}>
-              <Text style={styles.detailCenterName}>{state.selectedCenter.name}</Text>
-              <TouchableOpacity style={styles.locationRow}>
-                <Text style={styles.locationIcon}>📍</Text>
-                <Text style={styles.detailLocationText}>Location Name</Text>
-                <Text style={styles.chevronIcon}>→</Text>
-              </TouchableOpacity>
-
-              {/* Dates & Guests */}
-              <View style={styles.datesSection}>
-                <Text style={styles.subsectionTitle}>Dates & Guests</Text>
-                <View style={styles.checkInOutRow}>
-                  <View>
-                    <Text style={styles.checkLabel}>Check-in: <Text style={styles.checkTime}>1 PM</Text></Text>
-                  </View>
-                  <View>
-                    <Text style={styles.checkLabel}>Check-out: <Text style={styles.checkTime}>11 AM</Text></Text>
-                  </View>
-                </View>
-                <View style={styles.datesRow}>
-                  <View style={styles.dateTag}>
-                    <Text style={styles.dateTagText}>20 Nov</Text>
-                  </View>
-                  <View style={styles.dateTag}>
-                    <Text style={styles.dateTagText}>30 Nov</Text>
-                  </View>
-
-                  <View style={styles.guestsContainer}>
-                    <Text style={styles.guestsIcon}>👥</Text>
-                    <Text style={styles.guestsText}>2 Guests</Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* Offer */}
-              <View style={styles.offerCard}>
-                <View style={styles.offerHeader}>
-                  <View style={styles.offerDot} />
-                  <Text style={styles.offerTitle}>Offer</Text>
-                </View>
-                <Text style={styles.offerText}>
-                  Lorem ipsum dolor sit amet consectetur. Nibh ipsum sit at amet consectetur. Lorem ipsum dolor sit amet consectetur.
-                </Text>
-              </View>
-
-              {/* About */}
-              <View style={styles.aboutSection}>
-                <Text style={styles.subsectionTitle}>About the property</Text>
-                <Text style={styles.aboutText}>
-                  Lorem ipsum dolor sit amet consectetur. Nibh ipsum sit at amet consectetur. Lorem ipsum dolor sit amet consectetur.
-                </Text>
-              </View>
-
-              {/* Amenities */}
-              <View style={styles.amenitiesSection}>
-                <Text style={styles.subsectionTitle}>Amenities</Text>
-                <View style={styles.amenitiesGrid}>
-                  {[1, 2, 3, 4, 5, 6].map(i => (
-                    <View key={i} style={styles.amenityItem}>
-                      <View style={styles.amenityIcon} />
-                      <Text style={styles.amenityText}>Amenity</Text>
-                    </View>
-                  ))}
-                </View>
-                <TouchableOpacity>
-                  <Text style={styles.moreAmenitiesText}>More Amenities</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Photos */}
-              <View style={styles.photosSection}>
-                <Text style={styles.subsectionTitle}>Photos</Text>
-                <View style={styles.photosGrid}>
-                  {[1, 2, 3].map(i => (
-                    <View key={i} style={styles.photoItem}>
-                      <Text style={styles.cameraIcon}>📷</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-
-              {/* Similar Centers */}
-              <View style={styles.similarSection}>
-                <Text style={styles.subsectionTitle}>Similar Wellness Centers</Text>
-                <View style={styles.similarPlaceholder}>
-                  <Text style={styles.similarPlaceholderText}>Discover more wellness destinations</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-        </ScrollView>
-
-        <View style={styles.fixedBottom}>
-          <View style={styles.priceContainer}>
-            <Text style={styles.finalPrice}>{state.selectedCenter.price}</Text>
-            <Text style={styles.priceUnit}>/ person</Text>
-          </View>
-          <TouchableOpacity style={styles.bookButton}>
-            <Text style={styles.bookButtonText}>Book Now</Text>
-          </TouchableOpacity>
-        </View>
-
-      </SafeAreaView>
-    );
-  };
 
   return (
     <View style={styles.appContainer}>
@@ -565,7 +344,7 @@ const styles = StyleSheet.create({
   heroOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', paddingHorizontal: 15 },
   heroTitle: { fontSize: 28, fontFamily: Fonts.PoppinsSemiBold, color: '#FFFFFF', textAlign: 'center', marginBottom: 8 },
   heroSubtitle: { fontSize: 16, color: '#FFFFFF', textAlign: 'center', opacity: 0.9, lineHeight: 22 },
-  
+
   searchWrapper: { paddingHorizontal: 15, marginTop: -30, zIndex: 10 },
   bannerContainer: { paddingHorizontal: 15, marginBottom: 10, marginTop: 10 },
   TypeContainer: { paddingHorizontal: 15, marginBottom: 10, justifyContent: 'space-between', marginTop: 10, width: '100%', flexDirection: 'row' },
@@ -592,7 +371,7 @@ const styles = StyleSheet.create({
   // locationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   locationIcon: { fontSize: 12, marginRight: 4 },
   // locationText: { fontSize: 14, color: '#6B7280' },
-   ratingBadge: {
+  ratingBadge: {
     position: 'absolute',
     top: 12,
     left: 12,
@@ -608,7 +387,7 @@ const styles = StyleSheet.create({
   // excellentText: { fontSize: 14, color: '#333', marginRight: 8 },
   // reviewsText: { fontSize: 12, color: '#666' },
   // shareButton: { padding: 8 },
-    excellentText: {
+  excellentText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1A1A1A',
@@ -691,7 +470,7 @@ const styles = StyleSheet.create({
   cardImage: { width: '100%', height: 120, resizeMode: 'cover', borderRadius: 15 },
 
   // ratingBadge: { position: 'absolute', top: 90, left: 8, backgroundColor: '#1E1E1E33', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
- 
+
   star: { marginRight: 1 },
   largeCenterName: { fontSize: 18 },
   location: { fontSize: 14, color: '#666', marginBottom: 8 },
@@ -743,7 +522,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 5,
   },
-  
+
   filterButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -783,7 +562,7 @@ const styles = StyleSheet.create({
     height: 220,
     resizeMode: 'cover',
   },
- 
+
 
 
   titleRow: {

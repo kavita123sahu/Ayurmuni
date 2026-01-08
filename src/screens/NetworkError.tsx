@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-    StatusBar,
-    ImageBackground,
-    Image,
-} from 'react-native';
+import {View,Text,StyleSheet,StatusBar,ImageBackground,Image,} from 'react-native';
 import { Images } from '../common/Images';
 
 interface NoInternetScreenProps {

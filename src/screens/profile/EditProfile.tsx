@@ -1,17 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    TextInput,
-    Image,
-    ScrollView,
-    Alert,
-    SafeAreaView,
-    StatusBar,
-    Keyboard,
-} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,TextInput,Image,ScrollView,Alert,SafeAreaView,StatusBar,Keyboard,} from 'react-native';
 import { Ionicons, } from '../../common/Vector';
 import Header from '../../component/Header';
 import * as _PROFILE_SERVICES from '../../services/ProfileServices';
