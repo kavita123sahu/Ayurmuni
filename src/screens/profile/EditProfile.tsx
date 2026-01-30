@@ -413,7 +413,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
 
             } else if (response.status === 401) {
                 showSuccessToast('Authorization Error', 'error');
-                props.navigation.replace('AuthStack', { screen: 'Login' });
+                // props.navigation.replace('AuthStack', { screen: 'Login' });
             } else {
                 showSuccessToast(jsonResponse?.message || 'Please fill valid data', 'error');
             }

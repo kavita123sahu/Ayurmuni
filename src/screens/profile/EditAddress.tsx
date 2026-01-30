@@ -68,7 +68,9 @@ const EditAddress = (props: any) => {
                 }
             }
             else {
-                props.navigation.replace('AuthStack', { screen: 'Login' })
+                console.log("user address not")
+                // props.navigation.replace('AuthStack', { screen: 'Login' })
+                // props.navigation.replace('AuthStack', { screen: 'Login' })
 
             }
 

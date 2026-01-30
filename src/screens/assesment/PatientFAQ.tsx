@@ -275,6 +275,7 @@ const PatientFAQ: React.FC = (props: any) => {
                 'Ambivert',
                 'Introvert',
             ],
+            
         },
 
         THANK_YOU_STEP,
