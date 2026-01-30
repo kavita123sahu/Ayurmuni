@@ -115,7 +115,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 }
 
                 else if (result.status === 404) {
-                    navigation.replace('AuthStack', { screen: 'Login' })
+                    console.log("address not found", )
+                    // navigation.replace('AuthStack', { screen: 'Login' })
 
                 }
 

@@ -94,7 +94,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
           setProfileData(JSONDATA);
         }
         else if (result.status === 404) {
-          navigation.replace('AuthStack', { screen: 'Login' })
+          console.log("user adreess not found")
+          // navigation.replace('AuthStack', { screen: 'Login' })
 
         }
 

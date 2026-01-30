@@ -17,8 +17,6 @@ import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
 import { NavigationProp } from '@react-navigation/native';
 import { flagshipCenters } from '../../common/datafile';
-import CustomStarRating from '../../component/CustomStarRating';
-import { useSelector } from 'react-redux';
 import WellnessDetoxCard from './WellnessDetoxCard';
 
 const { width } = Dimensions.get('window');
