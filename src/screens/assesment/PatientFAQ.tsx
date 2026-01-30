@@ -284,7 +284,7 @@ const PatientFAQ: React.FC = (props: any) => {
 
 
     ];
-    
+
     const visibleSteps = steps.filter(
         (s) => !s.conditional || s.conditional(answers)
     );
@@ -308,7 +308,8 @@ const PatientFAQ: React.FC = (props: any) => {
 
     const handleNext = () => {
         if (current.type === 'thankyou') {
-            props.navigation.navigate('Onboarding'); // or Dashboard
+ props.navigation.replace('HomeStack', { screen: 'Home' })
+            // props.navigation.navigate('Onboarding'); // or Dashboard
             return;
         }
 

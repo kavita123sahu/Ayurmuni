@@ -130,7 +130,7 @@ import { showSuccessToast } from '../../config/Key';
 import { useDispatch } from 'react-redux';
 import { setUserInfo } from '../../reduxfile/action/UserInfoAction';
 
-const API_TIMEOUT = 6000; // 🔥 6 seconds max wait
+const API_TIMEOUT = 6000; 
 
 const Splash = (props: any) => {
   const isFocused = useIsFocused();

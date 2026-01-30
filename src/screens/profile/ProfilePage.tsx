@@ -37,6 +37,7 @@ interface UserData {
   first_name: string;
   last_name: string;
   email?: string;
+    profile_picture: string | null;
   // ... other properties
 }
 interface ProfilePageProps {
@@ -52,7 +53,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
     verified_phone_number: '',
     user: '',
     first_name: '',
-    last_name: ''
+    last_name: '',
+    email: '',
+    profile_picture: null,
   });
 
   const isFocused = useIsFocused();
@@ -94,9 +97,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
           setProfileData(JSONDATA);
         }
         else if (result.status === 404) {
-          console.log("user adreess not found")
+          showSuccessToast('Authorization Error', 'error');
           // navigation.replace('AuthStack', { screen: 'Login' })
-
         }
 
         else {
@@ -128,100 +130,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
   }
 
 
-  const openCamera = async () => {
-    try {
-      const hasPermission = await requestCameraPermission();
-      if (!hasPermission) {
-        showSuccessToast('Camera permission denied', 'error');
-        return;
-      }
-
-      const options: CameraOptions = {
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 1000,
-        maxWidth: 1000,
-        quality: 0.7,
-        saveToPhotos: false,
-      };
-
-      launchCamera(options, (response: ImagePickerResponse) => {
-
-        if (response.didCancel) {
-          console.log('Camera cancelled');
-          return;
-        }
-
-        if (response.errorCode) {
-          console.log('Camera Error Code:', response.errorCode);
-          showSuccessToast('Camera Error: ' + response.errorMessage, 'error');
-          return;
-        }
-
-        if (response.assets && response.assets.length > 0) {
-          const asset = response.assets[0];
-          console.log('Asset URI:', asset.uri);
-
-          if (asset.uri) {
-            setProfileImage(asset.uri);
-            showSuccessToast('Photo Captured Successfully', 'success');
-          }
-        }
-      });
-    } catch (error) {
-      console.log('Camera error:', error);
-      showSuccessToast('Camera failed to open', 'error');
-    }
-  };
-
-  const openGallery = () => {
-    const options: ImageLibraryOptions = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-      quality: 0.8,
-    };
-
-    launchImageLibrary(options, (response: ImagePickerResponse) => {
-      if (response.didCancel || response.errorMessage) {
-
-        showSuccessToast('Gallery cancelled or error', 'error')
-        return;
-      }
-
-      if (response.assets && response.assets[0]) {
-        const asset = response.assets[0];
-        setProfileImage(asset.uri || null);
-        showSuccessToast('Photo Selected Successfully', 'success')
-
-      }
-    });
-  };
-
-
-
-  const handleEditPicture = () => {
-    Alert.alert(
-      'Select Image',
-      'Choose an option to select image',
-      [
-        {
-          text: 'Camera',
-          onPress: openCamera,
-        },
-        {
-          text: 'Gallery',
-          onPress: openGallery,
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+  
+ 
 
 
   const handleMenuPress = (item: MenuItem) => {
@@ -332,14 +242,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
-            <TouchableOpacity onPress={handleEditPicture}>
-              {profileImage && profileImage !== '' ? (
+            <TouchableOpacity >
+              {/* {profileImage && profileImage !== '' ? (
                 <Image source={{ uri: profileImage }} style={styles.profileImage} />
               ) : (
                 <View style={styles.profilePlaceholder}>
-                  {/* {profileData?.first_name.charAt(0).toUpperCase()} */}
                   <Text style={{ fontSize: 40, color: 'white', fontFamily: Fonts.PoppinsBold }}> {profileData?.first_name?.charAt(0)?.toUpperCase()} </Text>
-                  {/* <Image source={require('../../assets/images/user_profile.png')} style={[styles.profileImage, { backgroundColor: 'black' }]} /> */}
+                
+                </View>
+              )} */}
+
+              {profileImage ? (
+                <Image source={{ uri: profileImage }} style={styles.profileImage} />
+              ) : profileData.profile_picture ? (
+                <Image source={{ uri: profileData.profile_picture }} style={styles.profileImage} />
+              ) : (
+                <View style={styles.profilePlaceholder}>
+                  <Text style={styles.profileText}>
+                    {profileData.first_name?.charAt(0)?.toUpperCase()}
+                  </Text>
                 </View>
               )}
 
@@ -347,7 +268,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={handleEditPicture}>
+          <TouchableOpacity>
           </TouchableOpacity>
         </View>
 
@@ -457,6 +378,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'white',
   },
+  profileText: {
+        fontSize: 48,
+        fontFamily: Fonts.PoppinsBold,
+        color: '#FFFFFF',
+        textAlign: 'center',
+    },
   editPictureText: {
     fontSize: 16,
     color: '#8BC34A',
