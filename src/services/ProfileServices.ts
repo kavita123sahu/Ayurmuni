@@ -9,17 +9,18 @@ export const update_Profile = async (data: any) => {
             const user = await Utils.getData('_USER_INFO');
             const customer_id = await Utils.getData('_CUSTOMER_ID');
             const id = user?.id || customer_id;
-            console.log("datadatadata", user);
+            console.log("datadatadata", id);
             let fetchParameter = {
                 method: Method.PUT,
                 body: data,
                 headers: {
-                    "Content-Type": "multipart/form-data",
+                    // "Content-Type": "multipart/form-data",
                     "Authorization": `Bearer ${token}`,
                 },
             }
 
             let serverResponse = await fetch(BaseUrl.base_url + `customers/customer/${id}/`, fetchParameter);
+            console.log("updateProfileResponse:", serverResponse);
             resolve(serverResponse);
         }
         catch (error) {

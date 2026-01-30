@@ -242,15 +242,15 @@ const Onboarding = (props: any) => {
         }
 
 
+        console.log("OnboardingData:", send_data);
         try {
 
             const response: any = await _AUTH_SERVICES.onBoarding(send_data);
+            console.log("Onboarding Response:", response);
             if (!response.ok) {
-
                 setIsLoading(false);
                 const errorText = await response.json();
                 console.log("Error response:", errorText);
-
                 showSuccessToast(errorText.message, 'error');
                 // showSuccessToast(errorText.message, 'error');
                 return;
@@ -270,12 +270,10 @@ const Onboarding = (props: any) => {
                 // props.navigation.replace('HomeStack', { screen: 'Home' });
                 props.navigation.navigate('Assesment', { screen: 'Home' });
             } else {
-
                 setIsLoading(false);
                 showSuccessToast(message || 'Login failed', 'error');
             }
         } catch (error) {
-
             setIsLoading(false);
             console.log("Network Error:", error);
             showSuccessToast('Something went wrong', 'error');

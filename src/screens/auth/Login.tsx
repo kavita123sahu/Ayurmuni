@@ -64,7 +64,6 @@ const Login: React.FC = (props: any) => {
         showSuccessToast(response.message || 'OTP send successfully', 'success');
 
         if (JSONReponse.is_new_user && JSONReponse.is_customer) {
-
           props.navigation.navigate('HomeStack', { Screen: 'Home' });
         }
 
@@ -78,11 +77,10 @@ const Login: React.FC = (props: any) => {
           // User false, Customer true - OtpVerify without newUser flag
           props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
         }
-
+        
         else {
           props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
-          // Dono false - Handle accordingly (maybe show error or default behavior)
-          // Add your logic here
+
         }
 
       }
@@ -130,7 +128,7 @@ const Login: React.FC = (props: any) => {
               efficient services.
               {/* Tender Name : {tendername} */}
             </Text>
-            
+
           </View>
 
           <View style={styles.formContainer1}>
@@ -185,7 +183,6 @@ const Login: React.FC = (props: any) => {
                   />
                 )
             }
-
 
             <View style={styles.termsContainer}>
               <Text style={styles.termsText}>

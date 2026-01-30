@@ -24,7 +24,7 @@ export const send_otp = async (data: Object) => {
 }
 
 
-export const send_otp_login = async (data: Object) => {
+export const verify_otp_login = async (data: Object) => {
     return new Promise(async (resolve, reject) => {
         try {
             let fetchParameter = {
@@ -57,7 +57,6 @@ export const customer_login = async (data: Object) => {
                     'Content-Type': 'application/json',
                 },
             }
-
             // console.log('urllsendotp', BaseUrl.base_url + 'user/unified-login/');
             let serverResponse = await fetch(BaseUrl.base_url + 'user/customerlogin/', fetchParameter);
             resolve(serverResponse);
@@ -81,8 +80,9 @@ export const onBoarding = async (data: any) => {
                     // "Authorization": `Bearer ${token}`,
                 },
             };
-
+            
             let serverResponse = await fetch(BaseUrl.base_url + 'customers/customer/', fetchParameter);
+            console.log('OnboardingResponse:', serverResponse);
             resolve(serverResponse);
         } catch (error) {
             console.log('Fetch error', error);
@@ -102,7 +102,6 @@ export const verify_otp = async (data: Object) => {
                     'Content-Type': 'application/json',
                 },
             }
-
             console.log('urllsendotp', BaseUrl.base_url + 'user/register/');
             let serverResponse = await fetch(BaseUrl.base_url + 'user/register/', fetchParameter);
             resolve(serverResponse);

@@ -26,12 +26,14 @@ import { Asset, CameraOptions, ImageLibraryOptions, ImagePickerResponse, launchC
 import { EmailValidator, requestCameraPermission } from '../../common/Validator';
 import { useSelector } from 'react-redux';
 
+
+
 interface ProfileData {
     first_name: string;
     mobile_number: string;
     email: string;
     address: string;
-    profile_picture: Asset | null;
+    profile_picture: string | Asset | null; // 🔥 URL string
 }
 
 interface EditingState {
@@ -79,7 +81,10 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
         profile_picture: null
     });
 
-    const [profileImage, setprofileImage] = useState('');
+    // const [profileImage, setprofileImage] = useState('');
+    const [profileImage, setProfileImage] = useState<string | null>(null); // local preview
+    const [profileImageFile, setProfileImageFile] = useState<any>(null);  // upload ke liye
+
     const isFocused = useIsFocused();
     const [customerID, setcustomerID] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,13 +97,16 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
         profile_picture: false
     });
 
+
+
     const hasChanges = (): boolean => {
         return (
             profileData.first_name !== originalData.first_name ||
             profileData.mobile_number !== originalData.mobile_number ||
             profileData.email !== originalData.email ||
             profileData.address !== originalData.address ||
-            profileData.profile_picture !== originalData.profile_picture
+            !!profileImageFile
+            // profileImage !== originalData.profile_picture
         );
     };
 
@@ -148,73 +156,62 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
         );
     };
 
-    const openCamera = async () => {
-        try {
-            const hasPermission = await requestCameraPermission();
-            if (!hasPermission) {
-                showSuccessToast('Camera permission denied', 'error');
-                return;
+
+
+    const openCamera = () => {
+        const options: CameraOptions = {
+            mediaType: 'photo',
+            quality: 0.8,
+        };
+
+        launchCamera(options, (response) => {
+            if (response.didCancel || response.errorMessage) return;
+
+            if (response.assets?.[0]) {
+                const asset = response.assets[0];
+
+                setProfileImage(asset.uri || null); // 👁 UI preview
+                setProfileImageFile({
+                    uri: asset.uri,
+                    type: asset.type || 'image/jpeg',
+                    name: asset.fileName || `profile_${Date.now()}.jpg`,
+                });
+
+                showSuccessToast('Photo Captured Successfully', 'success');
             }
-
-            const options: CameraOptions = {
-                mediaType: 'photo',
-                includeBase64: false,
-                maxHeight: 1000,
-                maxWidth: 1000,
-                quality: 0.7,
-                saveToPhotos: false,
-            };
-
-            launchCamera(options, (response: ImagePickerResponse) => {
-
-                if (response.didCancel) {
-
-                    return;
-                }
-
-                if (response.errorCode) {
-
-                    showSuccessToast('Camera Error: ' + response.errorMessage, 'error');
-                    return;
-                }
-
-                if (response.assets && response.assets.length > 0) {
-                    const asset = response.assets[0];
-
-                    if (asset.uri) {
-                        setProfileData(prev => ({ ...prev, profile_picture: asset }));
-                        showSuccessToast('Photo Captured Successfully', 'success');
-                    }
-                }
-            });
-        } catch (error) {
-            showSuccessToast('Camera failed to open', 'error');
-        }
+        });
     };
+
+
+
 
     const openGallery = () => {
         const options: ImageLibraryOptions = {
             mediaType: 'photo',
-            includeBase64: false,
-            maxHeight: 2000,
-            maxWidth: 2000,
             quality: 0.8,
         };
 
-        launchImageLibrary(options, (response: ImagePickerResponse) => {
-            if (response.didCancel || response.errorMessage) {
-                showSuccessToast('Gallery cancelled or error', 'error');
-                return;
-            }
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel || response.errorMessage) return;
 
-            if (response.assets && response.assets[0]) {
+            if (response.assets?.[0]) {
                 const asset = response.assets[0];
-                console.log(asset, 'data');
-                setProfileData(prev => ({ ...prev, profile_picture: asset }));
+
+                // ✅ UI preview
+                setProfileImage(asset.uri || null);
+
+                // ✅ Upload file
+                setProfileImageFile({
+                    uri: asset.uri,
+                    type: asset.type || 'image/jpeg',
+                    name: asset.fileName || `profile_${Date.now()}.jpg`,
+                });
+
                 showSuccessToast('Photo Selected Successfully', 'success');
             }
         });
     };
+
 
     useEffect(() => {
         getUser();
@@ -250,18 +247,22 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
 
             if (status === 200) {
                 const userData = {
-                    first_name: responseJSON?.first_name,
+                    first_name: responseJSON?.first_name || '',
                     mobile_number: removeCountryCodeRobust(responseJSON?.verified_phone_number),
-                    email: responseJSON?.email,
+                    email: responseJSON?.email || '',
                     address: getDefaultAddressString(responseJSON?.addresses),
-                    profile_picture: responseJSON?.profile_picture || ""
+                    profile_picture: responseJSON?.profile_picture || null, // URL string
                 };
 
                 setProfileData(userData);
-                setOriginalData(userData); // Original data store karo
-                setprofileImage(responseJSON?.profile_picture);
-            } else if (result.status === 404) {
-                props.navigation.replace('AuthStack', { screen: 'Login' });
+                setOriginalData(userData);
+
+                // ✅ initial preview server URL se
+                setProfileImage(responseJSON?.profile_picture || null);
+            }
+            else if (result.status === 404) {
+                showSuccessToast('Authorization Error', 'error');
+                // props.navigation.replace('AuthStack', { screen: 'Login' });
             } else {
                 showSuccessToast(responseJSON.error, 'error');
             }
@@ -377,16 +378,18 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
             formData.append('verified_phone_number', `+91${profileData.mobile_number}`);
             formData.append('address', profileData.address);
 
-            if (profileData.profile_picture && profileData.profile_picture.uri) {
-                const imageFile = {
-                    uri: profileData.profile_picture.uri,
-                    type: profileData.profile_picture.type || 'image/jpeg',
-                    name: profileData.profile_picture.fileName || `profile_${Date.now()}.jpg`,
-                };
-                formData.append('profile_picture', imageFile as any);
+            if (profileImageFile?.uri) {
+                formData.append('profile_picture', {
+                    uri: profileImageFile.uri,
+                    type: profileImageFile.type || 'image/jpeg',
+                    name: profileImageFile.name || `profile_${Date.now()}.jpg`,
+                } as any);
             }
 
+
+            console.log("FormDatatobesent:", formData);
             const response: any = await _PROFILE_SERVICES.update_Profile(formData);
+            console.log('UpdateProfileResponse:', response);
 
             if (!response) {
                 throw new Error('No response from server');
@@ -435,18 +438,27 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
 
                 <View style={styles.profileSection}>
                     <View style={styles.profileImageContainer}>
-                        {/* {profileData.profile_picture && profileData.profile_picture.uri ? (
-                            <Image source={{ uri: profileData.profile_picture.uri }} style={styles.profileImage} />
-                        ) : */}
-                        {profileImage && profileImage !== '' ? (
+                        {profileImage ? (
+                            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+                        ) : profileData.profile_picture ? (
+                            <Image source={{ uri: profileData.profile_picture }} style={styles.profileImage} />
+                        ) : (
+                            <View style={styles.ProfileContainer}>
+                                <Text style={styles.profileText}>
+                                    {profileData.first_name?.charAt(0)?.toUpperCase()}
+                                </Text>
+                            </View>
+                        )}
+
+                        {/* {profileImage && profileImage !== '' ? (
                             <Image source={{ uri: profileImage }} style={styles.profileImage} />
                         ) : (
                             <View style={styles.ProfileContainer}>
                                 <Text style={styles.profileText}>
                                     {profileData?.first_name?.charAt(0)?.toUpperCase()}
                                 </Text>
-                            </View> 
-                        )}
+                            </View>
+                        )} */}
 
                         <TouchableOpacity
                             style={styles.editPictureButton}
@@ -498,7 +510,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
                         disabled={isSubmitting}
                         style={{ opacity: isSubmitting ? 0.6 : 1 }}
                     >
-                        <LinearGradient colors={['#71A33F', '#466425']} style={styles.saveButton}>
+                        <LinearGradient colors={[Colors.primaryColor, Colors.secondaryColor]} style={styles.saveButton}>
                             <Text style={styles.saveButtonText}>
                                 {isSubmitting ? 'Saving...' : 'Save Changes'}
                             </Text>
@@ -689,7 +701,7 @@ const styles = StyleSheet.create({
     saveButtonText: {
         fontSize: 16,
         color: '#fff',
-        fontWeight: '600',
+        fontFamily: Fonts.PoppinsSemiBold,
     },
 });
 

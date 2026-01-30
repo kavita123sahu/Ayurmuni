@@ -19,6 +19,7 @@ import { Fonts } from '../common/Fonts';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Colors } from '../common/Colors';
 import { MaterialCommunityIcons } from '../common/Vector';
+import { showSuccessToast } from '../config/Key';
 
 interface SearchBarProps {
     placeholder?: string;
@@ -115,8 +116,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 }
 
                 else if (result.status === 404) {
-                    navigation.replace('AuthStack', { screen: 'Login' })
-
+                    showSuccessToast('Authorization Error', 'error');
+                    // navigation.replace('AuthStack', { screen: 'Login' })
+                    // navigation.replace('AuthStack', { screen: 'Login' })
                 }
 
                 else {

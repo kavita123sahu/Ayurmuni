@@ -62,7 +62,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
         }, [])
     );
 
-
     const handleVerifyOTP = async () => {
         Keyboard.dismiss();
 
@@ -82,7 +81,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             };
 
             const response: any = await _AUTH_SERVICE.verify_otp(send_data);
-
             const { data, message = "", status } = response;
             const datauser = await response.json()
 
@@ -91,7 +89,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                 showSuccessToast(response.message || 'OTP verified successfully', 'success');
 
                 if (datauser?.is_customer) {
-
                     props.navigation.replace('HomeStack', { screen: 'Home' });
                 }
 
@@ -133,21 +130,23 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
         try {
             const send_data = {
                 phone_number: `+91${phoneNumber}`,
-                otp: otpCode,
+                OTP: otpCode,
                 // role: 'customer'
             };
 
-            const response: any = await _AUTH_SERVICE.customer_login(send_data);
-
+            const response: any = await _AUTH_SERVICE.verify_otp_login(send_data);
+            console.log("verify_otp_login_response", response);
             const { data, message = "", status } = response;
             const datauser = await response.json()
 
-
             if (response?.status === 200) {
+                const roles = datauser?.roles || [];
                 showSuccessToast(response.message || 'OTP verified successfully', 'success');
                 Utils.storeData('_USER_ID', datauser?.user_id);
                 Utils.storeData('_TOKEN', datauser?.access);
-                Utils.storeData('_CUSTOMER_ID', datauser?.customer_id)
+                const customer = roles.find((r: any) => r.role === 'customer');
+                Utils.storeData('_CUSTOMER_ID', customer ? customer.role_id : '');
+                // Utils.storeData('_CUSTOMER_ID', datauser?.customer_id)
 
                 if (!datauser?.is_new_user) {
                     // props.navigation.replace('Assesment', { screen: 'Home' });
