@@ -36,9 +36,9 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
     const [resendTimer, setResendTimer] = useState<number>(60);
     const otpInputRefs = useRef<(TextInput | null)[]>([]);
     const phoneNumber = props.route?.params?.phone;
-    const IS_NEW_USER = props.route?.params?.newUser;
+    const IS_NEW_CUSTOMER = props.route?.params?.newCustomer;
 
-    console.log("is-new_user", IS_NEW_USER);
+    console.log("is-new_user", IS_NEW_CUSTOMER);
 
     useEffect(() => {
         if (resendTimer > 0) {
@@ -57,7 +57,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             };
 
             const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
             return () => subscription.remove();
         }, [])
     );
@@ -68,9 +67,8 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
         const otpCode = otp.join('');
         if (otpCode.length !== 4) {
             showSuccessToast('Please enter valid OTP', 'error');
-            return;
+            return;   
         }
-
         setIsLoading(true);
 
         try {
@@ -80,15 +78,20 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                 role: 'customer'
             };
 
-            const response: any = await _AUTH_SERVICE.verify_otp(send_data);
-            const { data, message = "", status } = response;
-            const datauser = await response.json()
+            const response : any = await _AUTH_SERVICE.verify_otp(send_data);
+            const { status, data, message } = response;
+
+            console.log('OTP VERIFIED DATA:', response);
+
+            const JSONData = await response.json();
+            console.log("verify_otp_response", response, JSONData);
 
             if (status === 200) {
-                Utils.storeData('_USER_ID', datauser?.user_id);
+                Utils.storeData('_USER_ID', data?.user_id);
                 showSuccessToast(response.message || 'OTP verified successfully', 'success');
 
-                if (datauser?.is_customer) {
+                if (data?.is_customer) {
+
                     props.navigation.replace('HomeStack', { screen: 'Home' });
                 }
 
@@ -99,12 +102,12 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                             agreed: false
                         }
                     })
-                    // props.navigation.replace('HomeStack', { screen: 'UpdateAvailable',  });
+
                 }
             }
 
             else {
-                showSuccessToast(datauser?.error || 'Failed to verify OTP', 'error');
+                showSuccessToast(data?.error || 'Failed to verify OTP', 'error');
             }
 
         } catch (error) {
@@ -135,9 +138,11 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             };
 
             const response: any = await _AUTH_SERVICE.verify_otp_login(send_data);
-            console.log("verify_otp_login_response", response);
+
             const { data, message = "", status } = response;
             const datauser = await response.json()
+            console.log("verify_otp_login_response", datauser);
+
 
             if (response?.status === 200) {
                 const roles = datauser?.roles || [];
@@ -145,11 +150,10 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                 Utils.storeData('_USER_ID', datauser?.user_id);
                 Utils.storeData('_TOKEN', datauser?.access);
                 const customer = roles.find((r: any) => r.role === 'customer');
-                Utils.storeData('_CUSTOMER_ID', customer ? customer.role_id : '');
-                // Utils.storeData('_CUSTOMER_ID', datauser?.customer_id)
+                console.log("customer_role", customer?.details?.id);
+                Utils.storeData('_CUSTOMER_ID', customer?.details?.id || '');
 
-                if (!datauser?.is_new_user) {
-                    // props.navigation.replace('Assesment', { screen: 'Home' });
+                if (!datauser?.is_new_customer) {
                     props.navigation.replace('HomeStack', { screen: 'Home' });
                 }
 
@@ -160,7 +164,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             }
 
             else {
-                showSuccessToast(response?.error || 'Failed to verify OTP', 'error');
+                showSuccessToast(datauser?.error || 'Failed to verify OTP', 'error');
             }
 
         } catch (error) {
@@ -223,14 +227,18 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                 phone_number: `+91${phoneNumber}`,
             };
 
+
             const response: any = await _AUTH_SERVICE.send_otp(send_data);
             const { data, message = "", status } = response;
-
-            if (status === 200) {
+            const JSONData = await response.json();
+            console.log("resend_otp_response", response, JSONData);
+            setIsLoading(false);
+            if (status === 200 || response.ok) {
                 setResendTimer(60);
                 showSuccessToast('New OTP has been send to your mobile number', 'success');
             }
             else {
+                setIsLoading(false);
                 showSuccessToast('Please Resend OTP', 'error')
             }
 
@@ -238,6 +246,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
 
 
         catch (error) {
+            setIsLoading(false);
             console.log(error);
         }
     }
@@ -303,13 +312,13 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                         otp.join('').length === 4 && !isLoading ? (
                             <GradientButton
                                 text="Verify and proceed"
-                                onPress={IS_NEW_USER ? LoginVerfiyOTP : handleVerifyOTP}
+                                onPress={IS_NEW_CUSTOMER ? LoginVerfiyOTP : handleVerifyOTP}
                             />
 
                         ) : isLoading ? (
                             <TouchableOpacity
                                 disabled={true}
-                                // onPress={IS_NEW_USER ? LoginVerfiyOTP : handleVerifyOTP}
+                                // onPress={IS_NEW_CUSTOMER ? LoginVerfiyOTP : handleVerifyOTP}
                                 style={[styles.verifyButton, styles.verifyButtonLoading]}
                             >
 
@@ -322,7 +331,9 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                             (
                                 <TouchableOpacity
                                     // disabled={true}
-                                    onPress={IS_NEW_USER ? LoginVerfiyOTP : handleVerifyOTP}
+
+                                    // onPress={handleVerifyOTP}
+                                    onPress={IS_NEW_CUSTOMER ? LoginVerfiyOTP : handleVerifyOTP}
                                     style={[styles.verifyButton]}
                                 >
                                     <Text style={styles.verifyButtonText}>Verify and proceed</Text>

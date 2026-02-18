@@ -1,12 +1,12 @@
 export const Colors = {
   white: '#fff',
-  black: '#000000',   //#71A33F   old Primary color    // old secondaryu color 71A33F 
+  black: '#000000',   //#71A33F   old Primary color    // old secondaryu color 71A33F    // tabttransparentcolro : 77946cff
   primaryColor: '#3F4B1A',    // new primary color 
   secondaryColor: '#466425',
   tabinactive: '#E8EDE3',
   bottomBg: '#EDEEF5',
   bottomActive: '#A52238',
-  tabtrasparent: '#77946cff',
+  tabtrasparent: '#46642533',
   bottomInactive: '#9093D8',
   bgGrayColor: '#EDEEF5',
   fieldGrayColor: 'rgba(166, 168, 214, 0.25)',

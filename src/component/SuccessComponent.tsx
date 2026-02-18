@@ -49,9 +49,10 @@ export const PaymentLoadingScreen: React.FC<PaymentLoadingProps> = ({
 }) => {
     const [spinValue] = useState(new Animated.Value(0));
 
-    const { ProcessText } = route.params || {};
+    const {ProcessText} = route?.params || {};
 
     console.log("ProcessTextProcessText", ProcessText);
+
     useEffect(() => {
         // 🌀 Start the animation
         const spin = Animated.loop(

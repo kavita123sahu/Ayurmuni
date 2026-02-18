@@ -25,6 +25,7 @@ const Assesment = (props: any) => {
         { id: 2, title: 'Vihar', subtitle: 'Your lifestyle and daily routine habits' },
         { id: 3, title: 'Chikitsa', subtitle: 'Your medical and treatment history' },
     ];
+    console.log(props,"propsssssssssssssss")
 
     return (
         <View style={styles.root}>
@@ -115,7 +116,6 @@ const Assesment = (props: any) => {
                     <TouchableOpacity
                         onPress={() =>
                             props.navigation.replace('HomeStack', { screen: 'Home' })
-                            // props.navigation.navigate('HomeStack', { screen: 'Onboarding' })
                         }>
                         <Text style={styles.skip}>Skip for now</Text>
                     </TouchableOpacity>

@@ -29,6 +29,7 @@ import * as _PROFILE_SERVICES from '../../services/ProfileServices';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import * as _HOME_SERVICE from '../../services/HomeServices';
 import RazorpayCheckout, { CheckoutOptions } from 'react-native-razorpay';
+import { Entypo } from '../../common/Vector';
 
 interface NavigationProp {
   navigate: (screen: string, params?: any) => void;
@@ -232,8 +233,10 @@ useFocusEffect(
       console.log("PaymentDataPaymentData--->", PaymentData);
       // Alert.alert('Success', 'Payment Successful');
 
-      props.navigation.navigate('PaymentLoadingScreen', { ProcessText: 'ecom', paymentData: PaymentData, });
+      
       showSuccessToast('Payment Suceefully Done', 'success')
+
+      props.navigation.navigate('PaymentLoadingScreen', { ProcessText: 'ecom', paymentData: PaymentData, });
 
       // if (Response.status === 200) {
 
@@ -853,19 +856,16 @@ useFocusEffect(
         </View>
 
         {/* Bottom Actions */}
-        <View style={styles.bottomActions}>
+        {/* <View style={styles.bottomActions}>
           <LinearGradient
             style={styles.buyNowButton}
             colors={[Colors.secondaryColor, Colors.secondaryColor, Colors.primaryColor]}
           >
-            {/* handlePaymentWithOrder(productData?.order_id) */}
-            {/* OnPayment() */}
-
+          
             <TouchableOpacity disabled={btnLoader} onPress={() => (UserAddress ? OnPayment() : props.navigation.navigate('AddAddress'))}>
 
               <Text style={styles.buyNowText}>
-                {/* {btnLoader ? 'Processing...' : 'Pay Now'} */}
-
+              
                 {btnLoader
                   ? 'Processing...'
                   : (selectedPayment === 'cash_on_delivery' || selectedPayment === 'cod')
@@ -876,7 +876,34 @@ useFocusEffect(
 
             </TouchableOpacity>
           </LinearGradient>
-        </View>
+        </View> */}
+
+          <View style={styles.bottomContainer}>
+                <LinearGradient
+                  colors={[Colors.primaryColor, Colors.secondaryColor]}
+                  style={styles.payButton}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <TouchableOpacity
+                    disabled={btnLoader}
+                   onPress={() => (UserAddress ? OnPayment() : props.navigation.navigate('AddAddress'))}
+                    style={styles.payButtonTouchable}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.payButtonText}>
+                      {btnLoader
+                        ? 'Processing...'
+                        : selectedPayment === 'cash_on_delivery' || selectedPayment === 'cod'
+                          ? 'Proceed'
+                          : 'Pay Now'}
+                    </Text>
+                    {!btnLoader && (
+                      <Entypo name="chevron-right" size={20} color="#fff" />
+                    )}
+                  </TouchableOpacity>
+                </LinearGradient>
+              </View>
       </ScrollView>
 
       {/* Card Modal */}
@@ -1073,6 +1100,44 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: Fonts.PoppinsSemiBold
   },
+
+   bottomContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  payButton: {
+    borderRadius: 14,
+    elevation: 4,
+    shadowColor: Colors.secondaryColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  payButtonTouchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+  },
+  payButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.PoppinsBold,
+    color: '#fff',
+    marginRight: 8,
+  },
+
   bottomActions: {
     padding: 16,
     backgroundColor: '#FFFFFF',

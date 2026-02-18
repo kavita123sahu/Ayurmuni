@@ -275,7 +275,7 @@ const PatientFAQ: React.FC = (props: any) => {
                 'Ambivert',
                 'Introvert',
             ],
-            
+
         },
 
         THANK_YOU_STEP,
@@ -308,8 +308,7 @@ const PatientFAQ: React.FC = (props: any) => {
 
     const handleNext = () => {
         if (current.type === 'thankyou') {
- props.navigation.replace('HomeStack', { screen: 'Home' })
-            // props.navigation.navigate('Onboarding'); // or Dashboard
+          props.navigation.replace('HomeStack', { screeen: 'Home' })
             return;
         }
 

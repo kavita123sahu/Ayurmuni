@@ -501,7 +501,7 @@ const ProductDetail = (props: any) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
 
       <LinearGradient
         colors={['#466425',Colors.primaryColor]}
@@ -533,7 +533,7 @@ const ProductDetail = (props: any) => {
         </View>
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

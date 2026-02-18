@@ -12,6 +12,9 @@ import {
     Platform,
     ScrollView,
     ActivityIndicator,
+    Keyboard,
+    TouchableWithoutFeedback,
+    KeyboardAvoidingView,
 } from 'react-native';
 import { Ionicons } from '../../common/Vector';
 import { Colors } from '../../common/Colors';
@@ -231,6 +234,8 @@ const Onboarding = (props: any) => {
         send_data.append('last_name', formData.lastName);
         send_data.append('email', formData.email);
         send_data.append('gender', formData.gender);
+        // mobile_number //
+        // date_of_birth //
 
         if (formData.profileImage && formData.profileImage.uri) {
             const imageFile = {
@@ -240,7 +245,6 @@ const Onboarding = (props: any) => {
             };
             send_data.append('profile_picture', imageFile as any);
         }
-
 
         console.log("OnboardingData:", send_data);
         try {
@@ -259,16 +263,16 @@ const Onboarding = (props: any) => {
             const jsonResponse = await response.json();
             console.log("Response JSON:", jsonResponse);
             const { data, message = "", status } = jsonResponse;
-            console.log("ResponseData:", data);
+            console.log("ResponseData:", jsonResponse.data, "Message:", message, "Status:", status);
 
-            if (status === 'success' || response.status === 200) {
+            if (status === 'success' || response.status === 201) {
                 setIsLoading(false);
                 Utils.storeData('_TOKEN', jsonResponse?.access);
-                Utils.storeData('_USER_INFO', data);
+                Utils.storeData('_USER_INFO', jsonResponse.data);
                 // Utils.storeData('_USER_ID', jsonResponse?.data?.user);
                 showSuccessToast('Welcome to Ayurmuni', 'success');
                 // props.navigation.replace('HomeStack', { screen: 'Home' });
-                props.navigation.navigate('Assesment', { screen: 'Home' });
+                props.navigation.navigate('Assesment');
             } else {
                 setIsLoading(false);
                 showSuccessToast(message || 'Login failed', 'error');
@@ -297,7 +301,7 @@ const Onboarding = (props: any) => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#ffffff" />
 
             <View style={styles.header}>
@@ -308,128 +312,141 @@ const Onboarding = (props: any) => {
                 <View style={styles.headerSpacer} />
             </View>
 
-            <ScrollView style={styles.container}>
-                <View style={styles.content}>
-                    <View style={styles.imageSection}>
-                        <TouchableOpacity style={styles.imageContainer} onPress={handleAddImage}>
-                            {formData.profileImage ? (
-                                <Image source={{ uri: formData.profileImage.uri }} style={styles.profileImage} />
-                            ) : (
-                                <View style={styles.addImagePlaceholder}>
-                                    <Ionicons name="camera" size={24} color="#CCCCCC" />
-                                    <Text style={styles.addImageText}>Add Image</Text>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0} // adjust if header present
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <ScrollView
+                        style={styles.container}
+                        contentContainerStyle={{ paddingBottom: 30 }}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={styles.content}>
+                            <View style={styles.imageSection}>
+                                <TouchableOpacity style={styles.imageContainer} onPress={handleAddImage}>
+                                    {formData.profileImage ? (
+                                        <Image source={{ uri: formData.profileImage.uri }} style={styles.profileImage} />
+                                    ) : (
+                                        <View style={styles.addImagePlaceholder}>
+                                            <Ionicons name="camera" size={24} color="#CCCCCC" />
+                                            <Text style={styles.addImageText}>Add Image</Text>
+                                        </View>
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.formSection}>
+                                <View style={styles.nameRow}>
+                                    <View style={styles.inputGroup}>
+                                        <Text style={styles.label}>
+                                            First name<Text style={styles.required}>*</Text>
+                                        </Text>
+                                        <TextInput
+                                            style={[styles.input, errors.firstName && styles.inputError]}
+                                            value={formData.firstName}
+                                            onChangeText={(text) => handleFieldChange('firstName', text)}
+                                            placeholder="First name"
+                                            placeholderTextColor="#CCCCCC"
+                                        />
+                                        {errors.firstName ? (
+                                            <Text style={styles.errorText}>{errors.firstName}</Text>
+                                        ) : null}
+                                    </View>
+
+                                    <View style={styles.inputGroup}>
+                                        <Text style={styles.label}>Last name*</Text>
+                                        <TextInput
+                                            style={[styles.input, errors.lastName && styles.inputError]}
+                                            value={formData.lastName}
+                                            onChangeText={(text) => handleFieldChange('lastName', text)}
+                                            placeholder="Last name"
+                                            placeholderTextColor="#CCCCCC"
+                                        />
+                                        {errors.lastName ? (
+                                            <Text style={styles.errorText}>{errors.lastName}</Text>
+                                        ) : null}
+                                    </View>
                                 </View>
+
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>Email</Text>
+                                    <TextInput
+                                        style={[styles.input, errors.email && styles.inputError]}
+                                        value={formData.email}
+                                        onChangeText={(text) => handleFieldChange('email', text)}
+                                        placeholder="Email"
+                                        placeholderTextColor="#CCCCCC"
+                                        keyboardType="email-address"
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                    />
+                                    {errors.email ? (
+                                        <Text style={styles.errorText}>{errors.email}</Text>
+                                    ) : null}
+                                </View>
+
+                                <View style={styles.genderSection}>
+                                    <Text style={styles.label}>
+                                        Gender<Text style={styles.required}>*</Text>
+                                    </Text>
+                                    <View style={styles.genderOptions}>
+                                        {genderOptions.map(renderGenderOption)}
+                                    </View>
+                                    {errors.gender ? (
+                                        <Text style={styles.errorText}>{errors.gender}</Text>
+                                    ) : null}
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={styles.buttonContainer}>
+
+
+                            {isLoading ? (
+                                <TouchableOpacity
+                                    // onPress={handleProcees}
+                                    disabled={true}
+                                    style={[styles.verifyButton, styles.verifyButtonLoading]}
+                                >
+
+                                    <ActivityIndicator size="small" color={Colors.primaryColor} />
+                                    <Text style={[styles.verifyButtonText, styles.loadingText]}>
+                                        Processing...
+
+                                    </Text>
+
+                                </TouchableOpacity>
+                            ) : (
+                                <GradientButton
+                                    onPress={handleProcees}
+                                    text='Proceed'
+                                />
+                                // <LinearGradient
+                                //     colors={
+                                //         (!formData.firstName.trim() || !formData.lastName.trim() || !formData.gender)
+                                //             ? [Colors.tabinactive, Colors.tabinactive]
+                                //             : [Colors.secondaryColor, Colors.primaryColor]
+                                //     }
+                                //     style={styles.proceedButton}
+                                // >
+                                //     <TouchableOpacity
+                                //         // onPress={handleProcees}
+                                //         style={styles.touchableStyle}>
+                                //         <Text style={styles.proceedButtonText}>
+                                //             Proceed
+                                //         </Text>
+                                //     </TouchableOpacity>
+                                // </LinearGradient>
+
                             )}
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.formSection}>
-                        <View style={styles.nameRow}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.label}>
-                                    First name<Text style={styles.required}>*</Text>
-                                </Text>
-                                <TextInput
-                                    style={[styles.input, errors.firstName && styles.inputError]}
-                                    value={formData.firstName}
-                                    onChangeText={(text) => handleFieldChange('firstName', text)}
-                                    placeholder="First name"
-                                    placeholderTextColor="#CCCCCC"
-                                />
-                                {errors.firstName ? (
-                                    <Text style={styles.errorText}>{errors.firstName}</Text>
-                                ) : null}
-                            </View>
-
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.label}>Last name*</Text>
-                                <TextInput
-                                    style={[styles.input, errors.lastName && styles.inputError]}
-                                    value={formData.lastName}
-                                    onChangeText={(text) => handleFieldChange('lastName', text)}
-                                    placeholder="Last name"
-                                    placeholderTextColor="#CCCCCC"
-                                />
-                                {errors.lastName ? (
-                                    <Text style={styles.errorText}>{errors.lastName}</Text>
-                                ) : null}
-                            </View>
                         </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email</Text>
-                            <TextInput
-                                style={[styles.input, errors.email && styles.inputError]}
-                                value={formData.email}
-                                onChangeText={(text) => handleFieldChange('email', text)}
-                                placeholder="Email"
-                                placeholderTextColor="#CCCCCC"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                            />
-                            {errors.email ? (
-                                <Text style={styles.errorText}>{errors.email}</Text>
-                            ) : null}
-                        </View>
-
-                        <View style={styles.genderSection}>
-                            <Text style={styles.label}>
-                                Gender<Text style={styles.required}>*</Text>
-                            </Text>
-                            <View style={styles.genderOptions}>
-                                {genderOptions.map(renderGenderOption)}
-                            </View>
-                            {errors.gender ? (
-                                <Text style={styles.errorText}>{errors.gender}</Text>
-                            ) : null}
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.buttonContainer}>
-
-
-                    {isLoading ? (
-                        <TouchableOpacity
-                            // onPress={handleProcees}
-                            disabled={true}
-                            style={[styles.verifyButton, styles.verifyButtonLoading]}
-                        >
-
-                            <ActivityIndicator size="small" color={Colors.primaryColor} />
-                            <Text style={[styles.verifyButtonText, styles.loadingText]}>
-                                Processing...
-
-                            </Text>
-
-                        </TouchableOpacity>
-                    ) : (
-                        <GradientButton
-                            onPress={handleProcees}
-                            text='Proceed'
-                        />
-                        // <LinearGradient
-                        //     colors={
-                        //         (!formData.firstName.trim() || !formData.lastName.trim() || !formData.gender)
-                        //             ? [Colors.tabinactive, Colors.tabinactive]
-                        //             : [Colors.secondaryColor, Colors.primaryColor]
-                        //     }
-                        //     style={styles.proceedButton}
-                        // >
-                        //     <TouchableOpacity
-                        //         // onPress={handleProcees}
-                        //         style={styles.touchableStyle}>
-                        //         <Text style={styles.proceedButtonText}>
-                        //             Proceed
-                        //         </Text>
-                        //     </TouchableOpacity>
-                        // </LinearGradient>
-
-                    )}
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                    </ScrollView>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </View>
     );
 };
 

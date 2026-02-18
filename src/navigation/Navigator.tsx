@@ -57,6 +57,7 @@ import Download from "../HRMS/dowload";
 import Assesment from "../screens/assesment/Assessment";
 import HealthAssessment from "../screens/assesment/HealthAssesment";
 import PatientFAQ from "../screens/assesment/PatientFAQ";
+import { RatingModal } from "../screens/consultation/RatingModel";
 
 enableScreens();
 
@@ -198,7 +199,7 @@ const HomeStack = () => {
             <Stack.Screen name={'TermsConditions'} component={TermsConditions} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'Onboarding'} component={Onboarding} options={{ headerShown: false, animation: 'slide_from_right' }} />
             {/* <Stack.Screen name={'VideoPlayer'} component={VideoPlayer} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
-            {/* <Stack.Screen name={'FriendCall'} component={FriendCall} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
+            <Stack.Screen name={'RatingModel'} component={RatingModal} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'CartScreen'} component={CartScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'MyOrders'} component={MyOrder} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'EditAddress'} component={EditAddress} options={{ headerShown: false, animation: 'slide_from_right' }} />

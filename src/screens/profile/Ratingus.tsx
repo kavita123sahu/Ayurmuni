@@ -23,7 +23,7 @@ const RatingScreen = (props: any) => {
         '🛡️ Safe & Secure',
         '🎯 As Described'
     ];
-    
+
     console.log('propsprops', props)
     const handleCategoryToggle = (category: any) => {
         if (selectedCategories.includes(category)) {

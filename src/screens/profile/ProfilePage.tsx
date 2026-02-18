@@ -37,7 +37,7 @@ interface UserData {
   first_name: string;
   last_name: string;
   email?: string;
-    profile_picture: string | null;
+  profile_picture: string | null;
   // ... other properties
 }
 interface ProfilePageProps {
@@ -93,6 +93,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
         const result: any = await _PROFILE_SERVICES.user_profile();
         console.log("Profile Data ===>", result)
         const JSONDATA = await result.json();
+        console.log("ProfileJSONDATA ===>", JSONDATA);
         if (result.status === 200) {
           setProfileData(JSONDATA);
         }
@@ -119,6 +120,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
       const { status, data, message = "" } = result;
       if (status === 200) {
         await Utils.clearAllData()
+        showSuccessToast(message || "User Deleted Successfully", 'success');
         navigation.replace('AuthStack', { screeen: 'Login' })
       }
       else {
@@ -130,8 +132,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
   }
 
 
-  
- 
+
+
 
 
   const handleMenuPress = (item: MenuItem) => {
@@ -379,11 +381,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
   },
   profileText: {
-        fontSize: 48,
-        fontFamily: Fonts.PoppinsBold,
-        color: '#FFFFFF',
-        textAlign: 'center',
-    },
+    fontSize: 48,
+    fontFamily: Fonts.PoppinsBold,
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
   editPictureText: {
     fontSize: 16,
     color: '#8BC34A',

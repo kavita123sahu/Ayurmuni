@@ -1,9 +1,25 @@
+// pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+// plugins { id("com.facebook.react.settings") }
+// extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+// rootProject.name = 'Ayurmuniapp'
+// include ':app'
+// includeBuild('../node_modules/@react-native/gradle-plugin')
+
+// include ':react-native-fs'
+// project(':react-native-fs').projec
+// tDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+
+
+
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+
 plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex ->
+    ex.autolinkLibrariesFromCommand()
+}
+
 rootProject.name = 'Ayurmuniapp'
 include ':app'
-includeBuild('../node_modules/@react-native/gradle-plugin')
 
-include ':react-native-fs'
-project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+includeBuild('../node_modules/@react-native/gradle-plugin')

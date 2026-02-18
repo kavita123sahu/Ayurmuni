@@ -29,14 +29,15 @@ const HeaderSearch: React.FC<HeaderProps> = ({ navigation }) => {
        
         <View style={styles.headerTop}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                {/* <Image source={require('../assets/images/backButton.png')} style={{ height: 20, width: 22, paddingRight: 5 }} /> */}
+                <Image source={require('../assets/images/backButton.png')} style={{ height: 20, width: 22, paddingRight: 5 }} />
             </TouchableOpacity>
 
             <View style={{ width: '90%' }}>
-                
+            
                 <SearchSection  voice ="true" placeholder ="search for product"  onChangeText={()=> console.log()}  />
 
             </View>
+            
         </View>
     );
 };
@@ -53,13 +54,19 @@ const styles = StyleSheet.create({
     headerTop: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginTop : 15,
         width: '100%',
-        // justifyContent: 'center',
+        justifyContent: 'center',
         padding: 15,
+        paddingVertical:10,
         paddingHorizontal: 10,
     },
     backButton: {
-        width: '10%',
+        width: '20%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingRight:50,
         borderRadius: 20,
     },
     searchContainer: {

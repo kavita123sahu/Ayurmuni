@@ -63,23 +63,24 @@ const Login: React.FC = (props: any) => {
         setIsLoading(false);
         showSuccessToast(response.message || 'OTP send successfully', 'success');
 
-        if (JSONReponse.is_new_user && JSONReponse.is_customer) {
-          props.navigation.navigate('HomeStack', { Screen: 'Home' });
+        if (!JSONReponse.is_new_user && JSONReponse.is_customer) {
+          // props.navigation.navigate('HomeStack', { Screen: 'Home' });
+          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newCustomer: JSONReponse.is_customer });    // chnage krwana h backned s is_customer wrong aa rh h
         }
 
         else if (JSONReponse.is_new_user && !JSONReponse.is_customer) {
           // User true, Customer false - OtpVerify with newUser true
-          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
+          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newCustomer: JSONReponse.is_customer });
           // props.navigation.navigate('HomeStack', { screen: 'Onboarding' });
         }
 
-        else if (!JSONReponse.is_new_user && JSONReponse.is_customer) {
+        else if (!JSONReponse.is_new_user && !JSONReponse.is_customer) {
           // User false, Customer true - OtpVerify without newUser flag
-          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
+          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newCustomer: JSONReponse.is_customer });
         }
-        
+
         else {
-          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newUser: JSONReponse.is_customer });
+          props.navigation.navigate('OtpVerify', { phone: phoneNumber, newCustomer: JSONReponse.is_customer });
 
         }
 

@@ -441,7 +441,18 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
                         {profileImage ? (
                             <Image source={{ uri: profileImage }} style={styles.profileImage} />
                         ) : profileData.profile_picture ? (
-                            <Image source={{ uri: profileData.profile_picture }} style={styles.profileImage} />
+                            <Image
+                                source={
+                                    profileData.profile_picture
+                                        ? typeof profileData.profile_picture === "string"
+                                            ? { uri: profileData.profile_picture }
+                                            : profileData.profile_picture
+                                        : require("../../assets/images/user_profile.png")
+                                }
+                                style={styles.profileImage}
+                            />
+
+                            // <Image source={{ uri: profileData.profile_picture }} style={styles.profileImage} />
                         ) : (
                             <View style={styles.ProfileContainer}>
                                 <Text style={styles.profileText}>

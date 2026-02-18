@@ -1,4 +1,4 @@
-/// <reference types="nativewind/types" />
+
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -15,6 +15,7 @@ export type RootStackParamList = {
   DownloadFile : undefined;
   SplashStack: undefined;
   DoctorSelect : any;
+  RatingModel : any;
   HealthAssessment : undefined;
   AuthStack: undefined;
   InvoiceScreen : undefined;

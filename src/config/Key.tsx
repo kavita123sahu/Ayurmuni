@@ -8,9 +8,11 @@ export const BaseUrl = {
     base: 'https://clikshop.co.in/',
     // https://q8f99wg9-8000.inc1.devtunnels.ms/
     base_url: 'https://0rb83pmx-8000.inc1.devtunnels.ms/',
+    // base_url: 'https://pp1nvg0p-8000.inc1.devtunnels.ms/',
     base_url1: 'https://ayurmuni.com/',
     //  https://pkg5t4tg-8000.inc1.devtunnels.ms/
 };
+
 
 export const Method = {
     GET: 'GET',

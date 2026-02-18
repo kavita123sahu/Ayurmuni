@@ -96,7 +96,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
         try {
             const token = await Utils.getData('_TOKEN');
-
+console.log("token_address", token);
             if (token) {
                 const result: any = await _PROFILE_SERVICES.user_profile();
                 console.log("tokeennnn->", token);

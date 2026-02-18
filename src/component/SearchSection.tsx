@@ -5,19 +5,17 @@ import { AntDesign, MaterialCommunityIcons } from '../common/Vector';
 import { useNavigation } from '@react-navigation/native';
 
 const SearchSection = (voice: any) => {
-    
+
     const navigation = useNavigation();
     const [searchText, setSearchText] = useState('');
 
     const handleTextChange = (text: string) => {
         setSearchText(text);
         navigation.navigate('ProductSearch');
-
     };
 
-
     return (
-        <TouchableOpacity style={styles.searchContainer}>
+        <TouchableOpacity style={styles.searchContainer} onPress={() => navigation.navigate('ProductSearch')}>
 
             {/* <TouchableOpacity style={styles.searchIconContainer}>
                 <Image source={Images.searchIcon} style={styles.iconstyle} />
@@ -40,13 +38,13 @@ const SearchSection = (voice: any) => {
             {voice ? <TouchableOpacity style={styles.voiceIconContainer}>
                 <Image source={Images.micIcon} style={styles.iconstyle} />
             </TouchableOpacity> :
-            
+
 
                 <TouchableOpacity style={styles.voiceIconContainer}>
                     <MaterialCommunityIcons name="arrow-right" size={20} color="#010101ff" />
                 </TouchableOpacity>
             }
-            
+
         </TouchableOpacity>
     )
 }

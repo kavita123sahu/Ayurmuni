@@ -39,35 +39,44 @@ const TermsCondition = (props: any) => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#ffffff" />
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
+      {/* ===== HEADER (STICKY) ===== */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
       </View>
 
-      <LinearGradient style={styles.notificationBanner} colors={[Colors.secondaryColor, Colors.primaryColor]}>
+      {/* ===== CONGRATULATIONS / TERMS BANNER (STICKY) ===== */}
+      <LinearGradient
+        style={styles.notificationBanner}
+        colors={[Colors.secondaryColor, Colors.primaryColor]}
+      >
         <View style={styles.notificationContent}>
           <Text style={styles.notificationTitle}>Hello,</Text>
           <Text style={styles.notificationText}>
-            {!agreed ? 'Before you create an account, Please read and accept our' : 'Congratulations , You have Successfully Accepted ! '}
+            {!agreed
+              ? 'Before you create an account, please read and accept our '
+              : 'Congratulations, You have Successfully Accepted! '}
             <Text style={styles.linkText}>Terms and Conditions</Text>
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.closeButton}
-        >
-          <Image source={require('../assets/images/HelloIcon.png')} style={{ height: 15, width: 15 }} />
-        </TouchableOpacity>
+
+        <Image
+          source={require('../assets/images/HelloIcon.png')}
+          style={{ height: 15, width: 15 }}
+        />
       </LinearGradient>
 
-
-      <View style={styles.content}>
-
-        <ScrollView style={styles.termsContainer} showsVerticalScrollIndicator={false}>
-          <View style={styles.titleSection}>
+      {/* ===== SCROLLABLE CONTENT ONLY ===== */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+       <View style={styles.titleSection}>
             <Text style={styles.title}>Terms and Conditions</Text>
             <Text style={styles.lastUpdated}>Last Updated: <Text style={styles.updateDate}>Yesterday</Text></Text>
           </View>
@@ -82,10 +91,9 @@ const TermsCondition = (props: any) => {
             {'\n\n'}
             Condimentum ullamcorper integer id nulla at. Eu elementum nibh nibh ornare bibendum. Cursus elementum diam amet integer viverra. Vitae habitant sagittis vulputate massa suscipit et id neque accumsan. Cras fames condimentum platea sed nibh suspendisse in turpis.
           </Text>
-        </ScrollView>
+      </ScrollView>
 
-
-        {!agreed && (
+       {agreed && (
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={handleAgree} activeOpacity={0.8} style={styles.buttonWrapper}>
               <LinearGradient
@@ -100,9 +108,8 @@ const TermsCondition = (props: any) => {
             </TouchableOpacity>
           </View>
         )}
+    </View>
 
-      </View>
-    </SafeAreaView>
   );
 };
 
@@ -115,6 +122,14 @@ const styles = StyleSheet.create({
   notificationTitle: { color: '#ffffff', fontSize: 16, fontWeight: '600', marginBottom: 4 },
   notificationText: { color: '#ffffff', fontSize: 14, lineHeight: 20 },
   linkText: { fontSize: 14, fontFamily: Fonts.PoppinsMedium },
+  scrollView: {
+  flex: 1, // IMPORTANT
+},
+
+scrollContent: {
+  padding: 16,
+  paddingBottom: 120, // space for sticky buttons
+},
   closeButton: { width: 24, height: 24, justifyContent: 'center', alignItems: 'center' },
   content: { flex: 1, paddingHorizontal: 20 },
   titleSection: { marginBottom: 20 },
@@ -123,7 +138,8 @@ const styles = StyleSheet.create({
   updateDate: { fontFamily: Fonts.PoppinsMedium, color: Colors.textColor },
   termsContainer: { flex: 1, marginBottom: 20, },
   termsText: { fontSize: 14, fontFamily: Fonts.PoppinsRegular, color: Colors.black, lineHeight: 20, textAlign: 'justify' },
-  buttonContainer: { flexDirection: 'row', gap: 15, paddingBottom: 20 },
+  buttonContainer: { flexDirection: 'row', gap: 15, paddingBottom: 50 , paddingHorizontal:20, paddingVertical:20},
+  
   buttonWrapper: { flex: 1 },
   agreeButton: { paddingVertical: 12, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
   disagreeButton: { flex: 1, paddingVertical: 12, borderRadius: 8, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.primaryColor },
@@ -132,3 +148,6 @@ const styles = StyleSheet.create({
 });
 
 export default TermsCondition;
+
+
+
