@@ -12,6 +12,7 @@ export type RootStackParamList = {
   CenterDetail: undefined;
   Splash: undefined;
   GeoLocation : undefined;
+  RatingModel : undefined;
   DownloadFile : undefined;
   SplashStack: undefined;
   DoctorSelect : any;
