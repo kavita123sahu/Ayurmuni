@@ -26,10 +26,11 @@ import { Utils } from '../../common/Utils';
 import *as _CART_SERVICE from '../../services/CartService';
 import *as _ORDER_SERVICE from '../../services/OrderService';
 import * as _PROFILE_SERVICES from '../../services/ProfileServices';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import * as _HOME_SERVICE from '../../services/HomeServices';
 import RazorpayCheckout, { CheckoutOptions } from 'react-native-razorpay';
 import { Entypo, EvilIcons, Feather, FontAwesome } from '../../common/Vector';
+import HeaderSearch from '../../component/HeaderSearch';
 
 interface NavigationProp {
   navigate: (screen: string, params?: any) => void;
@@ -67,6 +68,7 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
   const [btnLoader, setBtnLoader] = useState(false);
   const [totalWeight, setTotalWieght] = useState(0);
   const [showCardModal, setShowCardModal] = useState(false);
+
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -78,17 +80,19 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
   const [promoDiscount, setPromoDiscount] = useState(0);
   const isFocused = useIsFocused()
   const [EstimateData, setEstimateData] = useState<any>();
-  const [ESTDate, setESTDate] = useState('');
+  const [BookedData, setBookedData] = useState<any>();
 
-  const { booking } = props.route.params?.productData || {};
+  const { productData } = props.route.params || {};
 
+  const navigation = useNavigation();
 
-  console.log("bookingbookingbookingbooking===>", booking);
+  console.log("bookingbookingbookingbooking===>", productData);
 
 
 
   useFocusEffect(
     useCallback(() => {
+      getBookingOrder();
       getCustomerAddress();
       // getESTDate(booking?.id);
       return () => {
@@ -103,6 +107,26 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
   //     // getESTDate(booking?.id);
   // }, [isFocused])
 
+
+  const getBookingOrder = async () => {
+    try {
+
+      const result: any = await _CONSULT_SERVICE.getBookingOrder();
+
+      console.log("bokiingorderr====>>", result?.results);
+      const JSONDATA = result.results;
+      const FilteredBooking = JSONDATA?.find((item: any) => item.id === productData?.booking_id);
+      console.log("FilterrOrderiDDD====>>", FilteredBooking);
+
+      if (FilteredBooking) {
+        setBookedData(FilteredBooking)
+      }
+
+    } catch (error) {
+      console.log(error);
+      setUserAddress(null);
+    }
+  }
 
 
 
@@ -172,7 +196,7 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
       const PaymentData = await Response.json();
       console.log("PaymentDataPaymentData--->", PaymentData);
       props.navigation.replace('PaymentLoadingScreen', { paymentData: PaymentData, ProcessText: 'doctor', });
-      showSuccessToast('Payment Suceefully Done', 'success')
+      showSuccessToast('Payment Suceefully Done', 'success');
 
     } catch (error) {
       console.error('Verification error:', error);
@@ -258,10 +282,11 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
 
   return (
 
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.primaryColor} />
+      <Header title='Select Payment Method' navigation={navigation} Is_Tab={false} />
 
-      <LinearGradient
+      {/* <LinearGradient
         colors={[Colors.primaryColor, Colors.secondaryColor]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
@@ -274,7 +299,7 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
           <Entypo name="chevron-left" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Select Payment Method</Text>
-      </LinearGradient>
+      </LinearGradient> */}
 
       <ScrollView
         style={styles.scrollView}
@@ -290,20 +315,20 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
             end={{ x: 1, y: 1 }}
           >
             <View style={styles.doctorImageContainer}>
-              {/* <Image
+              <Image
                 source={{
-                  uri: booking?.image || 'https://cdn-icons-png.flaticon.com/512/3774/3774299.png',
+                  uri: 'https://cdn-icons-png.flaticon.com/512/3774/3774299.png',
                 }}
                 style={styles.doctorImage}
-              /> */}
+              />
 
-              <Image
+              {/* <Image
                 source={booking.image
                   ? { uri: booking.image || 'https://cdn-icons-png.flaticon.com/512/3774/3774299.png' }
                   : require('../../assets/images/user_profile.png')
                 }
                 style={styles.doctorImage}
-              />
+              /> */}
 
               <View style={styles.verifiedBadge}>
                 <Entypo name="check" size={12} color="#fff" />
@@ -311,11 +336,11 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
             </View>
 
             <View style={styles.doctorInfo}>
-              <Text style={styles.doctorName}>{booking?.doctor_name ?? ''}</Text>
+              <Text style={styles.doctorName}>{BookedData?.doctor_name ?? ''}</Text>
               {/* <Text style={styles.doctorSpec}>{booking?.specialization ?? 'Specialization'}</Text> */}
               <View style={styles.clinicRow}>
                 <Entypo name="location-pin" size={14} color="#718096" />
-                <Text style={styles.clinicName}>{booking?.clinic_name ?? 'Clinic Name'}</Text>
+                <Text style={[styles.clinicName, {color : BookedData?.payment?.status==='pending' ? Colors.errorColor : Colors.secondaryColor}]}>{BookedData?.payment?.status==='pending' ? 'Unpaid' : 'Paid'} </Text>
               </View>
             </View>
           </LinearGradient>
@@ -332,21 +357,21 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
             <View style={styles.iconContainer}>
               <Entypo name="calendar" color={Colors.secondaryColor} size={18} />
             </View>
-            <Text style={styles.infoText}>{booking?.slot_date ?? ""}</Text>
+            <Text style={styles.infoText}>{BookedData?.slot_date ?? ""}</Text>
           </View>
 
           <View style={styles.infoRow}>
             <View style={styles.iconContainer}>
               <Feather name="clock" color={Colors.secondaryColor} size={18} />
             </View>
-            <Text style={styles.infoText}>{booking?.slot_time ?? ''}</Text>
+            <Text style={styles.infoText}>{BookedData?.slot_start_time ?? ''}</Text>
           </View>
 
           <View style={styles.infoRow}>
             <View style={styles.iconContainer}>
               <FontAwesome name="user" color={Colors.secondaryColor} size={18} />
             </View>
-            <Text style={styles.infoText}>{booking?.patient ?? 'Patient Name'}</Text>
+            <Text style={styles.infoText}>{BookedData?.patient_name ?? 'Patient Name'}</Text>
           </View>
         </View>
 
@@ -359,19 +384,19 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
 
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Consultation Fee</Text>
-            <Text style={styles.priceValue}>₹ {booking?.consultation_fee ?? '0.00'}</Text>
+            <Text style={styles.priceValue}>₹ {BookedData?.payment?.amount ?? '0.00'}</Text>
           </View>
 
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Service Charge</Text>
-            <Text style={styles.priceValue}>₹ {booking?.service_charge ?? '0.00'}</Text>
+            <Text style={styles.priceValue}>₹ {BookedData?.service_charge ?? '0.00'}</Text>
           </View>
 
           <View style={styles.divider} />
 
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total Amount</Text>
-            <Text style={styles.totalValue}>₹ {booking?.consultation_fee ?? '0.0'}</Text>
+            <Text style={styles.totalValue}>₹ {BookedData?.order?.total_amount ?? '0.0'}</Text>
           </View>
         </View>
 
@@ -388,7 +413,7 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
         >
           <TouchableOpacity
             disabled={btnLoader}
-            onPress={() => handlePaymentWithOrder(booking?.order_id)}
+            onPress={() => handlePaymentWithOrder(productData?.order_id)}
             style={styles.payButtonTouchable}
             activeOpacity={0.8}
           >
@@ -435,7 +460,7 @@ const ConsultationPayment: React.FC<SelectDoctorProps> = (props: any) => {
         </TouchableOpacity>
       </View> */}
 
-    </SafeAreaView>
+    </View>
   );
 };
 

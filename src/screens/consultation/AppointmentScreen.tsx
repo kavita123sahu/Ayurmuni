@@ -177,8 +177,7 @@ export const AppointmentsScreen: React.FC = (props: any) => {
                 <TouchableOpacity
                     style={[styles.tab, activeTab === 'upcoming' && styles.tabActive]}
                     onPress={() => setActiveTab('upcoming')}
-                    activeOpacity={0.7}
-                >
+                    activeOpacity={0.7}>
                     <Text
                         style={[
                             styles.tabText,

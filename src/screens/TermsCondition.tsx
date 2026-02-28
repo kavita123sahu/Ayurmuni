@@ -21,6 +21,8 @@ const TermsCondition = (props: any) => {
 
   const { agreed } = props?.route?.params;
 
+  console.log("agreeeeeeeeeee", agreed);
+
   const handleAgree = () => {
     showSuccessToast('Accepted Terms and Condition! Welcome aboard.', 'success')
     props.navigation.replace('HomeStack', { screen: 'Onboarding' })
@@ -93,7 +95,7 @@ const TermsCondition = (props: any) => {
           </Text>
       </ScrollView>
 
-       {agreed && (
+       {!agreed && (
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={handleAgree} activeOpacity={0.8} style={styles.buttonWrapper}>
               <LinearGradient

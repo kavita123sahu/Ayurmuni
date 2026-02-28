@@ -73,48 +73,48 @@ const DoctorSelect = (Props: any) => {
 
 
   useEffect(() => {
-    if (All) {
-      getDoctor();
-    }
+    // if (All) {
+    getDoctor();
+    // }
 
-    getDoctorBySpeciality();
+    // getDoctorBySpeciality();
   }, [isFocused]);
 
 
-  const getDoctorBySpeciality = async () => {
+  // const getDoctorBySpeciality = async () => {
 
-    setIsLoading(true);
-    //.join(",") 
-    const send_data = {
-      speciality_ids: selectedSpecialties,
-      treatment_type_ids: selectedTreatments
-    };
+  //   setIsLoading(true);
+  //   //.join(",") 
+  //   const send_data = {
+  //     speciality_ids: selectedSpecialties,
+  //     treatment_type_ids: selectedTreatments
+  //   };
 
-    try {
-      const response: any = await _CONSULT_SERVICE.getDoctorBySpeciality(send_data);
-      const responseData = await response.json();
-      // Alert.alert(
-      //   'Doctors Fetched',
-      //   `Found ${responseData} doctors for the selected specialties and treatments.`
-      // );
-      console.log('Doctor By Speciality Response:', responseData);
+  //   try {
+  //     const response: any = await _CONSULT_SERVICE.getDoctorBySpeciality(send_data);
+  //     const responseData = await response.json();
+  //     // Alert.alert(
+  //     //   'Doctors Fetched',
+  //     //   `Found ${responseData} doctors for the selected specialties and treatments.`
+  //     // );
+  //     console.log('Doctor By Speciality Response:', responseData);
 
-      if (response.status === 200) {
+  //     if (response.status === 200) {
 
-        setDoctorData(responseData);
-        setIsLoading(false);
-      } else {
-        // showSuccessToast('Please Select atleast one speciality', 'error');
-      }
+  //       setDoctorData(responseData);
+  //       setIsLoading(false);
+  //     } else {
+  //       // showSuccessToast('Please Select atleast one speciality', 'error');
+  //     }
 
-    } catch (error) {
-      setIsLoading(false);
-      console.log('API Error:', error);
-      showSuccessToast('Something went wrong', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     console.log('API Error:', error);
+  //     showSuccessToast('Something went wrong', 'error');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const getDoctor = async () => {
 
@@ -155,7 +155,7 @@ const DoctorSelect = (Props: any) => {
   };
 
   const renderConsultCard = ({ item }: { item: DoctorData }) => (
-    console.log('Doctor Item:', item),
+
     <View style={{ marginBottom: 10, }}>
       <View style={styles.upcomingCard}>
         <View style={styles.doctorInfo}>
@@ -195,7 +195,6 @@ const DoctorSelect = (Props: any) => {
           <Image source={require('../../assets/images/Line.png')} style={{ width: '100%', tintColor: '#1E1E1ECC' }} />
         </View>
 
-
         <View style={{ flex: 1, justifyContent: 'center', paddingVertical: 10 }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingBottom: 10, justifyContent: 'space-between' }}>
             <TouchableOpacity
@@ -207,7 +206,7 @@ const DoctorSelect = (Props: any) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.ratButton, { backgroundColor:Colors.primaryColor, marginRight: 30 }]}
+              style={[styles.ratButton, { backgroundColor: Colors.primaryColor, marginRight: 30 }]}
               onPress={() => ("")}
             >
               <Image source={require('../../assets/images/rating.png')} style={{ height: 20, width: 20, margin: 3 }} />
@@ -266,12 +265,7 @@ const DoctorSelect = (Props: any) => {
         <Text style={styles.emptySubtitle}>
           We couldn't find any doctors at the moment. Please try again later.
         </Text>
-        <TouchableOpacity
-          style={styles.retryButton}
-          onPress={getDoctorBySpeciality}
-        >
-          <Text style={styles.retryButtonText}>Try Again</Text>
-        </TouchableOpacity>
+
       </View>
     );
   };
@@ -289,8 +283,9 @@ const DoctorSelect = (Props: any) => {
         <View style={styles.section}>
           {
             Isloading ? (
-
-              <DoctorCardSkeleton />
+              Array.from({ length: 5 }).map((_, index) => (
+                <DoctorCardSkeleton />
+              ))
 
             ) : DoctorData?.length > 0 ? (
               <>

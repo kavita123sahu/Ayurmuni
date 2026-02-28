@@ -7,9 +7,9 @@ export const BaseUrl = {
     urlV3: 'https://clikshop.co.in/api/v3/',
     base: 'https://clikshop.co.in/',
     // https://q8f99wg9-8000.inc1.devtunnels.ms/
-    base_url: 'https://0rb83pmx-8000.inc1.devtunnels.ms/',
-    // base_url: 'https://pp1nvg0p-8000.inc1.devtunnels.ms/',
-    base_url1: 'https://ayurmuni.com/',
+    // base_url: 'https://0rb83pmx-8000.inc1.devtunnels.ms/',
+    base_url: 'https://pp1nvg0p-8000.inc1.devtunnels.ms/',
+    // base_url1: 'https://ayurmuni.com/',
     //  https://pkg5t4tg-8000.inc1.devtunnels.ms/
 };
 
@@ -61,7 +61,6 @@ export const showSuccessToast = (message: string, type: string) => {
 export const getExpectedDeliveryDate = (rangeStr: string) => {
     const [day, month] = rangeStr.split("–")[0].trim().split(" "); // "28 Sep"
     const year = new Date().getFullYear();
-
     const months: any = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
     const date = new Date(year, months[month], parseInt(day));
 

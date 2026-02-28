@@ -57,7 +57,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
   const fetchAllData = useCallback(async () => {
 
     _CONSULT_SERVICE.getDoctor()
-      .then((res: any) => res.json())
+      .then((res: any) => res?.json())
       .then(json => {
         console.log("doctorlist-->", json);
         const filteredData = json?.data?.filter((item: any) => item.assured_muni === true);
@@ -67,7 +67,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
       .finally(() => setLoadingDoctors(false));
 
     _HOME_SERVICE.get_health_category()
-      .then((res: any) => res.json())
+      .then((res: any) => res?.json())
       .then(json => setHealthConcern(json))
       .catch(err => console.log("Health Error", err))
       .finally(() => setLoadingHealth(false));
@@ -92,7 +92,6 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
     setIsLoading(true);
     try {
       let response: any = await _CONSULT_SERVICE.getDoctor();
-
       const DataJSON = await response.json();
       console.log("doctorlist-->", DataJSON);
       const filteredData = DataJSON?.data?.filter((item: any) => item.assured_muni === true);
@@ -105,8 +104,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
     }
   }
 
-
-
+  
   const getConsultApi = async () => {
     setIsLoading(true);
     try {
@@ -135,7 +133,7 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
       const DataCategory = await response.json();
       console.log("healthhhh-->", DataCategory);
       if (response.status == 200) {
-        setHealthConcern(DataCategory)
+        setHealthConcern(DataCategory || [])
         setIsLoading(false);
       }
 

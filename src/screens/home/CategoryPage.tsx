@@ -1,6 +1,6 @@
 
 import React, { useRef } from 'react';
-import {Animated,Image,ListRenderItem,StyleSheet,Text,TouchableOpacity,View,Dimensions} from 'react-native';
+import { Animated, Image, ListRenderItem, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
 
@@ -23,96 +23,100 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 
 const CategoryPage = ({ title, categories = [], navigation }: Props) => {
-
-        const visibleItems = categories.slice(0, 5);
-        const scrollX = useRef(new Animated.Value(0)).current;
-
-        const handleCategoryPress = (category: any) => {
-            navigation.navigate('Search', { category });
-        };
-
-        const handleViewAll = () => {
-            navigation.navigate("AllCategories");
-        }
-
+    // const visibleItems = categories ? categories.slice(0, 5) : [];
+    // const visibleItems = categories?.slice(0, 5) ?? [];
+    const visibleItems = Array.isArray(categories)
+        ? categories.slice(0, 5)
+        : [];
         
-        const renderCategory: ListRenderItem<Category> = ({ item }) => (
-            <TouchableOpacity
-                style={[styles.categoryItem, {}]} 
-                onPress={() => handleCategoryPress(item)}
-            >
-                <View style={styles.cardstyle}>
-                    <Image
-                        source={item.image || require('../../assets/images/Frame1.png')}
-                        style={styles.itemImage}
-                        resizeMode="contain"
-                    />
-                </View>
-                <Text style={styles.categoryText}>{item?.name ?? 'NA'}</Text>
-            </TouchableOpacity>
-        );
+    const scrollX = useRef(new Animated.Value(0)).current;
+
+    const handleCategoryPress = (category: any) => {
+        navigation.navigate('Search', { category });
+    };
+
+    const handleViewAll = () => {
+        navigation.navigate("AllCategories");
+    }
 
 
-        return (
-            <View style={styles.categoriesSection}>
-                <View style={styles.titleRow}>
-                    <Text style={styles.sectionTitle}>{title}</Text>
-                    <TouchableOpacity onPress={handleViewAll}>
-                        <Text style={styles.viewAll}>View All</Text>
-                    </TouchableOpacity>
-                </View>
-
-
-                <Animated.FlatList
-                    data={visibleItems}
-                    renderItem={renderCategory}
-                    keyExtractor={(item) => item.id.toString()}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                        { useNativeDriver: false }
-                    )}
-                    snapToInterval={SCREEN_WIDTH / 3}
-                    decelerationRate="fast"
+    const renderCategory: ListRenderItem<Category> = ({ item }) => (
+        <TouchableOpacity
+            style={[styles.categoryItem, {}]}
+            onPress={() => handleCategoryPress(item)}
+        >
+            <View style={styles.cardstyle}>
+                <Image
+                    source={item.image || require('../../assets/images/Frame1.png')}
+                    style={styles.itemImage}
+                    resizeMode="contain"
                 />
-
-                {visibleItems.length > 1 && (
-                    <View style={styles.paginationContainer}>
-                        {visibleItems.map((_, i) => {
-                            const inputRange = [
-                                (i - 1) * (SCREEN_WIDTH / 3),
-                                i * (SCREEN_WIDTH / 3),
-                                (i + 1) * (SCREEN_WIDTH / 3)
-                            ];
-
-                            const opacity = scrollX.interpolate({
-                                inputRange,
-                                outputRange: [0.3, 1, 0.3],
-                                extrapolate: "clamp",
-                            });
-
-                            const scale = scrollX.interpolate({
-                                inputRange,
-                                outputRange: [0.6, 1.3, 0.6],
-                                extrapolate: "clamp",
-                            });
-
-                            return (
-                                <Animated.View
-                                    key={i}
-                                    style={[
-                                        styles.dot,
-                                        { opacity, transform: [{ scale }] },
-                                    ]}
-                                />
-                            );
-                        })}
-                    </View>
-                )}
             </View>
-        );
+            <Text style={styles.categoryText}>{item?.name ?? 'NA'}</Text>
+        </TouchableOpacity>
+    );
+
+
+    return (
+        <View style={styles.categoriesSection}>
+            <View style={styles.titleRow}>
+                <Text style={styles.sectionTitle}>{title}</Text>
+                <TouchableOpacity onPress={handleViewAll}>
+                    <Text style={styles.viewAll}>View All</Text>
+                </TouchableOpacity>
+            </View>
+
+
+            <Animated.FlatList
+                data={visibleItems}
+                renderItem={renderCategory}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                    { useNativeDriver: false }
+                )}
+                snapToInterval={SCREEN_WIDTH / 3}
+                decelerationRate="fast"
+            />
+
+            {visibleItems.length > 1 && (
+                <View style={styles.paginationContainer}>
+                    {visibleItems.map((_, i) => {
+                        const inputRange = [
+                            (i - 1) * (SCREEN_WIDTH / 3),
+                            i * (SCREEN_WIDTH / 3),
+                            (i + 1) * (SCREEN_WIDTH / 3)
+                        ];
+
+                        const opacity = scrollX.interpolate({
+                            inputRange,
+                            outputRange: [0.3, 1, 0.3],
+                            extrapolate: "clamp",
+                        });
+
+                        const scale = scrollX.interpolate({
+                            inputRange,
+                            outputRange: [0.6, 1.3, 0.6],
+                            extrapolate: "clamp",
+                        });
+
+                        return (
+                            <Animated.View
+                                key={i}
+                                style={[
+                                    styles.dot,
+                                    { opacity, transform: [{ scale }] },
+                                ]}
+                            />
+                        );
+                    })}
+                </View>
+            )}
+        </View>
+    );
 
 };
 
@@ -169,7 +173,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         gap: 6,
     },
-    
+
     dot: {
         height: 9,
         width: 9,

@@ -160,14 +160,13 @@ const SelectSpecialty: React.FC<SelectSpecialtyProps> = ({ navigation, route }) 
         const selectedSpecialties = specialties.filter(spec => spec.isSelected).map(t => t.id);;
         const selectedTreatments = treatmentTypes?.filter(treat => treat.isSelected).map(t => t.id);;
 
-
         console.log('Selected Specialties:', selectedSpecialties, selectedTreatments);
 
 
-        if (selectedSpecialties.length === 0 || selectedTreatments.length === 0) {
-            Alert.alert('Selection Required', 'Please select at least one specialty or treatment type.');
-            return;
-        }
+        // if (selectedSpecialties.length === 0 || selectedTreatments.length === 0) {
+        //     Alert.alert('Selection Required', 'Please select at least one specialty or treatment type.');
+        //     return;
+        // }
 
 
         

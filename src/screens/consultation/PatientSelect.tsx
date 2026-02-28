@@ -63,7 +63,7 @@ const PatientSelect: React.FC<PatientSelectProps> = ({
   //   getUser()
   // }, [isFocused, customerID]);
 
-  
+
   useFocusEffect(
     useCallback(() => {
       getPatientAPI();
@@ -201,12 +201,12 @@ const PatientSelect: React.FC<PatientSelectProps> = ({
 
       <Header title='Select Patient' navigation={navigation} Is_Tab={false} />
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}>
+      <View
+        style={styles.scrollView} >
+        {/* showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}> */}
 
-        <View style={styles.searchContainer}>
+        {/* <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
             <Icon
               name="search-outline"
@@ -225,8 +225,32 @@ const PatientSelect: React.FC<PatientSelectProps> = ({
             />
           </View>
 
-        </View>
+        </View> */}
 
+
+        {filteredPatients.length > 0 && (
+          <View style={styles.searchRow}>
+            <View style={styles.searchInputContainer}>
+              <Icon name="search-outline" size={20} color="#666" />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search patients..."
+                placeholderTextColor="#999"
+                value={searchText}
+                onChangeText={setSearchText}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.plusButton}
+              onPress={handleAddPatient}
+            >
+              <Icon name="add" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+
+        )}
+        
         <View style={styles.patientsContainer}>
           <FlatList
             data={filteredPatients}
@@ -234,11 +258,13 @@ const PatientSelect: React.FC<PatientSelectProps> = ({
             keyExtractor={(item: Patient) => item.id.toString()}
             numColumns={1}
             scrollEnabled={false}
-            ListFooterComponent={<AddPatientCard />}
+            ListFooterComponent={filteredPatients.length == 0 ? <AddPatientCard /> : null}
             showsVerticalScrollIndicator={false}
             testID="patients-list"
           />
         </View>
+
+
 
         <TouchableOpacity
           style={[
@@ -269,7 +295,12 @@ const PatientSelect: React.FC<PatientSelectProps> = ({
             />
           </LinearGradient>
         </TouchableOpacity>
-      </ScrollView>
+
+      </View>
+
+
+
+
     </View>
 
   );
@@ -283,6 +314,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     paddingHorizontal: 20,
+    paddingTop: 20,
   },
   scrollViewContent: {
     paddingBottom: 20,
@@ -291,12 +323,30 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     marginTop: 20
   },
+
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width : '100%',
+    marginBottom: 20,
+  },
+
+  plusButton: {
+    marginLeft: 10,
+    height: 55,
+    width: '15%',
+    borderRadius: 15,
+    backgroundColor: Colors.primaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   searchInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 15,
     paddingHorizontal: 20,
+    width : '80%',
     borderWidth: 0.1,
     elevation: 1,
     shadowColor: '#000',
@@ -320,10 +370,13 @@ const styles = StyleSheet.create({
   patientCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
+    borderColor : Colors.placeholderColor,
     marginBottom: 15,
     elevation: 1,
+    borderWidth :0.5,
+    shadowColor: Colors.primaryColor,
     shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.5,
     shadowRadius: 10,
   },
   selectedCard: {
@@ -362,10 +415,11 @@ const styles = StyleSheet.create({
   },
   patientDetails: {
     fontSize: 14,
-    color: '#636e72',
+fontFamily : Fonts.PoppinsMedium,
+    color: Colors.subTextColor,
   },
   descriptionText: {
-    fontSize: 13,
+    fontSize: 14,
     color: Colors.placeholderColor,
     fontFamily: Fonts.PoppinsMedium
   },

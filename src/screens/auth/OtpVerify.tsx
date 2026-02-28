@@ -81,9 +81,10 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             const response : any = await _AUTH_SERVICE.verify_otp(send_data);
             const { status, data, message } = response;
 
-            console.log('OTP VERIFIED DATA:', response);
+            console.log( response);
 
             const JSONData = await response.json();
+
             console.log("verify_otp_response", response, JSONData);
 
             if (status === 200) {

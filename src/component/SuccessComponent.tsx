@@ -69,9 +69,7 @@ export const PaymentLoadingScreen: React.FC<PaymentLoadingProps> = ({
             if (onPaymentComplete) {
                 onPaymentComplete();
             } else {
-
-
-                navigation.navigate('PaymentSuccess', {
+                navigation.navigate('PaymentSuccessScreen', {
                     SuccessText: ProcessText,
                 });
             }

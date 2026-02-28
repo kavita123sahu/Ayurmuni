@@ -143,21 +143,7 @@ const Splash = (props: any) => {
     }
   }, [isFocused]);
 
-  // ⏱️ timeout wrapper
-  const withTimeout = (promise: Promise<any>, timeout: number) => {
-    return Promise.race([
-      promise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('API timeout')), timeout)
-      ),
-    ]);
-  };
 
-  const navigateToAuth = (delay = 1000) => {
-    setTimeout(() => {
-      props.navigation.replace('AuthStack', { screen: 'Login' });
-    }, delay);
-  };
 
   
 
@@ -180,7 +166,7 @@ const Splash = (props: any) => {
     try {
       const token = await Utils.getData('_TOKEN');
       console.log('tokenn---->>>', token);
-     
+
       if (token) {
         const result: any = await _PROFILE_SERVICES.user_profile();
         const JSONUser = await result.json();
@@ -188,6 +174,7 @@ const Splash = (props: any) => {
         if (result.status === 200) {
           Utils.storeData('_USER_INFO', JSONUser);
           dispatch(setUserInfo(JSONUser));
+          
           setTimeout(() => {
             props.navigation.replace('HomeStack', { screeen: 'Home' })
           }, 1000);

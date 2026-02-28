@@ -220,7 +220,7 @@ const HomeStack = () => {
             <Stack.Screen name={'DownloadFile'} component={Download} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'Assesment'} component={Assesment} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'HealthAssessment'} component={HealthAssessment} options={{ headerShown: false, animation: 'slide_from_right' }} />
-  <Stack.Screen name={'PatientFAQ'} component={PatientFAQ} options={{ headerShown: false, animation: 'slide_from_right' }} />
+            <Stack.Screen name={'PatientFAQ'} component={PatientFAQ} options={{ headerShown: false, animation: 'slide_from_right' }} />
 
         </Stack.Navigator>
 
