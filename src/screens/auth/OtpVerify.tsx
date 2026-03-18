@@ -264,7 +264,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                 >
                     <View style={styles.logoContainer}>
                         <Image
-                            source={Images.mobilelogo}
+                            source={Images.MobileLogo}
                             style={styles.logo}
                             resizeMode='contain'
                         />
@@ -323,7 +323,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                                 style={[styles.verifyButton, styles.verifyButtonLoading]}
                             >
 
-                                <ActivityIndicator size="small" color={Colors.primaryColor} />
+                                <ActivityIndicator size="small" color={Colors.questionGreen} />
                                 <Text style={[styles.verifyButtonText, styles.loadingText]}>
                                     Verifying...
                                 </Text>
@@ -362,17 +362,17 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         alignItems: 'center',
-        marginTop: 100,
+        marginTop: 80,
         marginBottom: 30,
     },
     logo: {
-        width: 180,
-        height: 120,
+        width: 200,
+        height: 140,
     },
 
 
     linkText: {
-        color: '#4A7C3C',
+        color: Colors.questionGreen,
         fontFamily: Fonts.PoppinsSemiBold,
         fontSize: 14
     },
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
         fontSize: 14
     },
     title: {
-        fontSize: 24,
+        fontSize: 28,
         fontFamily: Fonts.PoppinsSemiBold,
         color: '#1f2937',
         textAlign: 'center',
@@ -401,20 +401,21 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 30,
         paddingHorizontal: 20,
+        color:Colors.questionGreen
     },
     otpInput: {
         width: 50,
         height: 50,
         borderWidth: 1,
         borderColor: '#d1d5db',
-        borderRadius: 8,
+        borderRadius: 12,
         backgroundColor: '#ffffff',
         fontSize: 18,
         fontWeight: '600',
-        color: '#1f2937',
+        color: Colors.questionGreen,
     },
     otpInputFilled: {
-        borderColor: Colors.secondaryColor,
+        borderColor: "#0D614E4A",
         backgroundColor: '#f0fdf4',
     },
     resendText: {
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     verifyButtonLoading: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#0D614E',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -439,19 +440,20 @@ const styles = StyleSheet.create({
 
     loadingText: {
         marginLeft: 8,
-        color: Colors.primaryColor,
+        color: Colors.questionGreen,
     },
     verifyButton: {
         height: 50,
-        backgroundColor: '#E8EDE3',
+        backgroundColor: '#0D614E0D',
         borderRadius: 8,
+        borderColor:'#0D614E4A',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 20,
     },
 
     verifyButtonText: {
-        color: Colors.primaryColor,
+        color: Colors.questionGreen,
         fontSize: 16,
         fontWeight: '600',
     },

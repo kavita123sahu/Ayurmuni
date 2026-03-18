@@ -1,76 +1,52 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Provider } from 'react-redux'
 import Navigator from './src/navigation/Navigator'
-import Toast from 'react-native-toast-message';
-import { AppState, Platform } from 'react-native';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import { Platform } from 'react-native';
 import { store } from './src/reduxfile/Store';
-import Login from './src/screens/auth/Login';
 
+const toastConfig = {
 
-// const inAppUpdates = new SpInAppUpdates(
-//   false
-// );
+  success: (props: any) => (
+    <BaseToast
+      {...props}
+      style={{
+        borderLeftColor: '#0D614E',   
+      }}
+      text2Style={{
+        fontSize: 12,
+        color: '#0D614E',             
+        textAlign: 'center'
+      }}
+    />
+  ),
 
+  error: (props: any) => (
+    <ErrorToast
+      {...props}
+      text2Style={{
+        fontSize: 12,
+        textAlign: 'center'
+      }}
+    />
+  ),
+
+};
 
 const App = () => {
-
-  //  const [appState, setAppState] = useState(AppState.currentState);
-
-
-  //   useEffect(() => {
-  //     const _handleAppStateChange = (nextAppState: any) => {
-  //       console.log("inside  function  ", appState.match(/inactive|background/), '....', appState, '  ... ', nextAppState);
-  //       if (!appState.match(/inactive|background/) && nextAppState === 'active') {
-  //         if (Platform.OS === 'android') {
-  //           checkUpdates();
-  //         }
-  //       }
-  //       setAppState(nextAppState);
-  //       return true;
-  //     }
-
-  //     const AppStateChangeHandler = AppState.addEventListener(
-  //       "change",
-  //       _handleAppStateChange
-  //     );
-
-  //     return () => AppStateChangeHandler.remove();
-
-  //   }, [])
-
 
   useEffect(() => {
     console.log("Hello Debugger");
   }, []);
 
-  
-  //   const checkUpdates = () => {
-  //     try {
-  //       inAppUpdates.checkNeedsUpdate().then((result: any) => {
-  //         if (result.shouldUpdate) {
-  //           let updateOptions = {};
-  //           if (Platform.OS === 'android') {
-  //             updateOptions = {
-  //               updateType: IAUUpdateKind.IMMEDIATE,
-  //             };
-  //           }
-  //           inAppUpdates.startUpdate(updateOptions);
-  //         }
-  //       });
-
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-
-  //   }
-
-  
   return (
     <Provider store={store}>
       <Navigator />
-      <Toast />
-    </Provider>
 
+      {/* 👇 toast config applied */}
+      <Toast config={toastConfig} />
+      
+    </Provider>
   )
 }
 

@@ -4,529 +4,489 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    SafeAreaView,
     ScrollView,
     StatusBar,
-    Platform,
-    TextInput,
-    Image,
-    Dimensions,
+    Image
 } from 'react-native';
 
-import YesNoScreen from '../../component/YesNoScreen';
-import { Ionicons } from '../../common/Vector';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import SingleSelectQuestion from '../../component/SingleSelectQuestion';
+
 import LottieView from 'lottie-react-native';
-import { QUESTION_IMAGES } from '../../common/Images';
 
-/* ================= TYPES ================= */
+const IMAGES = {
+    QnAMain: require('../../assets/images/QnAMain.png'),
+    NextArrow: require('../../assets/images/NextAroow.png'),
+    BackButton: require('../../assets/images/BackButoon.png'),
+    PlusBag: require('../../assets/images/PlusBag.png')
+};
 
-
-type StepType = 'single' | 'thankyou';
+type StepType = 'intro' | 'single' | 'thankyou';
 
 interface StepConfig {
     type: StepType;
     question: string;
-    key?: keyof Answers;
-    image?: any;
+    key?: string;
     options?: string[];
-    conditional?: (answers: Answers) => boolean;
+    conditional?: (answers: any) => boolean;
 }
 
+const steps: StepConfig[] = [
 
+    { type: 'intro', question: '' },
 
+    {
+        type: 'single',
+        question: 'Do you know your Prakriti?',
+        key: 'knowPrakriti',
+        options: ['Yes', 'No']
+    },
 
-interface Answers {
-    knowPrakriti?: string;
-    prakriti?: string;
-    bodyType?: string;
-    scalpHair?: string;
-    bodyHair?: string;
-    skin?: string;
-    appetite?: string;
-    bowel?: string;
-    sweating?: string;
-    sleep?: string;
-    learning?: string;
-    temperament?: string;
-    personality?: string;
-}
-/* ================= VALIDATION HELPERS ================= */
+    {
+        type: 'single',
+        question: 'How will you describe your body physique?',
+        key: 'bodyType',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Lean & thin with bony prominences',
+            'Medium Built',
+            'Heavy Built',
+            'Muscular or obese with broad stature'
+        ]
+    },
 
-const isOnlyNumber = (value: string) => /^[0-9]+$/.test(value);
+    {
+        type: 'single',
+        question: 'How will you describe your scalp hair?',
+        key: 'scalpHair',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Dry', 'Frizzy', 'Scanty', 'Soft', 'Less dense', 'Thick', 'Lustrous', 'Long', 'Prone to greying and hairfall'
+        ]
+    },
 
+    {
+        type: 'single',
+        question: 'How will you describe your body hair?',
+        key: 'bodyHair',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Scanty', 'Almost absent', 'Scarcely present', 'Brown', 'Soft', 'Dense', 'Thick often dark'
+        ]
+    },
 
-const isValidPhone = (value: string) =>
-    /^[6-9][0-9]{9}$/.test(value);
+    {
+        type: 'single',
+        question: 'How will you describe your forehead?',
+        key: 'forehead',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Low hairline, short forehead',
+            'Medium forehead',
+            'Broad forehead'
+        ]
+    },
 
+    {
+        type: 'single',
+        question: 'How will you describe your skin texture?',
+        key: 'skin',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Dry & cracked skin',
+            'Soft',
+            'Combination skin with reddish tinge',
+            'Smooth & acne prone',
+            'Oily',
+            'Glossy'
+        ]
+    },
 
-const isValidEmail = (value: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    {
+        type: 'single',
+        question: 'How would you describe your appetite and dietary habits?',
+        key: 'appetite',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Irregular: No fixed pattern of food intake',
+            'Tend to eat meals at regular intervals',
+            'Low appetite, feel full quickly'
+        ]
+    },
 
-const isValidAgeOrDob = (value: string) => {
-    if (isOnlyNumber(value)) {
-        const age = Number(value);
-        return age > 0 && age <= 120;
+    {
+        type: 'single',
+        question: 'How would you describe your bowel movements?',
+        key: 'bowel',
+        conditional: (a) => a.knowPrakriti === 'No',
+        options: [
+            'Usually hard stools cccccccccccccccccccccc sadfasf ds foubsa asofboas coausbfoae eoausb',
+            'Soft stools twice a day',
+            'Well formed stools'
+        ]
+    },
+
+    {
+        type: 'thankyou',
+        question: ''
     }
-    return /^\d{4}-\d{2}-\d{2}$/.test(value);
-};
 
-const THANK_YOU_STEP: StepConfig = {
-    type: 'thankyou',
-    question: '',
-};
-/* ================= COMMON ================= */
+];
 
-
-const ProgressBar = ({ progress }: { progress: number }) => (
-    <View style={styles.progressContainer}>
-        <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
-    </View>
-);
-
-const ProceedButton = ({
-    onPress,
-    disabled,
-}: {
-    onPress: () => void;
-    disabled?: boolean;
-}) => (
-    <View style={styles.footer}>
-        <TouchableOpacity
-            style={[styles.proceedButton, disabled && styles.proceedButtonDisabled]}
-            onPress={onPress}
-            disabled={disabled}
-            activeOpacity={0.85}
-        >
-            <Text style={styles.proceedButtonText}>Proceed</Text>
-        </TouchableOpacity>
-    </View>
-);
-
-/* ================= MAIN ================= */
-
-const PatientFAQ: React.FC = (props: any) => {
-
-    console.log("PatientFAQProps ", props);
+const PatientFAQ = (props: any) => {
 
     const [step, setStep] = useState(0);
-    const { width: screenWidth } = Dimensions.get('window');
-    const [answers, setAnswers] = useState<Answers>({});
-
-    const steps: StepConfig[] = [
-
-        {
-            type: 'single',
-            question: 'Do you know your Prakriti?',
-            key: 'knowPrakriti',
-            image: QUESTION_IMAGES.knowPrakriti,
-            options: ['Yes', 'No'],
-        },
-
-        /* YES FLOW */
-        {
-            type: 'single',
-            question: 'Select your Prakriti',
-            key: 'prakriti',
-            image: QUESTION_IMAGES.prakriti,
-            conditional: (a) => a.knowPrakriti === 'Yes',
-            options: [
-                'Vata',
-                'Pitta',
-                'Kapha',
-                'Vata Pitta',
-                'Pitta Kapha',
-                'Vata Kapha',
-                'Tridoshaja',
-            ],
-        },
-
-        {
-            ...THANK_YOU_STEP,
-            conditional: (a) => a.knowPrakriti === 'Yes',
-        },
-
-        /* NO FLOW */
-        {
-            type: 'single',
-            question: 'How will you describe your body physique?',
-            key: 'bodyType',
-            image: QUESTION_IMAGES.bodyType,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: ['Lean', 'Medium', 'Heavy'],
-        },
-
-        {
-            type: 'single',
-            question: 'How will you describe your scalp hair?',
-            key: 'scalpHair',
-            image: QUESTION_IMAGES.scalpHair,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Dry, frizzy, scanty',
-                'Soft, less dense, prone to greying',
-                'Thick, lustrous, long',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How will you describe your body hair?',
-            key: 'bodyHair',
-            image: QUESTION_IMAGES.bodyHair,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Scanty, almost absent',
-                'Scarcely present, brown, soft',
-                'Dense, thick often dark',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How will you describe your skin texture?',
-            key: 'skin',
-            image: QUESTION_IMAGES.skin,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Dry and cracked skin',
-                'Soft, combination skin',
-                'Oily, glossy, acne prone',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How will you describe your appetite?',
-            key: 'appetite',
-            image: QUESTION_IMAGES.appetite,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: ['Low', 'Strong', 'Irregular'],
-        },
-        {
-            type: 'single',
-            question: 'How would you describe your bowel movements?',
-            key: 'bowel',
-            image: QUESTION_IMAGES.bowel,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Hard stools / constipation',
-                'Loose stools / diarrhoea',
-                'Well formed stools',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How would you describe your sweating?',
-            key: 'sweating',
-            image: QUESTION_IMAGES.sweating,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Irregular or seasonal',
-                'Profuse sweating',
-                'Less sweating',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How would you describe your sleep?',
-            key: 'sleep',
-            image: QUESTION_IMAGES.sleep,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: ['Light', 'Sound', 'Heavy'],
-        },
-
-        {
-            type: 'single',
-            question: 'How would you describe your learning potential?',
-            key: 'learning',
-            image: QUESTION_IMAGES.learning,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Quick learner, forget easily',
-                'Sharp and intelligent',
-                'Slow learner, strong memory',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How will you describe your temperament?',
-            key: 'temperament',
-            image: QUESTION_IMAGES.temperament,
-            conditional: (a) => a.knowPrakriti === 'No',
-            options: [
-                'Anxious and restless',
-                'Aggressive and bold',
-                'Calm and composed',
-            ],
-        },
-
-        {
-            type: 'single',
-            question: 'How will you describe your personality?',
-            key: 'personality',
-            image: QUESTION_IMAGES.personality,
-            options: [
-                'Outgoing and talkative',
-                'Ambivert',
-                'Introvert',
-            ],
-
-        },
-
-        THANK_YOU_STEP,
-
-        // { type: 'done', question: '' },
-
-
-    ];
+    const [answers, setAnswers] = useState<any>({});
 
     const visibleSteps = steps.filter(
         (s) => !s.conditional || s.conditional(answers)
     );
 
     const current = visibleSteps[step];
-
-    const getProgress = () => {
-        // YES flow → Thank you = full progress
-        if (answers.knowPrakriti === 'Yes') {
-            if (current.type === 'thankyou') return 1;
-            return step / 2; // Q1 + Prakriti (2 steps)
-        }
-
-        // NO flow → normal progress
-        return step / (visibleSteps.length - 1);
-    };
-
-    const progress = getProgress();
-    // const progress = step / (visibleSteps.length - 1);
-
+    const progress = step / (visibleSteps.length - 1);
 
     const handleNext = () => {
-        if (current.type === 'thankyou') {
-          props.navigation.replace('HomeStack', { screeen: 'Home' })
+
+        if (current.key === 'knowPrakriti' && answers.knowPrakriti === 'Yes') {
+            setStep(visibleSteps.length - 1);
             return;
         }
 
-        if (step < visibleSteps.length - 1) setStep(step + 1);
+        if (current.type === 'thankyou') {
+            props.navigation.replace('HomeStack', { screen: 'Home' });
+            return;
+        }
+        setStep(step + 1);
     };
-
-
 
     const handleBack = () => {
         if (step > 0) setStep(step - 1);
     };
 
-    /* ================= VALIDATION ================= */
+    const handleSkip = () => {
+        setStep(step + 1);
+    };
+
+    const handleSkipHome = () => {
+        props.navigation.replace('HomeStack', { screen: 'Home' });
+    };
+
     const isDisabled =
-        current.type === 'single'
-            ? !answers[current.key as keyof Answers]
-            : false;
+        step === 0
+            ? false
+            : current.type === 'single'
+                ? !answers[current.key!]
+                : false
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+        <SafeAreaView style={styles.container} edges={['top']}>
+
+            <StatusBar barStyle="dark-content" />
+
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
                 <View style={styles.content}>
-                    <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color="#333" />
-                    </TouchableOpacity>
 
-                    <ProgressBar progress={progress} />
+                    {current.type !== 'intro' && (
 
-                    <View style={styles.questionContainer}>
-                        {current.image && (
-                            <View style={styles.imageWrapper}>
-                                <Image
-                                    source={current.image}
-                                    style={styles.questionImage}
-                                    resizeMode="contain"
-                                />
+                        <View style={styles.header}>
+
+                            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+                                <Image source={IMAGES.BackButton} style={styles.backIcon} />
+                            </TouchableOpacity>
+
+                            <Text style={styles.headerTitle}>Onboarding</Text>
+
+                            {/* Skip icon only on OTHER questions */}
+                            {current.key !== 'knowPrakriti' && step > 0 && (
+                                <TouchableOpacity style={styles.skipHeaderBtn} onPress={handleSkip}>
+                                    <Text style={styles.skipHeaderText}>Skip</Text>
+                                </TouchableOpacity>
+                            )}
+
+                        </View>
+                    )}
+
+                    {step > 0 && (
+
+                        <>
+                            <Text style={styles.stepText}>
+                                Step {step} of {visibleSteps.length - 1}
+                            </Text>
+
+                            <View style={styles.progressContainer}>
+                                <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
                             </View>
-                        )}
+                        </>
 
-                        <Text style={styles.questionText}>{current.question}</Text>
+                    )}
 
-                        {current.type === 'single' && current.key && (
-                            <YesNoScreen
-                                options={current.options!}
-                                selected={answers[current.key] ?? null}
-                                onSelect={(value: any) =>
-                                    setAnswers({ ...answers, [current.key!]: value })
-                                }
+                    {step === 0 && (
+
+                        <View style={styles.introContainer}>
+
+                            <Image
+                                source={IMAGES.QnAMain}
+                                style={styles.qnaImage}
                             />
-                        )}
 
-                        {current.type === 'thankyou' && (
+                            <Text style={styles.title}>
+                                Your Health, <Text style={styles.green}>Simplified</Text>
+                            </Text>
 
-                            <View style={styles.thankYouContainer}>
-                                {/* <Image
-                                    source={require('../assets/thankyou.png')}
-                                    style={styles.thankYouImage}
-                                /> */}
+                            <Text style={styles.subtitle}>
+                                Discover top-rated doctors and authentic medicines delivered right to your doorstep.
+                            </Text>
 
-                                <LottieView
-                                    source={require('../../assets/animations/thankyou.json')}
-                                    autoPlay
-                                    loop
-                                    style={{ width: screenWidth <= 360 ? 200 : 400, height: screenWidth <= 360 ? 200 : 400 }}
-                                />
+                        </View>
 
-                                <Text style={styles.thankYouTitle}>Thank You 🙏</Text>
-                                <Text style={styles.thankYouText}>
-                                    Your Prakriti has been saved successfully
-                                </Text>
+                    )}
+
+                    {current.key === 'knowPrakriti' && (
+
+                        <>
+
+                            <Text style={styles.questionText}>{current.question}</Text>
+
+                            <Text style={styles.prakritiDesc}>
+                                Prakriti is your unique, lifelong Ayurvedic blueprint—the birth-given balance of Vata, Pitta, and Kapha that defines your nature.
+                            </Text>
+
+                            <View style={styles.prakritiRow}>
+
+                                <TouchableOpacity
+                                    style={[
+                                        styles.prakritiBtn,
+                                        answers.knowPrakriti === 'No' && styles.prakritiBtnActive
+                                    ]}
+                                    onPress={() => setAnswers({ ...answers, knowPrakriti: 'No' })}
+                                >
+                                    <Text style={[
+                                        styles.prakritiText,
+                                        answers.knowPrakriti === 'No' && styles.prakritiTextActive
+                                    ]}>
+                                        No
+                                    </Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={[
+                                        styles.prakritiBtn,
+                                        answers.knowPrakriti === 'Yes' && styles.prakritiBtnActive
+                                    ]}
+                                    onPress={() => setAnswers({ ...answers, knowPrakriti: 'Yes' })}
+                                >
+                                    <Text style={[
+                                        styles.prakritiText,
+                                        answers.knowPrakriti === 'Yes' && styles.prakritiTextActive
+                                    ]}>
+                                        Yes
+                                    </Text>
+                                </TouchableOpacity>
+
                             </View>
-                        )}
-                    </View>
+
+                            <Image source={IMAGES.PlusBag} style={styles.prakritiImage} />
+
+                        </>
+
+                    )}
+
+                    {current.type === 'single' && current.key !== 'knowPrakriti' && (
+
+                        <>
+
+                            <Text style={styles.questionText}>{current.question}</Text>
+
+                            <SingleSelectQuestion
+                                options={current.options}
+                                selected={answers[current.key!]}
+                                onSelect={(value: any) => setAnswers({ ...answers, [current.key!]: value })}
+                            />
+
+                        </>
+
+                    )}
+
+                    {current.type === 'thankyou' && (
+
+                        <View style={styles.thankYouContainer}>
+
+                            <LottieView
+                                source={require('../../assets/animations/thankyou.json')}
+                                autoPlay
+                                loop
+                                style={{ width: 280, height: 280 }}
+                            />
+
+                            <Text style={styles.thankYouTitle}>Thank You 🙏</Text>
+
+                        </View>
+
+                    )}
+
                 </View>
+
             </ScrollView>
 
-            <ProceedButton onPress={handleNext} disabled={isDisabled} />
+            {current.type !== 'thankyou' && (
+
+                <View style={styles.footer}>
+
+                    <TouchableOpacity
+                        style={[styles.proceedButton, isDisabled && styles.proceedButtonDisabled]}
+                        disabled={isDisabled}
+                        onPress={handleNext}
+                    >
+
+                        <View style={styles.nextRow}>
+                            <Text style={styles.proceedButtonText}>
+                                {step === 0 ? 'Continue' : 'Next'}
+                            </Text>
+
+                            <Image source={IMAGES.NextArrow} style={styles.nextArrow} />
+                        </View>
+
+                    </TouchableOpacity>
+
+                    {/* Bottom skip ONLY for Prakriti screen */}
+                    {current.key === 'knowPrakriti' && (
+                        <TouchableOpacity style={styles.bottomSkipBtn} onPress={handleSkipHome}>
+                            <Text style={styles.bottomSkipText}>Skip</Text>
+                        </TouchableOpacity>
+                    )}
+
+                    {step > 0 && (
+                        <Text style={styles.secureText}>
+                            Your data is encrypted and secure.
+                        </Text>
+                    )}
+
+                </View>
+
+            )}
+
         </SafeAreaView>
 
     );
+
 };
 
 export default PatientFAQ;
 
-const { width } = Dimensions.get('window');
-const isSmallDevice = width < 360;
-/* ================= STYLES ================= */
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    },
 
-    scrollContent: { flexGrow: 1 },
+    container: { flex: 1, backgroundColor: '#fff' },
 
     content: { flex: 1, paddingHorizontal: 24 },
 
-    backButton: { marginVertical: 16 },
+    introContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+
+    qnaImage: { width: 400, height: 400, resizeMode: 'contain', marginBottom: 40 },
+
+    title: { fontSize: 30, fontFamily: Fonts.PoppinsSemiBold, color: '#111827' },
+
+    green: { color: Colors.questionGreen },
+
+    subtitle: { fontSize: 19, color: '#6B7280', textAlign: 'center', marginTop: 10, paddingHorizontal: 30 },
+
+    questionText: { fontSize: 30, fontFamily: Fonts.PoppinsSemiBold, marginVertical: 20 },
+
+    header: { height: 70, justifyContent: 'center', alignItems: 'center' },
+
+    backButton: { position: 'absolute', left: 0 },
+
+    backIcon: { width: 60, height: 60, resizeMode: 'contain' },
+
+    headerTitle: { fontSize: 18, fontWeight: '600', color: '#1A1A1A' },
+
+    skipHeaderBtn: { position: 'absolute', right: 0 },
+
+    skipHeaderText: { color: Colors.questionGreen, fontSize: 16 },
+
+    stepText: { marginTop: 10, color: '#6B7280', fontSize: 17 },
 
     progressContainer: {
         height: 6,
-        backgroundColor: '#E5E5E5',
-        borderRadius: 3,
+        backgroundColor: '#E5E7EB',
+        borderRadius: 50,
+        marginVertical: 10,
+        overflow: 'hidden'
     },
 
     progressBar: {
         height: '100%',
-        backgroundColor: Colors.primaryColor,
-        borderRadius: 3,
-    },
-
-    input: {
-        width: '100%',
-        borderWidth: 1,
-        borderColor: '#D1D5DB',
-        borderRadius: 12,
-        padding: 14,
-        fontFamily: Fonts.PoppinsMedium,
-    },
-
-    inputError: {
-        borderColor: 'red',
-    },
-
-    errorText: {
-        color: 'red',
-        fontSize: 12,
-        marginTop: 8,
-        fontFamily: Fonts.PoppinsMedium,
+        backgroundColor: Colors.questionGreen,
+        borderRadius: 50
     },
 
     footer: { padding: 24 },
 
-    proceedButton: {
-        backgroundColor: Colors.primaryColor,
+    proceedButton: { backgroundColor: Colors.questionGreen, padding: 16, borderRadius: 16, marginBottom: 10 },
+
+    proceedButtonDisabled: { backgroundColor: '#D1D5DB' },
+
+    proceedButtonText: { color: '#fff', fontFamily: Fonts.PoppinsMedium },
+
+    nextRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+
+    nextArrow: { width: 18, height: 18, marginLeft: 5 },
+
+    bottomSkipBtn: {
+        borderWidth: 1,
+        borderColor: '#D1D5DB',
+        borderRadius: 16,
         padding: 16,
-        borderRadius: 28,
+        alignItems: 'center',
+        marginTop: 10
     },
 
-    proceedButtonDisabled: {
-        backgroundColor: '#D1D5DB',
+    bottomSkipText: {
+        color: Colors.questionGreen,
+        fontFamily: Fonts.PoppinsMedium
     },
 
-    proceedButtonText: {
-        color: '#FFFFFF',
+    secureText: {
         textAlign: 'center',
-        fontFamily: Fonts.PoppinsMedium,
+        color: '#94A3B8',
+        marginTop: 10,
+        fontSize: 14
     },
 
-    doneContainer: {
+    prakritiDesc: { fontSize: 16, color: '#64748B', marginBottom: 20 },
+
+    prakritiRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
+
+    prakritiBtn: {
         flex: 1,
-        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        borderRadius: 12,
+        paddingVertical: 14,
         alignItems: 'center',
+        marginHorizontal: 5
     },
 
-    doneText: {
-        fontSize: 28,
-        fontFamily: Fonts.PoppinsSemiBold,
-    },
-    thankYouContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 24,
+    prakritiBtnActive: { backgroundColor: Colors.questionGreen },
+
+    prakritiText: { color: '#111827' },
+
+    prakritiTextActive: { color: '#fff' },
+
+    prakritiImage: {
+        width: 120,
+        height: 120,
+        alignSelf: 'center',
+        opacity: 0.2,
+        marginTop: 60
     },
 
-    questionContainer: {
-        flex: 1,
-        alignItems: 'center',
-        paddingHorizontal: 16,
-    },
+    thankYouContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 
-    imageWrapper: {
-        width: '100%',
-        height: isSmallDevice ? 100 : 140, // 🔥 FIXED HEIGHT
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 16,
-    },
-
-    questionImage: {
-        width: '100%',
-        height: '100%', // 🔒 FIXED SIZE
-    },
-
-    questionText: {
-        fontSize: isSmallDevice ? 18 : 20,
-        fontFamily: Fonts.PoppinsMedium,
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-
-
-    thankYouImage: {
-        width: 180,
-        height: 180,
-        resizeMode: 'contain',
-        marginBottom: 24,
-    },
-
-    thankYouTitle: {
-        fontSize: 26,
-        fontFamily: Fonts.PoppinsSemiBold,
-        color: Colors.primaryColor,
-        marginBottom: 12,
-        textAlign: 'center',
-    },
-
-    thankYouText: {
-        fontSize: 15,
-        fontFamily: Fonts.PoppinsMedium,
-        color: '#6B7280',
-        textAlign: 'center',
-        lineHeight: 22,
-    },
+    thankYouTitle: { fontSize: 26, fontFamily: Fonts.PoppinsSemiBold }
 
 });

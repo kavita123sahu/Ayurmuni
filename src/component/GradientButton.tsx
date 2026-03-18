@@ -12,7 +12,7 @@ const GradientButton = ({ onPress, text, colors, disable, isLoading }: any) => {
         <TouchableOpacity
             onPress={onPress} >
             <LinearGradient
-                colors={[Colors.secondaryColor, Colors.primaryColor,]}
+                colors={[Colors.questionGreen, Colors.questionGreen,]}
                 style={styles.otpButton}>
                 <Text style={[styles.otpButtonText]}>
                     {text}

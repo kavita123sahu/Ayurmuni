@@ -35,7 +35,7 @@
     "react-native-maps": "1.26.20",
     "react-native-permissions": "5.4.4",
     "react-native-razorpay": "2.3.1",
-    "react-native-safe-area-context": "^5.6.2",
+    "react-native-safe-area-context": "^5.7.0",
     "react-native-screens": "^4.19.0",
     "react-native-skeleton-placeholder": "^2.0.6",
     "react-native-svg": "^15.15.1",
@@ -51,9 +51,7 @@
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
     "@react-native-community/cli": "15.0.0",
-    "@react-native-community/cli-platform-android": "20.0.0"
-    
-    ,
+    "@react-native-community/cli-platform-android": "20.0.0",
     "@react-native-community/cli-platform-ios": "20.0.0",
     "@react-native/babel-preset": "0.83.0",
     "@react-native/eslint-config": "0.83.0",

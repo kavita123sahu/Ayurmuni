@@ -3,6 +3,7 @@ export const Colors = {
   black: '#000000',   //#71A33F   old Primary color    // old secondaryu color 71A33F    // tabttransparentcolro : 77946cff
   primaryColor: '#3F4B1A',    // new primary color 
   secondaryColor: '#466425',
+  questionGreen:'#0D614E',
   tabinactive: '#E8EDE3',
   bottomBg: '#EDEEF5',
   bottomActive: '#A52238',

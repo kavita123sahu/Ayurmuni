@@ -1,4 +1,6 @@
 export const Images = {
+    newlogo:require('../assets/images/MainIcon.png'),
+    MobileLogo:require('../assets/images/MobileLogo.png'),
     splashlogo: require('../assets/images/logo.png'),
     networkissue: require('../assets/images/networklogo.png'),
     ellipsebackground: require('../assets/images/Ellipse.png'),

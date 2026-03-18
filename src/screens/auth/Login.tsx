@@ -114,7 +114,7 @@ const Login: React.FC = (props: any) => {
 
           <View style={styles.logoContainer}>
             <Image
-              source={Images.splashlogo}
+              source={Images.newlogo}
               style={styles.logo}
               resizeMode='contain'
             />
@@ -169,7 +169,7 @@ const Login: React.FC = (props: any) => {
 
                 >
 
-                  <ActivityIndicator size="small" color={Colors.primaryColor} />
+                  <ActivityIndicator size="small" color={Colors.questionGreen} />
                   <Text style={[styles.verifyButtonText, styles.loadingText]}>
                     Processing...
 
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   welcomeTitle: {
     fontSize: 24,
-    color: Colors.primaryColor,
+    color: Colors.questionGreen,
     fontFamily: Fonts.PoppinsSemiBold,
     marginBottom: 12,
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   countryCode: {
     fontSize: 16,
-    color: Colors.primaryColor,
+    color: Colors.questionGreen,
     fontFamily: Fonts.PoppinsMedium,
   },
   phoneInput: {
@@ -305,13 +305,13 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   linkText: {
-    color: Colors.primaryColor,
+    color: Colors.questionGreen,
     fontFamily: Fonts.PoppinsMedium,
     fontSize: 14
   },
   loadingText: {
     marginLeft: 8,
-    color: Colors.primaryColor,
+    color: Colors.questionGreen,
   },
   verifyButtonLoading: {
     backgroundColor: '#f0f0f0',
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
 
   verifyButtonText: {
-    color: Colors.primaryColor,
+    color: Colors.questionGreen,
     fontSize: 16,
     fontWeight: '600',
   },
