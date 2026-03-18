@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -9,12 +9,11 @@ import {
     Image
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import SingleSelectQuestion from '../../component/SingleSelectQuestion';
-
+import * as _ASSESS_SERVICE from '../../services/AssesmentService';
 import LottieView from 'lottie-react-native';
 
 const IMAGES = {
@@ -30,125 +29,86 @@ interface StepConfig {
     type: StepType;
     question: string;
     key?: string;
-    options?: string[];
+    options?: any[];
     conditional?: (answers: any) => boolean;
 }
-
-const steps: StepConfig[] = [
-
-    { type: 'intro', question: '' },
-
-    {
-        type: 'single',
-        question: 'Do you know your Prakriti?',
-        key: 'knowPrakriti',
-        options: ['Yes', 'No']
-    },
-
-    {
-        type: 'single',
-        question: 'How will you describe your body physique?',
-        key: 'bodyType',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Lean & thin with bony prominences',
-            'Medium Built',
-            'Heavy Built',
-            'Muscular or obese with broad stature'
-        ]
-    },
-
-    {
-        type: 'single',
-        question: 'How will you describe your scalp hair?',
-        key: 'scalpHair',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Dry', 'Frizzy', 'Scanty', 'Soft', 'Less dense', 'Thick', 'Lustrous', 'Long', 'Prone to greying and hairfall'
-        ]
-    },
-
-    {
-        type: 'single',
-        question: 'How will you describe your body hair?',
-        key: 'bodyHair',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Scanty', 'Almost absent', 'Scarcely present', 'Brown', 'Soft', 'Dense', 'Thick often dark'
-        ]
-    },
-
-    {
-        type: 'single',
-        question: 'How will you describe your forehead?',
-        key: 'forehead',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Low hairline, short forehead',
-            'Medium forehead',
-            'Broad forehead'
-        ]
-    },
-
-    {
-        type: 'single',
-        question: 'How will you describe your skin texture?',
-        key: 'skin',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Dry & cracked skin',
-            'Soft',
-            'Combination skin with reddish tinge',
-            'Smooth & acne prone',
-            'Oily',
-            'Glossy'
-        ]
-    },
-
-    {
-        type: 'single',
-        question: 'How would you describe your appetite and dietary habits?',
-        key: 'appetite',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Irregular: No fixed pattern of food intake',
-            'Tend to eat meals at regular intervals',
-            'Low appetite, feel full quickly'
-        ]
-    },
-
-    {
-        type: 'single',
-        question: 'How would you describe your bowel movements?',
-        key: 'bowel',
-        conditional: (a) => a.knowPrakriti === 'No',
-        options: [
-            'Usually hard stools cccccccccccccccccccccc sadfasf ds foubsa asofboas coausbfoae eoausb',
-            'Soft stools twice a day',
-            'Well formed stools'
-        ]
-    },
-
-    {
-        type: 'thankyou',
-        question: ''
-    }
-
-];
 
 const PatientFAQ = (props: any) => {
 
     const [step, setStep] = useState(0);
     const [answers, setAnswers] = useState<any>({});
+    const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>({});
+    const [dynamicSteps, setDynamicSteps] = useState<StepConfig[]>([]);
+
+    useEffect(() => {
+        getQuestionList();
+    }, []);
+
+    const getQuestionList = async () => {
+        try {
+            let response: any = await _ASSESS_SERVICE.GetQuestionOptions();
+
+            const apiSteps: StepConfig[] = response.map((q: any) => ({
+                type: 'single',
+                question: q.text,
+                key: q.id,
+                conditional: (a: any) => a.knowPrakriti === 'No',
+                options: q.choices
+            }));
+
+            setDynamicSteps(apiSteps);
+
+        } catch (error) {
+            console.log("CATEGORY DATA ERROR:", error);
+        }
+    };
+
+    const steps: StepConfig[] = [
+        { type: 'intro', question: '' },
+        {
+            type: 'single',
+            question: 'Do you know your Prakriti?',
+            key: 'knowPrakriti',
+            options: ['Yes', 'No']
+        },
+        ...dynamicSteps,
+        { type: 'thankyou', question: '' }
+    ];
 
     const visibleSteps = steps.filter(
         (s) => !s.conditional || s.conditional(answers)
     );
 
     const current = visibleSteps[step];
+    
     const progress = step / (visibleSteps.length - 1);
 
-    const handleNext = () => {
+    const handleNext = async () => {
+        console.log("=======.>",current)
+
+        if (current.key !== 'knowPrakriti' && current.type === 'single') {
+
+            const choice_id = selectedChoices[current.key!];
+
+            if (choice_id) {
+                const payload = {
+                    patient_id: "7e7f7891-ce4c-4431-8e44-1edb921a8c1e",
+                    answers: [
+                        {
+                            question_id: current.key,
+                            choice_id: choice_id
+                        }
+                    ]
+                };
+
+                try {
+                    await _ASSESS_SERVICE.AssesmentSubmit(payload);
+                    console.log("Submitted:", payload);
+                } catch (error) {
+                    console.log("POST ERROR:", error);
+                }
+            }
+        }
 
         if (current.key === 'knowPrakriti' && answers.knowPrakriti === 'Yes') {
             setStep(visibleSteps.length - 1);
@@ -159,6 +119,7 @@ const PatientFAQ = (props: any) => {
             props.navigation.replace('HomeStack', { screen: 'Home' });
             return;
         }
+
         setStep(step + 1);
     };
 
@@ -179,7 +140,7 @@ const PatientFAQ = (props: any) => {
             ? false
             : current.type === 'single'
                 ? !answers[current.key!]
-                : false
+                : false;
 
     return (
 
@@ -201,7 +162,6 @@ const PatientFAQ = (props: any) => {
 
                             <Text style={styles.headerTitle}>Onboarding</Text>
 
-                            {/* Skip icon only on OTHER questions */}
                             {current.key !== 'knowPrakriti' && step > 0 && (
                                 <TouchableOpacity style={styles.skipHeaderBtn} onPress={handleSkip}>
                                     <Text style={styles.skipHeaderText}>Skip</Text>
@@ -212,7 +172,6 @@ const PatientFAQ = (props: any) => {
                     )}
 
                     {step > 0 && (
-
                         <>
                             <Text style={styles.stepText}>
                                 Step {step} of {visibleSteps.length - 1}
@@ -222,34 +181,24 @@ const PatientFAQ = (props: any) => {
                                 <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
                             </View>
                         </>
-
                     )}
 
+                    {/* INTRO */}
                     {step === 0 && (
-
                         <View style={styles.introContainer}>
-
-                            <Image
-                                source={IMAGES.QnAMain}
-                                style={styles.qnaImage}
-                            />
-
+                            <Image source={IMAGES.QnAMain} style={styles.qnaImage} />
                             <Text style={styles.title}>
                                 Your Health, <Text style={styles.green}>Simplified</Text>
                             </Text>
-
                             <Text style={styles.subtitle}>
                                 Discover top-rated doctors and authentic medicines delivered right to your doorstep.
                             </Text>
-
                         </View>
-
                     )}
 
+                    {/* PRAKRITI SCREEN (FIXED AS FIGMA) */}
                     {current.key === 'knowPrakriti' && (
-
                         <>
-
                             <Text style={styles.questionText}>{current.question}</Text>
 
                             <Text style={styles.prakritiDesc}>
@@ -257,76 +206,78 @@ const PatientFAQ = (props: any) => {
                             </Text>
 
                             <View style={styles.prakritiRow}>
+                                {['No', 'Yes'].map((item) => {
+                                    const active = answers.knowPrakriti === item;
 
-                                <TouchableOpacity
-                                    style={[
-                                        styles.prakritiBtn,
-                                        answers.knowPrakriti === 'No' && styles.prakritiBtnActive
-                                    ]}
-                                    onPress={() => setAnswers({ ...answers, knowPrakriti: 'No' })}
-                                >
-                                    <Text style={[
-                                        styles.prakritiText,
-                                        answers.knowPrakriti === 'No' && styles.prakritiTextActive
-                                    ]}>
-                                        No
-                                    </Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[
-                                        styles.prakritiBtn,
-                                        answers.knowPrakriti === 'Yes' && styles.prakritiBtnActive
-                                    ]}
-                                    onPress={() => setAnswers({ ...answers, knowPrakriti: 'Yes' })}
-                                >
-                                    <Text style={[
-                                        styles.prakritiText,
-                                        answers.knowPrakriti === 'Yes' && styles.prakritiTextActive
-                                    ]}>
-                                        Yes
-                                    </Text>
-                                </TouchableOpacity>
-
+                                    return (
+                                        <TouchableOpacity
+                                            key={item}
+                                            style={[styles.prakritiBtn, active && styles.prakritiBtnActive]}
+                                            onPress={() => setAnswers({ ...answers, knowPrakriti: item })}
+                                        >
+                                            <Text style={[styles.prakritiText, active && styles.prakritiTextActive]}>
+                                                {item}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
                             </View>
 
                             <Image source={IMAGES.PlusBag} style={styles.prakritiImage} />
-
                         </>
-
                     )}
 
+                    {/* QUESTIONS */}
                     {current.type === 'single' && current.key !== 'knowPrakriti' && (
-
                         <>
-
                             <Text style={styles.questionText}>{current.question}</Text>
 
-                            <SingleSelectQuestion
-                                options={current.options}
-                                selected={answers[current.key!]}
-                                onSelect={(value: any) => setAnswers({ ...answers, [current.key!]: value })}
-                            />
+                            {(current.options as any[])?.map((item: any, index: number) => {
 
+                                const text = item.text;
+                                const active = answers[current.key!] === text;
+
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[styles.card, active && styles.active]}
+                                        onPress={() => {
+                                            setAnswers({ ...answers, [current.key!]: text });
+
+                                            setSelectedChoices((prev) => ({
+                                                ...prev,
+                                                [current.key!]: item.id
+                                            }));
+                                        }}
+                                    >
+                                        <Text style={[styles.text, active && styles.activeText]}>
+                                            {text}
+                                        </Text>
+
+                                        {active && (
+                                            <View style={styles.iconContainer}>
+                                                <View style={styles.tickCircle}>
+                                                    <Icon name="checkmark" size={13} color={Colors.questionGreen} />
+                                                </View>
+                                            </View>
+                                        )}
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </>
-
                     )}
 
+                    {/* THANK YOU */}
                     {current.type === 'thankyou' && (
-
                         <View style={styles.thankYouContainer}>
-
                             <LottieView
                                 source={require('../../assets/animations/thankyou.json')}
                                 autoPlay
                                 loop
                                 style={{ width: 280, height: 280 }}
                             />
-
                             <Text style={styles.thankYouTitle}>Thank You 🙏</Text>
-
                         </View>
-
                     )}
 
                 </View>
@@ -342,38 +293,26 @@ const PatientFAQ = (props: any) => {
                         disabled={isDisabled}
                         onPress={handleNext}
                     >
-
                         <View style={styles.nextRow}>
                             <Text style={styles.proceedButtonText}>
                                 {step === 0 ? 'Continue' : 'Next'}
                             </Text>
-
                             <Image source={IMAGES.NextArrow} style={styles.nextArrow} />
                         </View>
-
                     </TouchableOpacity>
 
-                    {/* Bottom skip ONLY for Prakriti screen */}
+                    {/* SKIP BUTTON (FIGMA FIX) */}
                     {current.key === 'knowPrakriti' && (
                         <TouchableOpacity style={styles.bottomSkipBtn} onPress={handleSkipHome}>
                             <Text style={styles.bottomSkipText}>Skip</Text>
                         </TouchableOpacity>
                     )}
 
-                    {step > 0 && (
-                        <Text style={styles.secureText}>
-                            Your data is encrypted and secure.
-                        </Text>
-                    )}
-
                 </View>
-
             )}
 
         </SafeAreaView>
-
     );
-
 };
 
 export default PatientFAQ;
@@ -487,6 +426,51 @@ const styles = StyleSheet.create({
 
     thankYouContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 
-    thankYouTitle: { fontSize: 26, fontFamily: Fonts.PoppinsSemiBold }
+    thankYouTitle: { fontSize: 26, fontFamily: Fonts.PoppinsSemiBold },
+
+    card: {
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        borderRadius: 14,
+        paddingVertical: 16,
+        paddingHorizontal: 18,
+        paddingRight: 48,
+        marginBottom: 12,
+        backgroundColor: '#fff',
+        minHeight: 60
+    },
+
+    active: {
+        backgroundColor: Colors.questionGreen,
+        borderColor: Colors.questionGreen
+    },
+
+    text: {
+        fontSize: 15,
+        color: '#111827',
+        lineHeight: 20
+    },
+
+    activeText: {
+        color: '#fff'
+    },
+
+    iconContainer: {
+        position: 'absolute',
+        right: 16,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    tickCircle: {
+        width: 20,
+        height: 20,
+        borderRadius: 20,
+        backgroundColor: '#F1F5F9',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 
 });
