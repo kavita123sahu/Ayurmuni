@@ -65,13 +65,35 @@ const PatientFAQ = (props: any) => {
 
     const steps: StepConfig[] = [
         { type: 'intro', question: '' },
+
         {
             type: 'single',
             question: 'Do you know your Prakriti?',
             key: 'knowPrakriti',
             options: ['Yes', 'No']
         },
+
+        {
+            type: 'single',
+            question: 'Select your Prakriti',
+            key: 'prakritiType',
+            conditional: (a: any) => a.knowPrakriti === 'Yes',
+            options: [
+                { id: 'Vata', text: 'Vata' },
+                { id: 'Pitta', text: 'Pitta' },
+                { id: 'Kapha', text: 'Kapha' },
+                { id: 'Vata-Pitta', text: 'Vata-Pitta' },
+                { id: 'Pitta-Vata', text: 'Pitta-Vata' },
+                { id: 'Pitta-Kapha', text: 'Pitta-Kapha' },
+                { id: 'Kapha-Pitta', text: 'Kapha-Pitta' },
+                { id: 'Vata-Kapha', text: 'Vata-Kapha' },
+                { id: 'Kapha-Vata', text: 'Kapha-Vata' },
+                { id: 'Tri-Dosha', text: 'Trihoshaja (Vata Pitta Kapha)' },
+            ]
+        },
+
         ...dynamicSteps,
+
         { type: 'thankyou', question: '' }
     ];
 
@@ -80,19 +102,48 @@ const PatientFAQ = (props: any) => {
     );
 
     const current = visibleSteps[step];
-    
     const progress = step / (visibleSteps.length - 1);
 
+    // ✅ helper (convert ID → lowercase single dosha)
+    const getSingleDosha = (value: string) => {
+        return value.toLowerCase().split(/[-\s]+/)[0];
+    };
+
     const handleNext = async () => {
-        console.log("=======.>",current)
 
-        if (current.key !== 'knowPrakriti' && current.type === 'single') {
+        // ✅ YES FLOW API
+        if (current.key === 'prakritiType') {
 
+            const selectedId = selectedChoices['prakritiType'];
+            console.log("=========>  id",selectedId)
+            
+
+            if (selectedId) {
+                const payload = {
+                    customer: "8d5ffa87-7aed-4a36-a907-1aba89eccfbc",
+                    dominant_dosha: getSingleDosha(selectedId)
+                };
+                console.log("========payload",payload)
+                try {
+                    await _ASSESS_SERVICE.AssesmentYesSubmit(payload);
+                    console.log("YES API:", payload);
+                } catch (e) {
+                    console.log("YES API ERROR:", e);
+                }
+            }
+        }
+
+        // EXISTING NO FLOW
+        if (
+            current.key !== 'knowPrakriti' &&
+            current.key !== 'prakritiType' &&
+            current.type === 'single'
+        ) {
             const choice_id = selectedChoices[current.key!];
 
             if (choice_id) {
                 const payload = {
-                    patient_id: "7e7f7891-ce4c-4431-8e44-1edb921a8c1e",
+                    customer_id: "8d5ffa87-7aed-4a36-a907-1aba89eccfbc",
                     answers: [
                         {
                             question_id: current.key,
@@ -102,17 +153,11 @@ const PatientFAQ = (props: any) => {
                 };
 
                 try {
-                    await _ASSESS_SERVICE.AssesmentSubmit(payload);
-                    console.log("Submitted:", payload);
+                    await _ASSESS_SERVICE.AssesmentNoSubmit(payload);
                 } catch (error) {
                     console.log("POST ERROR:", error);
                 }
             }
-        }
-
-        if (current.key === 'knowPrakriti' && answers.knowPrakriti === 'Yes') {
-            setStep(visibleSteps.length - 1);
-            return;
         }
 
         if (current.type === 'thankyou') {
@@ -127,9 +172,7 @@ const PatientFAQ = (props: any) => {
         if (step > 0) setStep(step - 1);
     };
 
-    const handleSkip = () => {
-        setStep(step + 1);
-    };
+    const handleSkip = () => setStep(step + 1);
 
     const handleSkipHome = () => {
         props.navigation.replace('HomeStack', { screen: 'Home' });
@@ -148,14 +191,15 @@ const PatientFAQ = (props: any) => {
 
             <StatusBar barStyle="dark-content" />
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                scrollEnabled={current.key === 'knowPrakriti'}
+            >
                 <View style={styles.content}>
 
+                    {/* HEADER */}
                     {current.type !== 'intro' && (
-
                         <View style={styles.header}>
-
                             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
                                 <Image source={IMAGES.BackButton} style={styles.backIcon} />
                             </TouchableOpacity>
@@ -167,10 +211,10 @@ const PatientFAQ = (props: any) => {
                                     <Text style={styles.skipHeaderText}>Skip</Text>
                                 </TouchableOpacity>
                             )}
-
                         </View>
                     )}
 
+                    {/* PROGRESS */}
                     {step > 0 && (
                         <>
                             <Text style={styles.stepText}>
@@ -191,12 +235,14 @@ const PatientFAQ = (props: any) => {
                                 Your Health, <Text style={styles.green}>Simplified</Text>
                             </Text>
                             <Text style={styles.subtitle}>
-                                Discover top-rated doctors and authentic medicines delivered right to your doorstep.
+                                Discover top-rated doctors and
+                                authentic medicines delivered right
+                                to your doorstep
                             </Text>
                         </View>
                     )}
 
-                    {/* PRAKRITI SCREEN (FIXED AS FIGMA) */}
+                    {/* KNOW PRAKRITI */}
                     {current.key === 'knowPrakriti' && (
                         <>
                             <Text style={styles.questionText}>{current.question}</Text>
@@ -227,43 +273,47 @@ const PatientFAQ = (props: any) => {
                         </>
                     )}
 
-                    {/* QUESTIONS */}
+                    {/* OPTIONS */}
                     {current.type === 'single' && current.key !== 'knowPrakriti' && (
                         <>
                             <Text style={styles.questionText}>{current.question}</Text>
 
-                            {(current.options as any[])?.map((item: any, index: number) => {
+                            <ScrollView style={{ maxHeight: 400 }} showsVerticalScrollIndicator={false}>
+                                {(current.options as any[])?.map((item: any, index: number) => {
 
-                                const text = item.text;
-                                const active = answers[current.key!] === text;
+                                    const text = item.text || item;
+                                    const active = answers[current.key!] === text;
 
-                                return (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={[styles.card, active && styles.active]}
-                                        onPress={() => {
-                                            setAnswers({ ...answers, [current.key!]: text });
+                                    return (
+                                        <TouchableOpacity
+                                            key={index}
+                                            style={[styles.card, active && styles.active]}
+                                            onPress={() => {
+                                                setAnswers({ ...answers, [current.key!]: text });
 
-                                            setSelectedChoices((prev) => ({
-                                                ...prev,
-                                                [current.key!]: item.id
-                                            }));
-                                        }}
-                                    >
-                                        <Text style={[styles.text, active && styles.activeText]}>
-                                            {text}
-                                        </Text>
+                                                if (item.id) {
+                                                    setSelectedChoices((prev) => ({
+                                                        ...prev,
+                                                        [current.key!]: item.id
+                                                    }));
+                                                }
+                                            }}
+                                        >
+                                            <Text style={[styles.text, active && styles.activeText]}>
+                                                {text}
+                                            </Text>
 
-                                        {active && (
-                                            <View style={styles.iconContainer}>
-                                                <View style={styles.tickCircle}>
-                                                    <Icon name="checkmark" size={13} color={Colors.questionGreen} />
+                                            {active && (
+                                                <View style={styles.iconContainer}>
+                                                    <View style={styles.tickCircle}>
+                                                        <Icon name="checkmark" size={13} color={Colors.questionGreen} />
+                                                    </View>
                                                 </View>
-                                            </View>
-                                        )}
-                                    </TouchableOpacity>
-                                );
-                            })}
+                                            )}
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </ScrollView>
                         </>
                     )}
 
@@ -281,11 +331,10 @@ const PatientFAQ = (props: any) => {
                     )}
 
                 </View>
-
             </ScrollView>
 
+            {/* FOOTER */}
             {current.type !== 'thankyou' && (
-
                 <View style={styles.footer}>
 
                     <TouchableOpacity
@@ -301,7 +350,6 @@ const PatientFAQ = (props: any) => {
                         </View>
                     </TouchableOpacity>
 
-                    {/* SKIP BUTTON (FIGMA FIX) */}
                     {current.key === 'knowPrakriti' && (
                         <TouchableOpacity style={styles.bottomSkipBtn} onPress={handleSkipHome}>
                             <Text style={styles.bottomSkipText}>Skip</Text>
