@@ -33,7 +33,7 @@ interface ProfileData {
     mobile_number: string;
     email: string;
     address: string;
-    profile_picture: string | Asset | null; // 🔥 URL string
+    profile_picture: string | Asset | null; 
 }
 
 interface EditingState {
@@ -170,7 +170,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
             if (response.assets?.[0]) {
                 const asset = response.assets[0];
 
-                setProfileImage(asset.uri || null); // 👁 UI preview
+                setProfileImage(asset.uri || null); 
                 setProfileImageFile({
                     uri: asset.uri,
                     type: asset.type || 'image/jpeg',
@@ -257,12 +257,12 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
                 setProfileData(userData);
                 setOriginalData(userData);
 
-                // ✅ initial preview server URL se
+                
                 setProfileImage(responseJSON?.profile_picture || null);
             }
             else if (result.status === 404) {
                 showSuccessToast('Authorization Error', 'error');
-                // props.navigation.replace('AuthStack', { screen: 'Login' });
+                
             } else {
                 showSuccessToast(responseJSON.error, 'error');
             }
@@ -413,7 +413,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
 
             } else if (response.status === 401) {
                 showSuccessToast('Authorization Error', 'error');
-                // props.navigation.replace('AuthStack', { screen: 'Login' });
+                
             } else {
                 showSuccessToast(jsonResponse?.message || 'Please fill valid data', 'error');
             }

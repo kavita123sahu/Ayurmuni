@@ -20,7 +20,6 @@ import *as _AUTH_SERVICE from '../../services/AuthService'
 import { showSuccessToast } from '../../config/Key';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
-import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -109,7 +108,7 @@ const Login: React.FC = (props: any) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           style={styles.container}
-          keyboardShouldPersistTaps="handled" // Yeh important hai
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
 
           <View style={styles.logoContainer}>
@@ -127,7 +126,7 @@ const Login: React.FC = (props: any) => {
               Elevate your healthy lifestyle experience{'\n'}
               with our trusted, seamless and{'\n'}
               efficient services.
-              {/* Tender Name : {tendername} */}
+              
             </Text>
 
           </View>
@@ -208,12 +207,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   logo: {
-    width: 180,
-    height: 120,
+    width: 76,
+    height: 76,
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 80,
+    marginTop: 140,
     marginBottom: 30,
   },
 
@@ -223,17 +222,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5
   },
   welcomeTitle: {
-    fontSize: 24,
-    color: Colors.questionGreen,
+    fontSize: 30,
+    color: "#111827",
     fontFamily: Fonts.PoppinsSemiBold,
-    marginBottom: 12,
+    marginBottom: 8,
   },
   welcomeSubtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.subTextColor,
     fontFamily: Fonts.PoppinsRegular,
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 24,
   },
   formContainer: {
     flex: 1, marginTop: 10,
@@ -298,11 +297,11 @@ const styles = StyleSheet.create({
   },
 
   termsText: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.subTextColor,
     fontFamily: Fonts.PoppinsMedium,
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 20,
   },
   linkText: {
     color: Colors.questionGreen,

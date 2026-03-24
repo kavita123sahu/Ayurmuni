@@ -52,7 +52,6 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
     useFocusEffect(
         React.useCallback(() => {
             const onBackPress = () => {
-                // Return true to prevent default back action
                 return true;
             };
 
@@ -252,31 +251,44 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
         }
     }
 
-    return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView
-                    style={styles.container}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <View style={styles.logoContainer}>
+   return (
+    <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: '#F9FAFB' }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}>
+
+                <View style={styles.container}>
+
+                    
+                    <TouchableOpacity
+                        style={styles.backBtn}
+                        onPress={changeMobileNumber}>
                         <Image
-                            source={Images.MobileLogo}
-                            style={styles.logo}
-                            resizeMode='contain'
+                            source={Images.backIcon} 
+                            style={styles.backIcon}
                         />
-                    </View>
+                    </TouchableOpacity>
 
-                    <Text style={styles.title}>Enter Verification Code</Text>
-
-                    <Text style={styles.subtitle}>
-                        Enter 4-digit OTP sent to
-                        <Text style={styles.linkText}> (+91-{phoneNumber})</Text>
+                    {/* TITLE */}
+                    <Text style={styles.title}>
+                        Verify Your Mobile Number
                     </Text>
 
+                    {/* SUBTITLE */}
+                    <Text style={styles.subtitle}>
+                        Please enter the 4 digit code sent to your mobile number
+                        <Text style={styles.phone}> +91 {phoneNumber}</Text>
+                    </Text>
+
+                    {/* LABEL */}
+                    <Text style={styles.otpLabel}>Enter OTP</Text>
+
+                    {/* OTP BOXES */}
                     <View style={styles.otpContainer}>
                         {otp.map((digit, index) => (
                             <TextInput
@@ -284,186 +296,227 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
                                 ref={(ref) => {
                                     otpInputRefs.current[index] = ref;
                                 }}
-                                style={[styles.otpInput, digit && styles.otpInputFilled]}
+                                style={[
+                                    styles.otpInput,
+                                    digit && styles.otpFilled
+                                ]}
                                 value={digit}
                                 onChangeText={(text) => handleOTPChange(text, index)}
-                                onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent.key, index)}
+                                onKeyPress={({ nativeEvent }) =>
+                                    handleKeyPress(nativeEvent.key, index)
+                                }
                                 keyboardType="numeric"
                                 maxLength={1}
                                 textAlign="center"
-                                selectTextOnFocus
                             />
                         ))}
                     </View>
 
-                    <TouchableOpacity onPress={onResendPress} disabled={resendTimer > 0}>
+                    {/* TIMER */}
+                    <Text style={styles.timer}>
+                        00:{resendTimer < 10 ? `0${resendTimer}` : resendTimer}
+                    </Text>
+
+                    {/* RESEND */}
+                    <TouchableOpacity
+                        onPress={onResendPress}
+                        disabled={resendTimer > 0}>
                         <Text style={styles.resendText}>
-                            Didn't receive code ? {
-                                resendTimer > 0 ? (
-                                    <Text style={styles.linkTextDisabled}>Resend in {resendTimer}s</Text>
-                                ) : (
-                                    <Text style={styles.linkText}>Resend now</Text>
-                                )
-                            }
+                            Didn’t receive the code?{" "}
+                            <Text
+                                style={[
+                                    styles.resendLink,
+                                    resendTimer > 0 && styles.disabled
+                                ]}>
+                                Resend
+                            </Text>
                         </Text>
                     </TouchableOpacity>
 
-
+                    {/* BUTTON */}
                     {
                         otp.join('').length === 4 && !isLoading ? (
-                            <GradientButton
-                                text="Verify and proceed"
+                            <TouchableOpacity
                                 onPress={IS_NEW_CUSTOMER ? LoginVerfiyOTP : handleVerifyOTP}
-                            />
+                                style={styles.activeBtn}>
+                                <Text style={styles.activeBtnText}>Verify</Text>
+                            </TouchableOpacity>
 
                         ) : isLoading ? (
-                            <TouchableOpacity
-                                disabled={true}
-                                // onPress={IS_NEW_CUSTOMER ? LoginVerfiyOTP : handleVerifyOTP}
-                                style={[styles.verifyButton, styles.verifyButtonLoading]}
-                            >
-
-                                <ActivityIndicator size="small" color={Colors.questionGreen} />
-                                <Text style={[styles.verifyButtonText, styles.loadingText]}>
-                                    Verifying...
-                                </Text>
-                            </TouchableOpacity>
-                        ) :
-                            (
-                                <TouchableOpacity
-                                    // disabled={true}
-
-                                    // onPress={handleVerifyOTP}
-                                    onPress={IS_NEW_CUSTOMER ? LoginVerfiyOTP : handleVerifyOTP}
-                                    style={[styles.verifyButton]}
-                                >
-                                    <Text style={styles.verifyButtonText}>Verify and proceed</Text>
-                                </TouchableOpacity>
-                            )
+                            <View style={styles.activeBtn}>
+                                <ActivityIndicator color="#fff" />
+                            </View>
+                        ) : (
+                            <View style={styles.disabledBtn}>
+                                <Text style={styles.disabledBtnText}>Verify</Text>
+                            </View>
+                        )
                     }
 
-                    <TouchableOpacity>
-                        <Text style={styles.changeNumberText} onPress={() => changeMobileNumber()}>
-                            Entered wrong mobile number? <Text style={styles.linkText}>Change.</Text>
-                        </Text>
-                    </TouchableOpacity>
-
-                </ScrollView>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-    )
+                </View>
+            </ScrollView>
+        </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+);
 }
+export default OtpVerify;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
-        paddingHorizontal: 24,
-    },
-    logoContainer: {
-        alignItems: 'center',
-        marginTop: 80,
-        marginBottom: 30,
-    },
-    logo: {
-        width: 200,
-        height: 140,
-    },
-
-
-    linkText: {
-        color: Colors.questionGreen,
-        fontFamily: Fonts.PoppinsSemiBold,
-        fontSize: 14
-    },
-    linkTextDisabled: {
-        color: '#9ca3af',
-        fontWeight: '500',
-        fontSize: 14
-    },
-    title: {
-        fontSize: 28,
-        fontFamily: Fonts.PoppinsSemiBold,
-        color: '#1f2937',
-        textAlign: 'center',
-        marginBottom: 12,
-    },
-    subtitle: {
-        fontSize: 14,
-        color: '#6b7280',
-        textAlign: 'center',
-        lineHeight: 20,
-        fontFamily: Fonts.PoppinsMedium,
-        marginBottom: 40,
-    },
-    otpContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 30,
         paddingHorizontal: 20,
-        color:Colors.questionGreen
+        paddingTop: 20,
     },
-    otpInput: {
-        width: 50,
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#d1d5db',
+
+    backBtn: {
+        width: 40,
+        height: 40,
         borderRadius: 12,
-        backgroundColor: '#ffffff',
-        fontSize: 18,
-        fontWeight: '600',
-        color: Colors.questionGreen,
-    },
-    otpInputFilled: {
-        borderColor: "#0D614E4A",
-        backgroundColor: '#f0fdf4',
-    },
-    resendText: {
-        fontSize: 14,
-        color: '#6b7280',
-        textAlign: 'center',
-        fontFamily: Fonts.PoppinsMedium,
-        marginBottom: 30,
-    },
-    verifyButtonLoading: {
-        backgroundColor: '#0D614E',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
-    loadingContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
-    loadingText: {
-        marginLeft: 8,
-        color: Colors.questionGreen,
-    },
-    verifyButton: {
-        height: 50,
-        backgroundColor: '#0D614E0D',
-        borderRadius: 8,
-        borderColor:'#0D614E4A',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 20,
+        marginTop:30
     },
 
-    verifyButtonText: {
-        color: Colors.questionGreen,
-        fontSize: 16,
-        fontWeight: '600',
+    backIcon: {
+        width: 60,
+        height: 60,
+        resizeMode: 'contain',
     },
-    changeNumberText: {
-        fontSize: 14,
-        color: '#6b7280',
+
+    title: {
+        fontSize: 30,
+        fontFamily: Fonts.PoppinsSemiBold,
+        color: '#111827',
+        marginBottom: 6,
+        
+    },
+
+    subtitle: {
+        fontSize: 16,
+        color: '#88879C',
+        fontFamily: Fonts.PoppinsRegular,
+        lineHeight: 24,
+        marginBottom: 20,
+    },
+
+    phone: {
+        color: '#111827',
         fontFamily: Fonts.PoppinsMedium,
-        textAlign: 'center',
+    },
+
+    otpLabel: {
+        fontSize: 14,
+        color: '#111827',
+        fontFamily: Fonts.PoppinsMedium,
+        marginBottom: 14,
+        fontWeight:'bold'
+    },
+
+    otpContainer: {
+        flexDirection: 'row',
+        // justifyContent: 'space-between',
+        marginBottom: 20,
+        gap:20
+    },
+
+    // otpInput: {
+    //     width: 54,
+    //     height: 54,
+    //     borderRadius: 12,
+    //     borderWidth: 1,
+    //     borderColor: '#0D614E33',
+    //     backgroundColor: '#fff',
+    //     fontSize: 20,
+    //     fontFamily: Fonts.PoppinsSemiBold,
+    //     color: '#0D614E0D',
+    //     // display:"flex",
+    //     textAlign:"center",
+    //      textAlignVertical: 'center',
+    //     // alignItems: 'center',
+    //     // justifyContent: 'center',
+
+    // },
+
+    // otpFilled: {
+    //     borderColor: '#0D614E33',
+    //     backgroundColor: '#0D614E0D',
+    //     color: '#0D614E',
+    //     textAlign:"center",
+    //      textAlignVertical: 'center',
+        
+    // },
+    otpInput: {
+    width: 54,
+    height: 54,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#0D614E33',
+    backgroundColor: '#fff',
+
+    fontSize: 20,
+    fontFamily: Fonts.PoppinsSemiBold,
+    color: '#0D614E',
+
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    padding: 0,
+},
+
+otpFilled: {
+    borderColor: '#0D614E33',
+    backgroundColor: '#0D614E0D',
+    color: '#0D614E',
+},
+
+    timer: {
+        color: '#0D614E',
+        fontSize: 14,
+        fontFamily: Fonts.PoppinsMedium,
+        marginBottom: 10,
+    },
+
+    resendText: {
+        fontSize: 14,
+        color: '#6B7280',
+        fontFamily: Fonts.PoppinsRegular,
         marginBottom: 30,
     },
-})
 
-export default OtpVerify;
+    resendLink: {
+        color: '#0D614E',
+        fontFamily: Fonts.PoppinsMedium,
+    },
+
+    disabled: {
+        color: '#9CA3AF',
+    },
+
+    activeBtn: {
+        height: 52,
+        backgroundColor: '#0D614E',
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    activeBtnText: {
+        color: '#fff',
+        fontSize: 16,
+        fontFamily: Fonts.PoppinsSemiBold,
+    },
+
+    disabledBtn: {
+        height: 52,
+        backgroundColor: '#E5E7EB',
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    disabledBtnText: {
+        color: '#9CA3AF',
+        fontSize: 16,
+        fontFamily: Fonts.PoppinsSemiBold,
+    },
+});

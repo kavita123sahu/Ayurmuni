@@ -1,9 +1,11 @@
 export const Colors = {
   white: '#fff',
   black: '#000000',   //#71A33F   old Primary color    // old secondaryu color 71A33F    // tabttransparentcolro : 77946cff
-  primaryColor: '#3F4B1A',    // new primary color 
-  secondaryColor: '#466425',
+  primaryColor: '#3F4B1A',
+  containerShape:"#0D614E0D",
+  containerborder:"#0D614E33",
   questionGreen:'#0D614E',
+  secondaryColor: '#466425',
   tabinactive: '#E8EDE3',
   bottomBg: '#EDEEF5',
   bottomActive: '#A52238',
@@ -13,8 +15,8 @@ export const Colors = {
   fieldGrayColor: 'rgba(166, 168, 214, 0.25)',
   toggleColor: '#9C2B5F',
   greyBorder: '#9093D8',
-  textColor: '#1E1E1E',
-  subTextColor: '#1E1E1ECC',
+  textColor: '#18181B',
+  subTextColor: '#6B7280',
   errorColor: '#DF0C34',
   blackColor50: 'rgba(0, 0, 0, 0.5)',
   greyColor25: '#A6A8D6',

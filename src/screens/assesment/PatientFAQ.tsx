@@ -115,15 +115,15 @@ const PatientFAQ = (props: any) => {
         if (current.key === 'prakritiType') {
 
             const selectedId = selectedChoices['prakritiType'];
-            console.log("=========>  id",selectedId)
-            
+            console.log("=========>  id", selectedId)
+
 
             if (selectedId) {
                 const payload = {
-                    customer: "8d5ffa87-7aed-4a36-a907-1aba89eccfbc",
+                    customer: "cd1249c3-3734-4129-83c5-41a4755ccbfa",
                     dominant_dosha: getSingleDosha(selectedId)
                 };
-                console.log("========payload",payload)
+                console.log("========payload", payload)
                 try {
                     await _ASSESS_SERVICE.AssesmentYesSubmit(payload);
                     console.log("YES API:", payload);
@@ -143,7 +143,7 @@ const PatientFAQ = (props: any) => {
 
             if (choice_id) {
                 const payload = {
-                    customer_id: "8d5ffa87-7aed-4a36-a907-1aba89eccfbc",
+                    customer_id: " df819cc9-8ac9-4da8-9032-7f8fd39d7352",
                     answers: [
                         {
                             question_id: current.key,
@@ -232,7 +232,7 @@ const PatientFAQ = (props: any) => {
                         <View style={styles.introContainer}>
                             <Image source={IMAGES.QnAMain} style={styles.qnaImage} />
                             <Text style={styles.title}>
-                                Your Health, <Text style={styles.green}>Simplified</Text>
+                                Your Health, <Text style={styles.greenText}>Simplified</Text>
                             </Text>
                             <Text style={styles.subtitle}>
                                 Discover top-rated doctors and
@@ -287,7 +287,7 @@ const PatientFAQ = (props: any) => {
                                     return (
                                         <TouchableOpacity
                                             key={index}
-                                            style={[styles.card, active && styles.active]}
+                                            style={[styles.card, active && styles.activeCard]}
                                             onPress={() => {
                                                 setAnswers({ ...answers, [current.key!]: text });
 
@@ -366,141 +366,237 @@ const PatientFAQ = (props: any) => {
 export default PatientFAQ;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
 
-    container: { flex: 1, backgroundColor: '#fff' },
+    content: {
+        flex: 1,
+        paddingHorizontal: 24,
+    },
 
-    content: { flex: 1, paddingHorizontal: 24 },
+    introContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-    introContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    qnaImage: {
+        width: 400,
+        height: 400,
+        resizeMode: 'contain',
+        marginBottom: 40,
+    },
 
-    qnaImage: { width: 400, height: 400, resizeMode: 'contain', marginBottom: 40 },
+    title: {
+        fontSize: 30,
+        color: '#111827',
+        fontFamily: Fonts.PoppinsSemiBold,
+    },
 
-    title: { fontSize: 30, fontFamily: Fonts.PoppinsSemiBold, color: '#111827' },
+    greenText: {
+        color: Colors.questionGreen,
+    },
 
-    green: { color: Colors.questionGreen },
+    subtitle: {
+        fontSize: 19,
+        color: '#6B7280',
+        textAlign: 'center',
+        marginTop: 10,
+        paddingHorizontal: 30,
+    },
 
-    subtitle: { fontSize: 19, color: '#6B7280', textAlign: 'center', marginTop: 10, paddingHorizontal: 30 },
+    questionText: {
+        fontSize: 30,
+        marginVertical: 20,
+        fontFamily: Fonts.PoppinsSemiBold,
+    },
 
-    questionText: { fontSize: 30, fontFamily: Fonts.PoppinsSemiBold, marginVertical: 20 },
+    header: {
+        height: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-    header: { height: 70, justifyContent: 'center', alignItems: 'center' },
+    backButton: {
+        position: 'absolute',
+        left: 0,
+    },
 
-    backButton: { position: 'absolute', left: 0 },
+    backIcon: {
+        width: 60,
+        height: 60,
+        resizeMode: 'contain',
+    },
 
-    backIcon: { width: 60, height: 60, resizeMode: 'contain' },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#1A1A1A',
+    },
 
-    headerTitle: { fontSize: 18, fontWeight: '600', color: '#1A1A1A' },
+    skipHeaderBtn: {
+        position: 'absolute',
+        right: 0,
+    },
 
-    skipHeaderBtn: { position: 'absolute', right: 0 },
+    skipHeaderText: {
+        fontSize: 16,
+        color: Colors.questionGreen,
+    },
 
-    skipHeaderText: { color: Colors.questionGreen, fontSize: 16 },
-
-    stepText: { marginTop: 10, color: '#6B7280', fontSize: 17 },
+    stepText: {
+        marginTop: 10,
+        fontSize: 17,
+        color: '#6B7280',
+    },
 
     progressContainer: {
         height: 6,
-        backgroundColor: '#E5E7EB',
-        borderRadius: 50,
         marginVertical: 10,
-        overflow: 'hidden'
+        borderRadius: 50,
+        overflow: 'hidden',
+        backgroundColor: '#E5E7EB',
     },
 
     progressBar: {
         height: '100%',
+        borderRadius: 50,
         backgroundColor: Colors.questionGreen,
-        borderRadius: 50
     },
 
-    footer: { padding: 24 },
+    footer: {
+        padding: 24,
+    },
 
-    proceedButton: { backgroundColor: Colors.questionGreen, padding: 16, borderRadius: 16, marginBottom: 10 },
+    proceedButton: {
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 10,
+        backgroundColor: Colors.questionGreen,
+    },
 
-    proceedButtonDisabled: { backgroundColor: '#D1D5DB' },
+    proceedButtonDisabled: {
+        backgroundColor: '#D1D5DB',
+    },
 
-    proceedButtonText: { color: '#fff', fontFamily: Fonts.PoppinsMedium },
+    proceedButtonText: {
+        color: '#fff',
+        fontFamily: Fonts.PoppinsMedium,
+    },
 
-    nextRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+    nextRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-    nextArrow: { width: 18, height: 18, marginLeft: 5 },
+    nextArrow: {
+        width: 18,
+        height: 18,
+        marginLeft: 5,
+    },
 
     bottomSkipBtn: {
-        borderWidth: 1,
-        borderColor: '#D1D5DB',
-        borderRadius: 16,
+        marginTop: 10,
         padding: 16,
+        borderWidth: 1,
+        borderRadius: 16,
         alignItems: 'center',
-        marginTop: 10
+        borderColor: '#D1D5DB',
     },
 
     bottomSkipText: {
         color: Colors.questionGreen,
-        fontFamily: Fonts.PoppinsMedium
+        fontFamily: Fonts.PoppinsMedium,
     },
 
     secureText: {
+        marginTop: 10,
+        fontSize: 14,
         textAlign: 'center',
         color: '#94A3B8',
-        marginTop: 10,
-        fontSize: 14
     },
 
-    prakritiDesc: { fontSize: 16, color: '#64748B', marginBottom: 20 },
+    prakritiDesc: {
+        fontSize: 16,
+        marginBottom: 20,
+        color: '#64748B',
+    },
 
-    prakritiRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
+    prakritiRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
 
     prakritiBtn: {
         flex: 1,
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
-        borderRadius: 12,
+        marginHorizontal: 5,
         paddingVertical: 14,
+        borderWidth: 1,
+        borderRadius: 12,
         alignItems: 'center',
-        marginHorizontal: 5
+        borderColor: '#E5E7EB',
     },
 
-    prakritiBtnActive: { backgroundColor: Colors.questionGreen },
+    prakritiBtnActive: {
+        backgroundColor: Colors.questionGreen,
+    },
 
-    prakritiText: { color: '#111827' },
+    prakritiText: {
+        color: '#111827',
+    },
 
-    prakritiTextActive: { color: '#fff' },
+    prakritiTextActive: {
+        color: '#fff',
+    },
 
     prakritiImage: {
         width: 120,
         height: 120,
-        alignSelf: 'center',
+        marginTop: 60,
         opacity: 0.2,
-        marginTop: 60
+        alignSelf: 'center',
     },
 
-    thankYouContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    thankYouContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-    thankYouTitle: { fontSize: 26, fontFamily: Fonts.PoppinsSemiBold },
+    thankYouTitle: {
+        fontSize: 26,
+        fontFamily: Fonts.PoppinsSemiBold,
+    },
 
     card: {
+        minHeight: 60,
+        marginBottom: 12,
         borderWidth: 1,
-        borderColor: '#E5E7EB',
         borderRadius: 14,
         paddingVertical: 16,
         paddingHorizontal: 18,
         paddingRight: 48,
-        marginBottom: 12,
         backgroundColor: '#fff',
-        minHeight: 60
+        borderColor: '#E5E7EB',
     },
 
-    active: {
+    activeCard: {
         backgroundColor: Colors.questionGreen,
-        borderColor: Colors.questionGreen
+        borderColor: Colors.questionGreen,
     },
 
     text: {
         fontSize: 15,
+        lineHeight: 20,
         color: '#111827',
-        lineHeight: 20
     },
 
     activeText: {
-        color: '#fff'
+        color: '#fff',
     },
 
     iconContainer: {
@@ -508,17 +604,16 @@ const styles = StyleSheet.create({
         right: 16,
         top: 0,
         bottom: 0,
+        alignItems: 'center',
         justifyContent: 'center',
-        alignItems: 'center'
     },
 
     tickCircle: {
         width: 20,
         height: 20,
         borderRadius: 20,
-        backgroundColor: '#F1F5F9',
         alignItems: 'center',
-        justifyContent: 'center'
-    }
-
+        justifyContent: 'center',
+        backgroundColor: '#F1F5F9',
+    },
 });

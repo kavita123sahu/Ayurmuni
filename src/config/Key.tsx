@@ -6,7 +6,7 @@ export const BaseUrl = {
     url: 'https://clikshop.co.in/api/v1/',
     urlV3: 'https://clikshop.co.in/api/v3/',
     base: 'https://clikshop.co.in/',
-    base_url: 'https://pp1nvg0p-8000.inc1.devtunnels.ms/',
+    base_url: 'https://t4frlm3l-8000.inc1.devtunnels.ms/',
 };
 
 export const Method = {
