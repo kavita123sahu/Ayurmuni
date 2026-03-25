@@ -12,9 +12,10 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 import * as _ASSESS_SERVICE from '../../services/AssesmentService';
 import LottieView from 'lottie-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const IMAGES = {
     QnAMain: require('../../assets/images/QnAMain.png'),
@@ -35,6 +36,7 @@ interface StepConfig {
 
 const PatientFAQ = (props: any) => {
 
+    const navigation = useNavigation();
     const [step, setStep] = useState(0);
     const [answers, setAnswers] = useState<any>({});
     const [selectedChoices, setSelectedChoices] = useState<Record<string, string>>({});
@@ -43,6 +45,18 @@ const PatientFAQ = (props: any) => {
     useEffect(() => {
         getQuestionList();
     }, []);
+
+
+    useEffect(() => {
+        if (current?.type === 'thankyou') {
+            const timer = setTimeout(() => {
+                props.navigation.replace('HomeStack', { screen: 'Home' });
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [current?.type]);
+
 
     const getQuestionList = async () => {
         try {
@@ -80,11 +94,11 @@ const PatientFAQ = (props: any) => {
     );
 
     const current = visibleSteps[step];
-    
+
     const progress = step / (visibleSteps.length - 1);
 
     const handleNext = async () => {
-        console.log("=======.>",current)
+        console.log("=======.>", current)
 
         if (current.key !== 'knowPrakriti' && current.type === 'single') {
 
@@ -92,7 +106,7 @@ const PatientFAQ = (props: any) => {
 
             if (choice_id) {
                 const payload = {
-                    patient_id: "7e7f7891-ce4c-4431-8e44-1edb921a8c1e",
+                    customer_id: "bd8ce7f2-2be3-4d91-ad5d-0ea790d013c5",
                     answers: [
                         {
                             question_id: current.key,
@@ -144,7 +158,7 @@ const PatientFAQ = (props: any) => {
 
     return (
 
-        <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.container} >
 
             <StatusBar barStyle="dark-content" />
 
@@ -311,7 +325,7 @@ const PatientFAQ = (props: any) => {
                 </View>
             )}
 
-        </SafeAreaView>
+        </View>
     );
 };
 

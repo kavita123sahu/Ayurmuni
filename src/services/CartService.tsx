@@ -38,8 +38,6 @@ export const add_cart_item = async (data: object) => {
                 },
 
             }
-
-          
             let serverResponse = await fetch(BaseUrl.base_url + 'carts/cartitem/', fetchParameter);
             resolve(serverResponse);
         }

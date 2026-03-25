@@ -199,7 +199,7 @@ const HomeStack = () => {
             <Stack.Screen name={'TermsConditions'} component={TermsConditions} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'Onboarding'} component={Onboarding} options={{ headerShown: false, animation: 'slide_from_right' }} />
             {/* <Stack.Screen name={'VideoPlayer'} component={VideoPlayer} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
-            <Stack.Screen name={'RatingModel'} component={RatingModal} options={{ headerShown: false, animation: 'slide_from_right' }} />
+            {/* <Stack.Screen name={'RatingModel'} component={RatingModal} options={{ headerShown: false, animation: 'slide_from_right' }} /> */}
             <Stack.Screen name={'CartScreen'} component={CartScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'MyOrders'} component={MyOrder} options={{ headerShown: false, animation: 'slide_from_right' }} />
             <Stack.Screen name={'EditAddress'} component={EditAddress} options={{ headerShown: false, animation: 'slide_from_right' }} />
@@ -245,7 +245,6 @@ const AuthStack = () => {
 
 
 const SplashStack = () => {
-
     return (
         <Stack.Navigator initialRouteName="Splash" screenOptions={hideHeader}>
             <Stack.Screen name={'Splash'} component={Splash} options={{
@@ -272,9 +271,6 @@ const MainNavigator = () => {
 
 const Navigator = () => {
     const isConnected = useNetworkStatus();
-    // const isConnected = useSelector((state: any) => {
-    //     return state.internetReducer.isConnected
-    // })
 
     return (
         <NavigationContainer>

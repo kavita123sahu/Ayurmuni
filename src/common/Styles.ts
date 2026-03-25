@@ -104,6 +104,7 @@ export const Styles = {
         left: width / 2 - 80,
         zIndex: 10,
     },
+    
     askNowButton: {
 
         paddingHorizontal: 25,

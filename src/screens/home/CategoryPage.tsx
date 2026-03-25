@@ -1,9 +1,15 @@
-
-import React, { useRef } from 'react';
-import { Animated, Image, ListRenderItem, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React from 'react';
+import {
+    Image,
+    ListRenderItem,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    FlatList,
+} from 'react-native';
 import { Colors } from '../../common/Colors';
 import { Fonts } from '../../common/Fonts';
-
 
 interface Category {
     id: number;
@@ -15,50 +21,50 @@ interface Props {
     title: string;
     categories?: Category[];
     navigation: any;
-    onCategoryPress?: (category: Category) => void;
 }
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
-
-
-
 const CategoryPage = ({ title, categories = [], navigation }: Props) => {
-    // const visibleItems = categories ? categories.slice(0, 5) : [];
-    // const visibleItems = categories?.slice(0, 5) ?? [];
-    const visibleItems = Array.isArray(categories)
-        ? categories.slice(0, 5)
-        : [];
-        
-    const scrollX = useRef(new Animated.Value(0)).current;
 
-    const handleCategoryPress = (category: any) => {
+    const visibleItems = Array.isArray(categories)
+        ? categories.slice(0, 4) // 👈 same like figma (4 items)
+        : [];
+
+    const handleCategoryPress = (category: Category) => {
         navigation.navigate('Search', { category });
     };
 
     const handleViewAll = () => {
         navigation.navigate("AllCategories");
-    }
-
+    };
 
     const renderCategory: ListRenderItem<Category> = ({ item }) => (
         <TouchableOpacity
-            style={[styles.categoryItem, {}]}
+            style={styles.categoryItem}
             onPress={() => handleCategoryPress(item)}
+            activeOpacity={0.7}
         >
-            <View style={styles.cardstyle}>
+            <View style={styles.iconContainer}>
                 <Image
-                    source={item.image || require('../../assets/images/Frame1.png')}
-                    style={styles.itemImage}
+                    source={
+                        item?.image
+                            ? { uri: item.image } // ✅ API image support
+                            : require('../../assets/images/Frame1.png')
+                    }
+                    style={styles.icon}
                     resizeMode="contain"
                 />
             </View>
-            <Text style={styles.categoryText}>{item?.name ?? 'NA'}</Text>
+
+            <Text style={styles.categoryText}>
+                {item?.name ?? 'NA'}
+            </Text>
         </TouchableOpacity>
     );
 
-
     return (
         <View style={styles.categoriesSection}>
+            
+            {/* Header */}
             <View style={styles.titleRow}>
                 <Text style={styles.sectionTitle}>{title}</Text>
                 <TouchableOpacity onPress={handleViewAll}>
@@ -66,121 +72,71 @@ const CategoryPage = ({ title, categories = [], navigation }: Props) => {
                 </TouchableOpacity>
             </View>
 
-
-            <Animated.FlatList
+            {/* Categories Row */}
+            <FlatList
                 data={visibleItems}
                 renderItem={renderCategory}
                 keyExtractor={(item) => item.id.toString()}
                 horizontal
-                pagingEnabled
                 showsHorizontalScrollIndicator={false}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                    { useNativeDriver: false }
-                )}
-                snapToInterval={SCREEN_WIDTH / 3}
-                decelerationRate="fast"
+                contentContainerStyle={{ paddingHorizontal: 4 }}
             />
-
-            {visibleItems.length > 1 && (
-                <View style={styles.paginationContainer}>
-                    {visibleItems.map((_, i) => {
-                        const inputRange = [
-                            (i - 1) * (SCREEN_WIDTH / 3),
-                            i * (SCREEN_WIDTH / 3),
-                            (i + 1) * (SCREEN_WIDTH / 3)
-                        ];
-
-                        const opacity = scrollX.interpolate({
-                            inputRange,
-                            outputRange: [0.3, 1, 0.3],
-                            extrapolate: "clamp",
-                        });
-
-                        const scale = scrollX.interpolate({
-                            inputRange,
-                            outputRange: [0.6, 1.3, 0.6],
-                            extrapolate: "clamp",
-                        });
-
-                        return (
-                            <Animated.View
-                                key={i}
-                                style={[
-                                    styles.dot,
-                                    { opacity, transform: [{ scale }] },
-                                ]}
-                            />
-                        );
-                    })}
-                </View>
-            )}
         </View>
     );
-
 };
 
 export default CategoryPage;
 
-
 const styles = StyleSheet.create({
     categoriesSection: {
-        padding: 12,
+        paddingHorizontal: 16,
         marginTop: 10,
     },
+
     titleRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: 10,
+        marginBottom: 12,
     },
+
     sectionTitle: {
         fontSize: 18,
         fontFamily: Fonts.PoppinsSemiBold,
-        color: '#333'
+        color: '#333',
     },
+
     viewAll: {
         fontSize: 14,
-        fontFamily: Fonts.PoppinsSemiBold,
+        fontFamily: Fonts.PoppinsMedium,
         color: Colors.primaryColor,
     },
+
     categoryItem: {
         alignItems: 'center',
-        paddingHorizontal: 6,
-    },
-    cardstyle: {
-        height: 75,
-        width: 75,
-        borderRadius: 50,
-        backgroundColor: '#F4F4F4',
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    itemImage: {
-        height: 70,
-        width: 70,
-    },
-    categoryText: {
-        marginTop: 6,
-        fontSize: 12,
-        color: Colors.textColor,
-        fontFamily: Fonts.PoppinsSemiBold,
-        textAlign: "center"
-    },
-    paginationContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 10,
-        gap: 6,
+        marginRight: 18,
     },
 
-    dot: {
-        height: 9,
-        width: 9,
-        backgroundColor: Colors.primaryColor,
-        borderRadius: 100,
+    iconContainer: {
+        height: 72,
+        width: 72,
+        borderRadius: 40,
+        backgroundColor: '#E9ECEF', // 👈 exact figma grey
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    icon: {
+        height: 32,
+        width: 32,
+        tintColor: Colors.primaryColor, // 👈 green icon
+    },
+
+    categoryText: {
+        marginTop: 8,
+        fontSize: 13,
+        color: '#333',
+        fontFamily: Fonts.PoppinsMedium,
+        textAlign: "center",
     },
 });
-
-
-

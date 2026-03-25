@@ -17,11 +17,28 @@ import { Images } from '../../common/Images';
 import { Colors } from '../../common/Colors';
 import CategoryPage from '../home/CategoryPage';
 import ProductCard from '../../component/ProductCard';
+import *as _ASSESSMENT_SERVICE from '../../services/AssesmentService'
 import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import *as _HOME_SERVICE from '../../services/HomeServices';
 import { CategorySkeleton, ProductSkeleton } from '../../Skeleton/CardSkeleton';
+import PrakritiCard from '../../component/PrakritiCard';
+import { showSuccessToast } from '../../config/Key';
+import HeaderWithSearch from '../../component/SearchBar';
 
 
+type Prakriti = {
+    id: string;
+    customer: string;
+    vata_score: number;
+    pitta_score: number;
+    kapha_score: number;
+    dominant_dosha: string | null;
+    created_at: string;
+    updated_at: string;
+    answered_questions: number;
+    total_questions: number;
+    answered_percentage: number;
+};
 
 interface ShopPageProps {
     navigation: NavigationProp<any>;
@@ -32,7 +49,7 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
     const isFocused = useIsFocused();
 
     const [refreshing, setRefreshing] = useState(false);
-
+    const [PakritiData, setPakritiData] = useState<Prakriti | null>(null);
     const [categorieData, setCategoryData] = useState([]);
     const [EssentialsData, setEssentialsData] = useState([])
     const [SellingProduct, setSellingProduct] = useState([])
@@ -48,45 +65,19 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
     const [loadingHealth, setLoadingHealth] = useState(true);
     const [loadingCategory, setLoadingCategory] = useState(true)
 
-    // const fetchAllData = useCallback(async () => {
-    //     setIsLoading(true);
-    //     try {
-    //         const [
-    //             vendor,
-    //             bestSelling,
-    //             healthCategory,
-    //             productCategory
-    //         ] = await Promise.all([
-    //             _HOME_SERVICE.getVendorProduct(),
-    //             _HOME_SERVICE.getBestSellerProduct(),
-    //             _HOME_SERVICE.get_health_category(),
-    //             _HOME_SERVICE.get_shop_category()
-    //         ]) as [
-    //                 Response,
-    //                 Response,
-    //                 Response,
-    //                 Response
-    //             ];;
-
-    //         const vendorJson = await vendor.json();
-    //         setEssentialsData(vendorJson.data);
-    //         setTopNutrician(vendorJson.data);
-    //         setHealthConcern(await healthCategory?.json());
-    //         setCategoryData(await productCategory.json());
-    //         setSellingProduct(await bestSelling?.json());
-
-    //     } catch (err) {
-    //         console.log("🔥 FETCH ERROR: ", err);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // }, []);
-
-
 
 
     const fetchAllData = useCallback(async () => {
         // setIsLoading(true);
+
+        _ASSESSMENT_SERVICE.GetAssessmentPercentage()
+            .then((res: any) => res?.json())
+            .then(json => {
+                console.log("APIJSON 👉", json);
+                setPakritiData(json)
+            })
+            .catch(err => console.log("prakritidata Error", err))
+            .finally(() => setIsLoading(false));
 
         _HOME_SERVICE.getVendorProduct()
             .then((res: any) => res.json())
@@ -125,61 +116,24 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
     }, [isFocused, fetchAllData]);
 
 
+
+
+
+
+
     const onRefresh = async () => {
         setRefreshing(true);
         await fetchAllData();
         setRefreshing(false);
     };
 
-
-    // const searchProducts = async (query: string) => {
-    //     if (!query.trim()) {
-    //         setShowSearchResults(false);
-    //         return;
-    //     }
-
-    //     setIsSearching(true);
-
-    //     try {
-
-    //         let response: any = await _HOME_SERVICE.getProductsSearch(query);
-    //         if (response.status_code == 200) {
-    //             setSearchResults(response.products || []);
-    //             setShowSearchResults(true);
-    //         } else {
-    //             setSearchResults([]);
-    //             setShowSearchResults(true);
-    //         }
-    //     } catch (error) {
-    //         console.log("SEARCH ERROR:", error);
-    //         setSearchResults([]);
-    //         setShowSearchResults(true);
-    //     } finally {
-    //         setIsSearching(false);
-    //     }
-    // };
-
-    // const handleSearch = (text: string) => {
-    //     setSearchQuery(text);
-    //     if (text.trim()) {
-    //         setTimeout(() => {
-    //             if (text === searchQuery) {
-    //                 searchProducts(text);
-    //             }
-    //         }, 500);
-    //     } else {
-    //         setShowSearchResults(false);
-    //         setSearchResults([]);
-    //     }
-    // };
-
-
-
     const clearSearch = () => {
         setSearchQuery('');
         setShowSearchResults(false);
         setSearchResults([]);
     };
+
+
 
     const Prescription = () => (
         <View style={styles.prescriptionButton}>
@@ -199,9 +153,9 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
 
     const MainContent = () => (
         <>
-            <Image source={Images.homebanner} style={styles.banner} resizeMode='contain' />
+            {/* <Image source={Images.homebanner} style={styles.banner} resizeMode='contain' /> */}
 
-            <Prescription />
+            {/* <Prescription /> */}
 
             {loadingCategory ?
                 <CategorySkeleton /> : categorieData?.length > 0 ?
@@ -213,6 +167,18 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
                     /> : null
             }
 
+            {loadingVendor ?
+                <CategorySkeleton /> : categorieData?.length > 0 ?
+
+                    <CategoryPage
+                        title="Shop by Categories:"
+                        categories={categorieData}
+                        navigation={navigation}
+                    /> : null
+            }
+
+
+{/* 
             {
                 loadingVendor
                     ? <ProductSkeleton />
@@ -229,12 +195,13 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
 
             <Image source={Images.homebanner} style={styles.banner} resizeMode='contain' />
 
-
             {loadingHealth ?
                 <CategorySkeleton /> :
 
                 HealthConcern?.length > 0 ?
-                    <CategoryPage
+                    <
+                
+                    
                         title="Shop by health concern:"
                         categories={HealthConcern}
                         navigation={navigation}
@@ -247,7 +214,7 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
 
             {loadingVendor ? <ProductSkeleton /> : TopNutrician?.length > 0 ?
                 <ProductCard title="Top Nutrition Products:" flag='search' navigation={navigation} PropsData={TopNutrician} /> : null
-            }
+            } */}
         </>
     );
 
@@ -277,22 +244,25 @@ const ShopPage: React.FC<ShopPageProps> = ({ navigation }) => {
         </View>
     );
 
-
-
+    
     return (
 
         <View style={styles.container}>
             <StatusBar backgroundColor="#466425" barStyle="light-content" />
 
-            <LinearGradient colors={['#466425',Colors.primaryColor]} style={styles.header}>
-                <SearchBar
-                    placeholder="Search for products"
-                    // onSearch={handleSearch}
-                    // onChangeText={handleSearch}
-                    value={searchQuery}
-                    showVoiceIcon={false}
+            <View  style={styles.header}>
+                <HeaderWithSearch  />
+            </View>
+
+            <TouchableOpacity style={{ padding: 16 }} onPress={()=>navigation.navigate('PatientFAQ')}>
+
+                <PrakritiCard
+                    title="Know Your Prakriti"
+                    status="Profile Pending"
+                    progress={Math.round(PakritiData?.answered_percentage ?? 0)}
                 />
-            </LinearGradient>
+
+            </TouchableOpacity>
             {/* 
             {isLoading ? (
                 //   <Loader />
@@ -333,11 +303,9 @@ const styles = StyleSheet.create({
 
 
     header: {
-        backgroundColor:Colors.primaryColor,
-        paddingHorizontal: 20,
+        paddingTop:30,
+        paddingHorizontal: 10,
         paddingBottom: 10,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
     },
 
     section: { marginBottom: 20 },
@@ -430,7 +398,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     clearButton: {
-        backgroundColor:Colors.primaryColor,
+        backgroundColor: Colors.primaryColor,
         paddingHorizontal: 15,
         paddingVertical: 8,
         borderRadius: 8,

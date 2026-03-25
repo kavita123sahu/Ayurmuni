@@ -54,7 +54,7 @@ const TermsCondition = (props: any) => {
       {/* ===== CONGRATULATIONS / TERMS BANNER (STICKY) ===== */}
       <LinearGradient
         style={styles.notificationBanner}
-        colors={[Colors.secondaryColor, Colors.primaryColor]}
+        colors={[Colors.secondaryColor, Colors.questionGreen]}
       >
         <View style={styles.notificationContent}>
           <Text style={styles.notificationTitle}>Hello,</Text>
@@ -99,7 +99,7 @@ const TermsCondition = (props: any) => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={handleAgree} activeOpacity={0.8} style={styles.buttonWrapper}>
               <LinearGradient
-                colors={[Colors.secondaryColor, Colors.primaryColor]}
+                colors={[Colors.secondaryColor, Colors.questionGreen]}
                 style={styles.agreeButton}>
                 <Text style={styles.agreeButtonText}>Agree</Text>
               </LinearGradient>

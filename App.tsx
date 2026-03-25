@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Provider } from 'react-redux'
 import Navigator from './src/navigation/Navigator'
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import { Platform } from 'react-native';
+
 import { store } from './src/reduxfile/Store';
 
 const toastConfig = {
@@ -42,8 +42,6 @@ const App = () => {
   return (
     <Provider store={store}>
       <Navigator />
-
-      {/* 👇 toast config applied */}
       <Toast config={toastConfig} />
       
     </Provider>

@@ -20,6 +20,7 @@ import { useNavigationState } from "@react-navigation/native";
 import { BackHandler, ToastAndroid } from 'react-native';
 import { useRef } from 'react';
 import { Colors } from '../../common/Colors';
+import HeaderSearch from '../../component/HeaderSearch';
 const { width } = Dimensions.get('window');
 
 
@@ -53,13 +54,14 @@ const HomePage: React.FC = () => {
             <StatusBar backgroundColor="#466425" barStyle="light-content" />
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
 
-                <LinearGradient
-                    colors={['#466425',Colors.primaryColor]}
+                <View
+                   
                     style={styles.header}>
 
                     <TouchableOpacity>
-                        <SearchBar
-                            type='home'
+                        <HeaderSearch/>
+                        {/* <SearchBar
+                            type='home'a
                             showVoiceIcon={false}
                             placeholder="Search for products"
                             navigation={navigation}
@@ -67,7 +69,8 @@ const HomePage: React.FC = () => {
                             onVoicePress={handleVoicePress}
                             value={searchQuery}
                             onChangeText={setSearchQuery}
-                        />
+                        /> */}
+
 
                     </TouchableOpacity>
 
@@ -89,7 +92,7 @@ const HomePage: React.FC = () => {
                         </TouchableOpacity>
                     </View>
 
-                </LinearGradient>
+                </View>
 
                 <Servicecard navigation={navigation} />
 

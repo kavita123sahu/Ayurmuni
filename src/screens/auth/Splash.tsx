@@ -129,9 +129,7 @@ import * as _PROFILE_SERVICES from '../../services/ProfileServices';
 import { showSuccessToast } from '../../config/Key';
 import { useDispatch } from 'react-redux';
 import { setUserInfo } from '../../reduxfile/action/UserInfoAction';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_TIMEOUT = 6000;
 
 const Splash = (props: any) => {
   const isFocused = useIsFocused();
@@ -142,10 +140,6 @@ const Splash = (props: any) => {
       getUser();
     }
   }, [isFocused]);
-
-
-
-  
 
   // const getAllStoredData = async () => {
   //   try {
@@ -162,11 +156,12 @@ const Splash = (props: any) => {
   //     console.log('Error fetching AsyncStorage data', error);
   //   }
   // };
+ 
+ 
   const getUser = async () => {
     try {
       const token = await Utils.getData('_TOKEN');
       console.log('tokenn---->>>', token);
-
       if (token) {
         const result: any = await _PROFILE_SERVICES.user_profile();
         const JSONUser = await result.json();

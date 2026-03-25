@@ -267,7 +267,7 @@ const CenterWellness: React.FC<CenterProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.primaryColor} />
       <ScrollView showsVerticalScrollIndicator={false}>
-
+        
         <View style={styles.heroSection}>
           <Image
             source={{ uri: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&h=300&fit=crop" }}
@@ -276,13 +276,14 @@ const CenterWellness: React.FC<CenterProps> = ({ navigation }) => {
 
           <View style={styles.heroOverlay}>
 
-            <SearchBar placeholder="Search for Destinations"
+            {/* <SearchBar
+             placeholder="Search for Destinations"
               onSearch={handleSearch}
               onVoicePress={handleVoicePress}
               value={searchQuery}
               type='wellness'
               showVoiceIcon={false}
-              onChangeText={setSearchQuery} />
+              onChangeText={setSearchQuery} /> */}
 
             <Text style={styles.heroTitle}>Detox. Reconnect. Thrive.</Text>
             <Text style={styles.heroSubtitle}>

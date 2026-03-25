@@ -1,11 +1,6 @@
-import { Alert, Text } from "react-native";
-import RazorpayCheckout from 'react-native-razorpay';
-import { Colors } from "./Colors";
-import { BaseUrl, showSuccessToast } from "../config/Key";
+import {  Text } from "react-native";
 import { Styles } from "./Styles";
 import *as _ORDER_SERVICE from "../services/OrderService";
-import { Utils } from "./Utils";
-import { useNavigation } from "@react-navigation/native";
 
 export const RAZORPAY_KEY = 'rzp_test_e12OYY9xlDSzMc'; // Replace with your Razorpay key
 
@@ -89,6 +84,18 @@ export const foodCategories: Category[] = [
   { id: 2, name: 'Stomach care', icon: require('../assets/images/Stomach.png') },
   { id: 3, name: 'Liver Care', icon: require('../assets/images/Liver.png') },
 ];
+
+
+export interface Step {
+  id: number;
+  text: string;
+}
+
+export interface FAQ {
+  question: string;
+  description: string;
+  steps: Step[];
+}
 
 export const healthConcerns: HealthConcern[] = [
   {

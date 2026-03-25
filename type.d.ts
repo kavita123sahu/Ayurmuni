@@ -98,7 +98,5 @@ export type RootBottomParamList = {
 export type AllBooksScreenProps = NativeStackScreenProps<RootStackParamList, 'AllBooks'>
 
 
-
-
     // <uses-permission android:name="android.permission.BLUETOOTH" />
     // <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />

@@ -131,11 +131,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
     }
   }
 
-
-
-
-
-
+  
   const handleMenuPress = (item: MenuItem) => {
     if (item.title === 'Log Out') {
       Alert.alert('Log Out', 'Are you sure you want to log out?', [
@@ -188,13 +184,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
   };
 
 
-
   const logout = async () => {
     await Utils.clearAllData()
     navigation.replace('AuthStack', { screen: 'Login' });
   }
-
-
+  
 
   const handleDeleteAccount = () => {
     Alert.alert('Delete Account', 'Are you sure you want to delete your account? This action cannot be undone.', [
@@ -236,215 +230,187 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primaryColor} />
+  <SafeAreaView style={styles.container}>
+    <StatusBar barStyle="dark-content" backgroundColor="#F7F8FA" />
 
-      <Header title='Profile' Is_Tab={true} />
+    <Header title="Profile" Is_Tab={true} />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.profileSection}>
-          <View style={styles.profileImageContainer}>
-            <TouchableOpacity >
-              {/* {profileImage && profileImage !== '' ? (
-                <Image source={{ uri: profileImage }} style={styles.profileImage} />
-              ) : (
-                <View style={styles.profilePlaceholder}>
-                  <Text style={{ fontSize: 40, color: 'white', fontFamily: Fonts.PoppinsBold }}> {profileData?.first_name?.charAt(0)?.toUpperCase()} </Text>
-                
-                </View>
-              )} */}
+    <ScrollView showsVerticalScrollIndicator={false}>
 
-              {profileImage ? (
-                <Image source={{ uri: profileImage }} style={styles.profileImage} />
-              ) : profileData.profile_picture ? (
-                <Image source={{ uri: profileData.profile_picture }} style={styles.profileImage} />
-              ) : (
-                <View style={styles.profilePlaceholder}>
-                  <Text style={styles.profileText}>
-                    {profileData.first_name?.charAt(0)?.toUpperCase()}
-                  </Text>
-                </View>
-              )}
-
-
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity>
-          </TouchableOpacity>
+      {/* PROFILE HEADER */}
+      <View style={styles.profileCard}>
+        <View style={styles.profileImageContainer}>
+          {profileImage ? (
+            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+          ) : profileData.profile_picture ? (
+            <Image source={{ uri: profileData.profile_picture }} style={styles.profileImage} />
+          ) : (
+            <View style={styles.profilePlaceholder}>
+              <Text style={styles.profileText}>
+                {profileData.first_name?.charAt(0)?.toUpperCase()}
+              </Text>
+            </View>
+          )}
         </View>
 
-        <View style={styles.menuContainer}>
-          <View style={styles.menuSection}>
-            <Text style={styles.sectionTitle}>User settings</Text>
-            <View style={{
-              borderBottomWidth: 1,
-              borderColor: "#eee",
-            }} />
-            {userSettings.map((item, index) => renderMenuItem(item, index))}
-          </View>
+        <Text style={styles.name}>
+          {profileData.first_name} {profileData.last_name}
+        </Text>
 
-          <View style={styles.menuSection}>
-            <Text style={styles.sectionTitle}>Account Settings</Text>
-            <View style={{
-              borderBottomWidth: 1,
-              borderColor: "#eee",
-            }} />
-            {accountSettings.map((item, index) => renderMenuItem(item, index))}
-          </View>
+        <Text style={styles.phone}>
+          {profileData.verified_phone_number}
+        </Text>
+      </View>
 
-          <View style={styles.menuSection}>
-            <Text style={styles.sectionTitle}>More Info and Support</Text>
-            <View style={{
-              borderBottomWidth: 1,
-              borderColor: "#eee",
-            }} />
-            {supportSettings.map((item, index) => renderMenuItem(item, index))}
+      {/* USER SETTINGS */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Account</Text>
+        {userSettings.map((item, index) => renderMenuItem(item, index))}
+      </View>
 
-          </View>
+      {/* ACCOUNT SETTINGS */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Preferences</Text>
+        {accountSettings.map((item, index) => renderMenuItem(item, index))}
+      </View>
 
-          <View style={styles.deleteSection}>
-            <TouchableOpacity onPress={handleDeleteAccount}>
-              <Text style={styles.deleteAccountText}>Delete my account</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+      {/* SUPPORT */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Support</Text>
+        {supportSettings.map((item, index) => renderMenuItem(item, index))}
+      </View>
 
-      </ScrollView>
-    </SafeAreaView>
-  );
+      {/* LOGOUT BUTTON */}
+      <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+        <Ionicons name="log-out-outline" size={20} color="#FF4D4F" />
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+
+      {/* DELETE */}
+      <TouchableOpacity onPress={handleDeleteAccount}>
+        <Text style={styles.deleteAccountText}>Delete my account</Text>
+      </TouchableOpacity>
+
+    </ScrollView>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F7F8FA',
   },
-  header: {
-    flexDirection: 'row',
+
+  profileCard: {
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 20,
+    margin: 16,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 20,
     elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'white',
-    textAlign: 'center',
-    marginLeft: -40,
-  },
-  headerSpacer: {
-    width: 40,
-  },
-  scrollView: {
-    flex: 1,
-    paddingHorizontal: 15,
-  },
-  profileSection: {
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    marginBottom: 1,
-  },
+
   profileImageContainer: {
-    marginBottom: 12,
-    borderWidth: 1,
-    borderRadius: 50,
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    resizeMode: 'cover',
-  },
-  profilePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: Colors.primaryColor,
-    // backgroundColor: '#F0F0F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: 'white',
-  },
-  profileText: {
-    fontSize: 48,
-    fontFamily: Fonts.PoppinsBold,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  editPictureText: {
-    fontSize: 16,
-    color: '#8BC34A',
-    fontFamily: Fonts.PoppinsMedium,
-  },
-  menuContainer: {
-    flex: 1,
-  },
-  menuSection: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: '#ffff',
     marginBottom: 10,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.PoppinsMedium,
-    color: Colors.textColor,
-    marginBottom: 20,
+
+  profileImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 50,
   },
+
+  profilePlaceholder: {
+    width: 90,
+    height: 90,
+    borderRadius: 50,
+    backgroundColor: Colors.primaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  profileText: {
+    fontSize: 36,
+    color: '#fff',
+    fontFamily: Fonts.PoppinsBold,
+  },
+
+  name: {
+    fontSize: 18,
+    fontFamily: Fonts.PoppinsSemiBold,
+    marginTop: 5,
+  },
+
+  phone: {
+    fontSize: 13,
+    color: '#888',
+    marginTop: 2,
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginBottom: 14,
+    borderRadius: 16,
+    padding: 16,
+    elevation: 3,
+  },
+
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: Fonts.PoppinsSemiBold,
+    marginBottom: 10,
+  },
+
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 15,
-    backgroundColor: 'white',
-    borderRadius: 10,
-
-    paddingHorizontal: 0,
+    paddingVertical: 14,
   },
-  dangerMenuItem: {
+
+   dangerMenuItem: {
     // Add any danger-specific styling here
+  },
+   dangerText: {
+    color: '#FF6B6B',
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
-  },
-  menuItemText: {
-    fontSize: 16,
-    color: Colors.textColor,
-    marginLeft: 15,
-    fontFamily: Fonts.PoppinsRegular,
-  },
-  dangerText: {
-    color: '#FF6B6B',
-  },
-  deleteSection: {
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  deleteAccountText: {
-    fontSize: 16,
-    color: '#FF6B6B',
-    fontFamily: Fonts.PoppinsSemiBold
   },
 
+  menuItemText: {
+    fontSize: 14,
+    marginLeft: 12,
+    fontFamily: Fonts.PoppinsRegular,
+  },
+
+  logoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 10,
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: '#FFF1F0',
+  },
+
+  logoutText: {
+    marginLeft: 8,
+    color: '#FF4D4F',
+    fontFamily: Fonts.PoppinsSemiBold,
+  },
+
+  deleteAccountText: {
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 40,
+    color: '#FF6B6B',
+    fontFamily: Fonts.PoppinsSemiBold,
+  },
 });
 
 export default ProfilePage;

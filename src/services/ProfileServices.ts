@@ -30,15 +30,13 @@ export const update_Profile = async (data: any) => {
 }
 
 
-
-
 export const user_profile = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const customer_id = await Utils.getData('_CUSTOMER_ID');
             const user = await Utils.getData('_USER_INFO');
             const id = customer_id || user?.id;
-            console.log("userprofile---->>>", user, customer_id, "id===>", id);
+            console.log("userprofile---->>>", user?.id, customer_id, "id===>", id);
             let fetchParameter = {
                 method: Method.GET,
                 headers: {

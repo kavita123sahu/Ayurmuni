@@ -272,7 +272,7 @@ const Onboarding = (props: any) => {
                 // Utils.storeData('_USER_ID', jsonResponse?.data?.user);
                 showSuccessToast('Welcome to Ayurmuni', 'success');
                 // props.navigation.replace('HomeStack', { screen: 'Home' });
-                props.navigation.navigate('Assesment');
+                props.navigation.navigate('PatientFAQ');
             } else {
                 setIsLoading(false);
                 showSuccessToast(message || 'Login failed', 'error');

@@ -64,6 +64,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
     const handleVerifyOTP = async () => {
         Keyboard.dismiss();
 
+
         const otpCode = otp.join('');
         if (otpCode.length !== 4) {
             showSuccessToast('Please enter valid OTP', 'error');
@@ -80,6 +81,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
 
             const response : any = await _AUTH_SERVICE.verify_otp(send_data);
             const { status, data, message } = response;
+            console.log("newwwwwwuser", response);
 
             console.log( response);
 
@@ -88,7 +90,7 @@ const OtpVerify: React.FC<OTPVerificationProps> = (props) => {
             console.log("verify_otp_response", response, JSONData);
 
             if (status === 200) {
-                Utils.storeData('_USER_ID', data?.user_id);
+                Utils.storeData('_USER_ID', JSONData?.user_id);
                 showSuccessToast(response.message || 'OTP verified successfully', 'success');
 
                 if (data?.is_customer) {

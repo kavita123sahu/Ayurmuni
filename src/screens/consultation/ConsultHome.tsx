@@ -201,19 +201,19 @@ const ConsultHome: React.FC<ConsultHomeProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#466425" barStyle="light-content" />
 
-      <LinearGradient
-        colors={['#466425',Colors.primaryColor]}
+      <View
+        
         style={styles.header}>
         <SearchBar
-          type='consult'
-          showVoiceIcon={false}
-          placeholder="Search for products"
-          onSearch={handleSearch}
-          onVoicePress={handleVoicePress}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
+          // type='consult'
+          // showVoiceIcon={false}
+          // placeholder="Search for products"
+          // onSearch={handleSearch}
+          // onVoicePress={handleVoicePress}
+          // value={searchQuery}
+          // onChangeText={setSearchQuery}
         />
-      </LinearGradient>
+      </View>
 
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -311,10 +311,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    borderBottomColor: '#F0F0F0',
+    paddingTop:30,
+    // borderBottomWidth: 1,
+    // borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
+    // borderBottomColor: '#F0F0F0',
   },
   bannerContainer: {
     paddingHorizontal: 16,

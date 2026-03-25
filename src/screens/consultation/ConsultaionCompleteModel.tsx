@@ -18,7 +18,7 @@ interface ConsultationCompletedModalProps {
   visible: boolean;
   doctor?: Doctor;
   onClose: () => void;
-    navigation: any;
+  navigation: any;
   onRateNow: () => void;
 }
 
@@ -52,9 +52,9 @@ export const ConsultationCompletedModal: React.FC<ConsultationCompletedModalProp
             style={styles.modalPrimaryButton}
             onPress={onRateNow}
             activeOpacity={0.7}
-            
+
           >
-            <Text style={styles.modalPrimaryButtonText}> 
+            <Text style={styles.modalPrimaryButtonText}>
               Rate Your Experience
             </Text>
           </TouchableOpacity>

@@ -9,7 +9,8 @@ import {
     Image,
 } from 'react-native';
 import { Ionicons } from '../common/Vector';
-import { Colors } from '../common/Colors';
+import { Colors } from '../common/Colors'
+;
 import { Fonts } from '../common/Fonts';
 import LinearGradient from 'react-native-linear-gradient';
 
